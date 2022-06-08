@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<?php
+include("head.html");
+?>  
+</head>
+<body>  
 <?php
 include("headerAlumno.html");
 include("conexion.inc");
@@ -43,3 +52,4 @@ mysqli_close($link);
 <?php
 include("footer.html");
 ?>
+</body> 

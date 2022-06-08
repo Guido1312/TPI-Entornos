@@ -139,7 +139,9 @@ $vMaterias = mysqli_query($link, $vSqlMaterias);
         </select>
         <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
     </form>
-    <table border=1>
+    <div class="table-responsive">
+    <table class="table">
+        <thead style="background-color: #077b83; color: #ffff ;">
         <tr>
             <td><b>Materia</b></td>
             <td><b>Profesor</b></td>
@@ -147,6 +149,7 @@ $vMaterias = mysqli_query($link, $vSqlMaterias);
             <td><b>Hora</b></td>
             <td></td>
         </tr>
+    </thead>
 <?php
 
 while ($fila = mysqli_fetch_array($vResultado))
@@ -166,8 +169,8 @@ mysqli_free_result($vResultado);
 // Cerrar la conexion
 mysqli_close($link);
 ?>
-
     </table>
+</div>
     <p>&nbsp;</p>
 <?php
 include("footer.html");
