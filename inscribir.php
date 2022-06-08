@@ -1,17 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<?php
+include("head.html");
+?>  
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="/resources/demos/style.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+<script>
+$( function() {
+var dateFormat = "yy-mm-dd",
+    from = $( "#from" )
+    .datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        dateFormat: "yy-mm-dd",
+        numberOfMonths: 3
+    })
+    .on( "change", function() {
+        to.datepicker( "option", "minDate", getDate( this ) );
+    }),
+    to = $( "#to" ).datepicker({
+    defaultDate: "+1w",
+    changeMonth: true,
+    dateFormat: "yy-mm-dd",
+    numberOfMonths: 3
+    })
+    .on( "change", function() {
+    from.datepicker( "option", "maxDate", getDate( this ) );
+    });
+
+function getDate( element ) {
+    var date;
+    try {
+    date = $.datepicker.parseDate( dateFormat, element.value );
+    } catch( error ) {
+    date = null;
+    }
+
+    return date;
+}
+} );
+</script>
+</head>
+<body>  
 <?php
 include("headerAlumno.html");
 include("conexion.inc");
 $vIDalumno = 1; #$_POST ['id_alumno'];
 $vIDespecialidad = 1; #$_POST ['especialidad'];
+if (!empty($_POST ['from'])) {
+    $vFechaDesde = $_POST ['from'];
+}
+if (!empty($_POST ['to'])) {
+    $vFechaHasta = $_POST ['to'];
+}
+
 
 $vSql = "SELECT * FROM consultas c inner join materias m on c.id_materia = m.id_materia
-                                    inner join especialidades e on m.id_especialidad = e.id_especialidad
-                                    inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
-                                    inner join profesores p on c.id_profesor = p.id_profesor
-                                    where ea.id_alumno = '$vIDalumno'and ea.id_especialidad = '$vIDespecialidad' ";
+        inner join especialidades e on m.id_especialidad = e.id_especialidad
+        inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
+        inner join profesores p on c.id_profesor = p.id_profesor
+        where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+if (!empty($_POST ['from'])) {
+    $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
+}
+
+if (!empty($_POST ['materia']) && $_POST ['materia']!="0") {
+    $vMateriaFiltro = $_POST ['materia'];
+    $vSql .= " and c.id_materia = '$vMateriaFiltro'";
+}
+
+$vSqlMaterias = "SELECT m.id_materia, m.nombre_materia FROM materias m
+                inner join especialidades e on m.id_especialidad = e.id_especialidad
+                inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
+                where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+                                   
 $vResultado = mysqli_query($link, $vSql);
+$vMaterias = mysqli_query($link, $vSqlMaterias);
 
 ?>
+    <form action="inscribir.php" method="POST" name="FiltrarConsultas">
+        <label for="from">Fecha desde:</label>
+        <?php
+        if (empty($_POST ['from'])) {
+        ?>
+            <input type="text" id="from" name="from">
+        <?php
+        }
+        else {
+        ?>
+            <input type="text" id="from" name="from" value=<?php echo ($_POST ['from'])?>>
+        <?php
+        }
+        ?>
+        <label for="to">hasta:</label>
+        <?php
+        if (empty($_POST ['to'])) {
+        ?>
+            <input type="text" id="to" name="to">
+        <?php
+        }
+        else {
+        ?>
+            <input type="text" id="to" name="to" value=<?php echo ($_POST ['to'])?>>
+        <?php
+        }
+        ?>
+        <label for="materia">Materia:</label>
+        <select name="materia" id="materia">
+        <?php
+        if (empty($_POST ['materia'])) {
+        ?>
+            <option value="0" selected>Todas</option>
+        <?php        
+        }
+        else {
+        ?>
+            <option value="0">Todas</option>
+        <?php
+        }    
+        while ($fila = mysqli_fetch_array($vMaterias))
+        {
+            if (!empty($_POST ['materia']) && $_POST ['materia']==$fila['id_materia']) {
+            ?>
+                <option value=<?php echo ($fila['id_materia'])?> selected> <?php echo ($fila['nombre_materia'])?></option>
+            <?php        
+            }
+            else {
+            ?>
+                <option value=<?php echo ($fila['id_materia'])?>> <?php echo ($fila['nombre_materia'])?></option>
+            <?php
+            }
+        }
+        ?>    
+        </select>
+        <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+    </form>
     <table border=1>
         <tr>
             <td><b>Materia</b></td>
@@ -45,3 +172,4 @@ mysqli_close($link);
 <?php
 include("footer.html");
 ?>
+</body>
