@@ -11,7 +11,7 @@ include("head.html");
 <?php
 include("headerAlumno.html");
 include("conexion.inc");
-$vIDalumno = 2; #$_POST ['id_alumno'];
+$vIDalumno = 1; #$_POST ['id_alumno'];
 
 $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                      inner join consultas c on i.id_consulta = c.id_consulta
