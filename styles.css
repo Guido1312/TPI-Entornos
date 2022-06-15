@@ -210,3 +210,10 @@ a.article:hover {
 .nav-item:hover {
     color:#6d7fcc;
 }
+
+
+@media print {
+    div,a {display:none}
+    .ver {display:block}
+    .nover {display:none}
+}
