@@ -47,10 +47,34 @@ function getDate( element ) {
 </head>
 <body>  
 <?php
-include("headerAlumno.html");
 include("conexion.inc");
 $vIDalumno = 1; #$_POST ['id_alumno'];
 $vIDespecialidad = 1; #$_POST ['especialidad'];
+
+if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="inscribirse") {
+    $vIDconsulta = $_POST["inputIDconsulta"];
+    $vSqlCount = "SELECT COUNT(*) as cantidad FROM inscripciones WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
+    $resultCount = mysqli_query($link, $vSqlCount);
+    $data=mysqli_fetch_assoc($resultCount);
+    if ($data['cantidad'] == 0){
+        $vSql = "INSERT INTO inscripciones (fecha_inscripcion, estado_inscripcion, id_consulta, id_alumno) 
+                Values (sysdate(), 1, $vIDconsulta, $vIDalumno)";
+        }
+        else{
+            $vSql = "UPDATE inscripciones SET estado_inscripcion = 1 WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
+        }
+    if(mysqli_query($link, $vSql)) {
+        $vTipoMensaje = "success";
+        $vMensaje = "Se ha inscripto exitosamente";
+    }
+    else{
+        $vTipoMensaje = "danger";
+        $vMensaje = "Ha ocurrido un error, intente nuevamente";
+    }
+}
+include("headerAlumno.html");
+include("mensaje.php");
+
 if (!empty($_POST ['from'])) {
     $vFechaDesde = $_POST ['from'];
 }
@@ -58,12 +82,15 @@ if (!empty($_POST ['to'])) {
     $vFechaHasta = $_POST ['to'];
 }
 
-
 $vSql = "SELECT * FROM consultas c inner join materias m on c.id_materia = m.id_materia
         inner join especialidades e on m.id_especialidad = e.id_especialidad
         inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
         inner join profesores p on c.id_profesor = p.id_profesor
-        where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+        where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'
+            and not exists ( SELECT * FROM inscripciones i where i.id_consulta = c.id_consulta 
+                                    and i.id_alumno = '$vIDalumno'
+                                    and i.estado_inscripcion != 4)";
+
 if (!empty($_POST ['from'])) {
     $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
 }
@@ -137,7 +164,7 @@ $vMaterias = mysqli_query($link, $vSqlMaterias);
         }
         ?>    
         </select>
-        <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+        <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-block">Filtrar</button>
     </form>
     <div class="table-responsive">
     <table class="table">
@@ -160,10 +187,16 @@ while ($fila = mysqli_fetch_array($vResultado))
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
                 <td><?php echo ($fila['fecha_consulta']); ?></td>
                 <td><?php echo ($fila['hora_consulta']); ?></td>
-                <td><button type="button" class="btn btn-info"> Inscribirse </button></td>
+                <td> 
+                    <form action="inscribir.php" method="post">
+                        <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
+                        <button type="submit" name="actionType" value="inscribirse" class="btn btn-info"> Inscribirse </button>
+                    </form>
+                </td>
             </tr>
 <?php
 }
+
 // Liberar conjunto de resultados
 mysqli_free_result($vResultado);
 // Cerrar la conexion
