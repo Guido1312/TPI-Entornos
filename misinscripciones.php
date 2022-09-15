@@ -24,7 +24,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST
     }
 }
 
-include("headerAlumno.html");
+include("headerAlumno.php");
 include("mensaje.php");
 
 $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo

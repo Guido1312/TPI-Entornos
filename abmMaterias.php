@@ -59,7 +59,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDmateria"]) && $_POST 
 
 
 
-include("headerAlumno.html");
+include("headerAlumno.php");
 include("mensaje.php");
 
 $vSqlEspecialidad = "SELECT * FROM especialidades";

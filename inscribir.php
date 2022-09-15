@@ -72,7 +72,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST
         $vMensaje = "Ha ocurrido un error, intente nuevamente";
     }
 }
-include("headerAlumno.html");
+include("headerAlumno.php");
 include("mensaje.php");
 
 if (!empty($_POST ['from'])) {
