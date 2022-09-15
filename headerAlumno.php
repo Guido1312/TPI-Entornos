@@ -84,4 +84,6 @@
                 </div>
             </nav>
 
-            <div class="container content-center">
+            <div class="container-fluid">
+            <?php include("mensaje.php"); ?>
+            <div class="content-center">

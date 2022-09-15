@@ -72,8 +72,8 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST
         $vMensaje = "Ha ocurrido un error, intente nuevamente";
     }
 }
-include("headerAlumno.html");
-include("mensaje.php");
+include("headerAlumno.php");
+ 
 
 if (!empty($_POST ['from'])) {
     $vFechaDesde = $_POST ['from'];

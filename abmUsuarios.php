@@ -61,8 +61,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDusuario"]) && $_POST 
 }
 
 
-include("headerAlumno.html");
-include("mensaje.php");
+include("headerAlumno.php");
 
 $vSqlRol = "SELECT * FROM roles_usuario";
 $vRoles = mysqli_query($link, $vSqlRol);

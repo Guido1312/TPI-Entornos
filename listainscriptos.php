@@ -19,7 +19,7 @@ function imprSelec(nombre) {
 
 <body>  
 <?php
-include("headerAlumno.html");
+include("headerAlumno.php");
 include("conexion.inc");
 $vIDprofesor = 1; #$_POST ['id_profesor'];
 $vIDconsulta = 2; #$_POST ['id_consulta'];
