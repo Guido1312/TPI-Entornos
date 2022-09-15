@@ -60,7 +60,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDmateria"]) && $_POST 
 
 
 include("headerAlumno.php");
-include("mensaje.php");
+ 
 
 $vSqlEspecialidad = "SELECT * FROM especialidades";
 $vEspecialidades = mysqli_query($link, $vSqlEspecialidad);

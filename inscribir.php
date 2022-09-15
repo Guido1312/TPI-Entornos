@@ -73,7 +73,7 @@ if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST
     }
 }
 include("headerAlumno.php");
-include("mensaje.php");
+ 
 
 if (!empty($_POST ['from'])) {
     $vFechaDesde = $_POST ['from'];
