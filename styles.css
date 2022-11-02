@@ -210,3 +210,8 @@ a.article:hover {
 .nav-item:hover {
     color:#6d7fcc;
 }
+
+
+.center {
+    padding: 8%;
+  }
