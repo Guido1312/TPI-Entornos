@@ -71,12 +71,14 @@ elseif(isset($_POST['ingresar'])){
       $usuarioOk = $fila['nombre_usuario']; 
       $passwordOk = $fila['password'];
       $idUsuarioOk= $fila['id_usuario'];
+      $rolUsuarioOk= $fila['rol'];
     }
 
     if(isset($Lusuario) && isset($Lusuario))
     {
       if($Lusuario==$usuarioOk && $Lpass==$passwordOk){
         $_SESSION['usuario']=$idUsuarioOk;
+        $_SESSION['rol']=$rolUsuarioOk;
         header("location:index.php");
       }
       else{

@@ -1,6 +1,7 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="es">
-<?php session_start(); ?>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,6 +19,8 @@
     <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
+<?php
+    if (isset($_SESSION['usuario'])){?>
     <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
@@ -58,7 +61,11 @@
 
             <ul class="list-unstyled CTAs align-items-end">
                 <li>
-                    <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Cerrar sesión</a>
+                    <form action="login.php" method="post">
+                        <button type="submit" name="actionType" value="logout">
+                                Cerrar sesión
+                        </button>
+                    </form>
                 </li>
             </ul>
         </nav>
@@ -149,6 +156,11 @@
         </div>
         <!-- Copyright -->
     </footer>
+    <?php
+    }
+    else {
+        header("location:login.php");
+    }?>
 
     <script>
         $(document).ready(function () {
