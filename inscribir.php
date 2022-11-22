@@ -69,6 +69,47 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 $vSql = "UPDATE inscripciones SET estado_inscripcion = 1 WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
             }
         if(mysqli_query($link, $vSql)) {
+            //se envia mail de notificacion de inscripcion al profesor
+            $vSqlmail = "SELECT a.legajo, a.nombre_apellido, m.nombre_materia, c.fecha_consulta, c.hora_consulta, p.mail  FROM inscripciones i 
+                            INNER JOIN consultas c on i.id_consulta = c.id_consulta
+                            INNER JOIN alumnos a on i.id_alumno = a.legajo
+                            INNER JOIN profesores p on p.id_profesor = c.id_profesor
+                            INNER JOIN materias m on c.id_materia = m.id_materia
+                            WHERE i.id_consulta = $vIDconsulta AND i.id_alumno = $vIDalumno";
+            $vResultadoMail = mysqli_query($link, $vSqlmail);
+            
+            while ($fila = mysqli_fetch_array($vResultadoMail))
+                    {
+                        $legajoAlumno = $fila['legajo'];
+                        $nombreAlumno = $fila['nombre_apellido'];
+                        $Emateria = $fila['nombre_materia'];
+                        $Efecha = $fila['fecha_consulta'];
+                        $Ehora = $fila['hora_consulta'];
+                        $EmailProfesor = $fila['mail'];
+                    }
+
+            $destinatario = $EmailProfesor;
+            $asunto = "Nueva inscripción a consultas - UTN";
+            $cuerpo = "
+            <html>
+            <head>
+            <title>UTN - Consultas</title>
+            </head>
+            <body>
+            <p>Un nuevo alumno se ha inscrito a consulta</p>
+            <p>Legajo: ".$legajoAlumno." </p> 
+            <p>Alumno: ".$nombreAlumno." </p> 
+            <p>Materia: ".$Emateria." </p>
+            <p>Fecha: ".$Efecha." </p>
+            <p>Hora: ".$Ehora." </p>
+            </body>
+            </html>";
+            $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
+            $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+            $cabeceras .= 'From: me@you.com' . "\r\n";
+            mail($destinatario,$asunto,$cuerpo,$cabeceras);
+            //se envia mail de notificacion de inscripcion al profesor
+
             $vTipoMensaje = "success";
             $vMensaje = "Se ha inscripto exitosamente";
         }
