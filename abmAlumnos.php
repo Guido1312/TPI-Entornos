@@ -17,15 +17,16 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
 
     // Se guardan los cambios de alta
-    if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaProfesor") {
+    if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaAlumno") {
+        $vLegajo = $_POST["inputLegajo"];
         $vNombre = $_POST["inputNombre"];
         $vMail= $_POST["inputMail"];
         $vUser= $_POST["selectUser"];
-        $vSql = "INSERT INTO profesores (nombre_apellido, mail, id_usuario)
-                Values ('$vNombre', '$vMail', $vUser)";
+        $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
+                Values ('$vLegajo','$vNombre', '$vMail', $vUser)";
         if(mysqli_query($link, $vSql)) {
             $vTipoMensaje = "success";
-            $vMensaje = "Se ha creado el profesor";
+            $vMensaje = "Se ha creado el alumno";
         }
         else{
             $vTipoMensaje = "danger";
@@ -33,12 +34,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         }
     }
     // Se guardan los cambios de eliminar
-    if (!empty($_POST ['actionType']) && !empty($_POST["inputIDprofesor"]) && $_POST ['actionType']=="eliminarProfesor") {
-        $vIDprofesor = $_POST["inputIDprofesor"];
-        $vSql = "DELETE FROM profesores p WHERE p.id_profesor = '$vIDprofesor'";
+    if (!empty($_POST ['actionType']) && !empty($_POST["inputLegajoAlumno"]) && $_POST ['actionType']=="eliminarAlumno") {
+        $vLegajo = $_POST["inputLegajoAlumno"];
+        $vSql = "DELETE FROM alumnos a WHERE a.legajo = '$vLegajo'";
         if(mysqli_query($link, $vSql)) {
             $vTipoMensaje = "success";
-            $vMensaje = "Se ha eliminado el profesor";
+            $vMensaje = "Se ha eliminado el alumno";
         }
         else{
             $vTipoMensaje = "danger";
@@ -46,16 +47,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         }
     }
     // Se guardan los cambios de modificar
-    if (!empty($_POST ['actionType']) && !empty($_POST["inputIDprofesor"]) && $_POST ['actionType']=="modificarProfesor") {
-        $vIDprofesor = $_POST["inputIDprofesor"];
+    if (!empty($_POST ['actionType']) && !empty($_POST["inputLegajoAlumno"]) && $_POST ['actionType']=="modificarAlumno") {
+        $vLegajoNuevo = $_POST["inputLegajoNuevo"];
+        $vLegajo = $_POST["inputLegajoAlumno"];
         $vNombre = $_POST["inputNombre"];
         $vMail= $_POST["inputMail"];
         $vUser= $_POST["selectUser"];
-        $vSql = "UPDATE profesores SET nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
-                WHERE id_profesor = '$vIDprofesor'";
+        $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
+                WHERE legajo = '$vLegajo'";
         if(mysqli_query($link, $vSql)) {
             $vTipoMensaje = "success";
-            $vMensaje = "Se ha modificado el profesor";
+            $vMensaje = "Se ha modificado el alumno";
         }
         else{
             $vTipoMensaje = "danger";
@@ -67,16 +69,16 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("headerAlumno.php");
 
     $vSqlUser = "SELECT * FROM usuarios u
-                            WHERE NOT EXISTS (SELECT * FROM alumnos a 
-                                                WHERE u.id_usuario = a.id_usuario) 
-                            AND NOT EXISTS (SELECT * FROM profesores p 
-                                                WHERE u.id_usuario = p.id_usuario) ;";
+	                    WHERE NOT EXISTS (SELECT * FROM alumnos a 
+					                        WHERE u.id_usuario = a.id_usuario) 
+	                    AND NOT EXISTS (SELECT * FROM profesores p 
+					                        WHERE u.id_usuario = p.id_usuario) ;";
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
 
-    $vSql = "SELECT p.*, u.nombre_usuario, u.dni
-                    FROM profesores p left join usuarios u 
-                    on p.id_usuario = u.id_usuario";
+    $vSql = "SELECT a.*, u.nombre_usuario, u.dni
+                    FROM alumnos a left join usuarios u 
+                    on a.id_usuario = u.id_usuario";
     $vResultado = mysqli_query($link, $vSql);
     ?>
 
@@ -84,7 +86,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
                 <tr>
-                    <th><b>ID Profesor</b></td>
+                    <th><b>Legajo Alumno</b></td>
                     <th><b>Nombre y apellido</b></td>
                     <th><b>DNI</b></td>
                     <th><b>Email</b></td>
@@ -104,14 +106,14 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     while ($fila = mysqli_fetch_array($vResultado))
     {?>
             <tr>
-                <td><?php echo ($fila['id_profesor']); ?></td>
+                <td><?php echo ($fila['legajo']); ?></td>
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
                 <td><?php echo ($fila['dni']); ?></td>
                 <td><?php echo ($fila['mail']); ?></td>
                 <td><?php echo ($fila['nombre_usuario']); ?></td>
                 <td>
-                    <a class="nav-item" href="#modalModif<?php echo ($fila['id_profesor']);?>" data-toggle="modal"
-                        data-target="#modalModif<?php echo ($fila['id_profesor']); ?>" style="float:right;">
+                    <a class="nav-item" href="#modalModif<?php echo ($fila['legajo']);?>" data-toggle="modal"
+                        data-target="#modalModif<?php echo ($fila['legajo']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
                             <path
@@ -120,8 +122,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </a>
                 </td>
                 <td>
-                    <a class="nav-item" href="#modalbaja<?php echo ($fila['id_profesor']);?>" data-toggle="modal"
-                        data-target="#modalbaja<?php echo ($fila['id_profesor']); ?>" style="float:right;">
+                    <a class="nav-item" href="#modalbaja<?php echo ($fila['legajo']);?>" data-toggle="modal"
+                        data-target="#modalbaja<?php echo ($fila['legajo']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-trash-fill" viewBox="0 0 16 16">
                             <path
@@ -137,13 +139,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Alta de Profesor</h5>
+                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Alta de Alumno</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="abmProfesores.php" method="post">
+                                <form action="abmAlumnos.php" method="post">
+                                <div class="form-group col-md-6">
+                                        <label for="inputLegajo">Legajo</label>
+                                        <input name="inputLegajo" type="text" class="form-control" id="inputLegajo" required/>
+                                    </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido</label>
                                         <input name="inputNombre" type="text" class="form-control" id="inputNombre" required/>
@@ -177,7 +183,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="actionType" value="altaProfesor" class="btn btn-success">Crear profesor</button>
+                                <button type="submit" name="actionType" value="altaAlumno" class="btn btn-success">Crear alumno</button>
                                 </form>
                             </div>
                         </div>
@@ -186,19 +192,24 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
 
                 <!-- Modal Modificacion -->
-                <div class="modal fade" id="modalModif<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
+                <div class="modal fade" id="modalModif<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleMlabel<?php echo ($fila['legajo']); ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Modificar
-                                    Profesor <?php echo ($fila['id_profesor']); ?></h5>
+                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Modificar
+                                    Alumno <?php echo ($fila['legajo']); ?></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form action="abmProfesores.php" method="post">
+                                <form action="abmAlumnos.php" method="post">
+                                    <div class="form-group col-md-6">
+                                        <label for="inputLegajoNuevo"> Legajo </label>
+                                        <input name="inputLegajoNuevo" type="text" class="form-control" id="inputLegajoNuevo"
+                                            value="<?php echo ($fila['legajo'])?> " required/>
+                                    </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido</label>
                                         <input name="inputNombre" type="text" class="form-control" id="inputNombre"
@@ -235,9 +246,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDprofesor" type="text" class="form-control" style="display:none"
-                                    id="inputIDprofesor" value="<?php echo ($fila['id_profesor']); ?>">
-                                <button type="submit" name="actionType" value="modificarProfesor"
+                                <input name="inputLegajoAlumno" type="text" class="form-control" style="display:none"
+                                    id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
+                                <button type="submit" name="actionType" value="modificarAlumno"
                                     class="btn btn-primary">Guardar cambios</button>
                                 </form>
                             </div>
@@ -246,28 +257,28 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 </div>
 
                 <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
+                <div class="modal fade" id="modalbaja<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel<?php echo ($fila['legajo']); ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Baja de
-                                    Profesor <?php echo ($fila['id_profesor']); ?></h5>
+                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Baja de
+                                    Alumno <?php echo ($fila['legajo']); ?></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_profesor']); ?>">Está a punto de eliminar
-                                    el profesor <?php echo ($fila['id_profesor']); ?></p>
+                                <p id="modalLabel<?php echo ($fila['legajo']); ?>">Está a punto de eliminar
+                                    el alumno <?php echo ($fila['legajo']); ?></p>
                                 <p>¿Esta seguro de querer hacerlo?</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmProfesores.php" method="post">
-                                    <input name="inputIDprofesor" type="text" class="form-control" style="display:none"
-                                        id="inputIDprofesor" value="<?php echo ($fila['id_profesor']); ?>">
-                                    <button type="submit" name="actionType" value="eliminarProfesor"
+                                <form action="abmAlumnos.php" method="post">
+                                    <input name="inputLegajoAlumno" type="text" class="form-control" style="display:none"
+                                        id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
+                                    <button type="submit" name="actionType" value="eliminarAlumno"
                                         class="btn btn-danger">Eliminar</button>
                                 </form>
                             </div>
