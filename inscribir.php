@@ -53,7 +53,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
-    $vIDalumno = 1; #$_POST ['id_alumno'];
+    $vIDalumno = 1; #$_SESSION['usuario'];
     $vIDespecialidad = 1; #$_POST ['especialidad'];
 
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="inscribirse") {
@@ -146,13 +146,26 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         $vSql .= " and c.id_materia = '$vMateriaFiltro'";
     }
 
+    if (!empty($_POST ['profesor']) && $_POST ['profesor']!="0") {
+        $vProfesorFiltro = $_POST ['profesor'];
+        $vSql .= " and c.id_profesor = '$vProfesorFiltro'";
+    }
+
     $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia FROM materias m
                     inner join especialidades e on m.id_especialidad = e.id_especialidad
                     inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
                     where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+
+    $vSqlProfesores = "SELECT DISTINCT p.id_profesor, p.nombre_apellido FROM profesores p
+                        inner join consultas c on c.id_profesor = p.id_profesor
+                        inner join materias m on m.id_materia = c.id_materia
+                        inner join especialidades e on e.id_especialidad = m.id_especialidad
+                        inner join especialidades_alumnos ea on ea.id_especialidad = e.id_especialidad
+                        where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
                                     
     $vResultado = mysqli_query($link, $vSql);
     $vMaterias = mysqli_query($link, $vSqlMaterias);
+    $vProfesores = mysqli_query($link, $vSqlProfesores);
 
     ?>
         <form action="inscribir.php" method="POST" name="FiltrarConsultas">
@@ -182,6 +195,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             <?php
             }
             ?>
+            <br>
             <label for="materia">Materia:</label>
             <select name="materia" id="materia">
             <?php
@@ -208,7 +222,35 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 <?php
                 }
             }
-            ?>    
+            ?>   
+            &nbsp;</select> 
+            <label for="profesor">Profesor:</label>
+            <select name="profesor" id="profesor">
+            <?php
+            if (empty($_POST['profesor'])) {
+            ?>
+                <option value="0" selected>Todos</option>
+            <?php        
+            }
+            else {
+            ?>
+                <option value="0">Todos</option>
+            <?php
+            }    
+            while ($fila = mysqli_fetch_array($vProfesores))
+            {
+                if (!empty($_POST ['profesor']) && $_POST ['profesor']==$fila['id_profesor']) {
+                ?>
+                    <option value=<?php echo ($fila['id_profesor'])?> selected> <?php echo ($fila['nombre_apellido'])?></option>
+                <?php        
+                }
+                else {
+                ?>
+                    <option value=<?php echo ($fila['id_profesor'])?>> <?php echo ($fila['nombre_apellido'])?></option>
+                <?php
+                }
+            }
+            ?>   
             </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-block">Filtrar</button>
         </form>

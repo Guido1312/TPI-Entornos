@@ -68,21 +68,49 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     include("headerAlumno.php");
 
+
+    if (!empty($_POST ['contiene'])) {
+        $vContiene = $_POST ['contiene'];
+    }
     $vSqlUser = "SELECT * FROM usuarios u
 	                    WHERE NOT EXISTS (SELECT * FROM alumnos a 
 					                        WHERE u.id_usuario = a.id_usuario) 
 	                    AND NOT EXISTS (SELECT * FROM profesores p 
 					                        WHERE u.id_usuario = p.id_usuario) ;";
+
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
 
     $vSql = "SELECT a.*, u.nombre_usuario, u.dni
                     FROM alumnos a left join usuarios u 
                     on a.id_usuario = u.id_usuario";
+
+    if (!empty($_POST ['contiene'])) {
+        $vSql .= " WHERE a.nombre_apellido LIKE '%$vContiene%' OR a.legajo LIKE '%$vContiene%'";
+    }
+
     $vResultado = mysqli_query($link, $vSql);
     ?>
 
-    <h1>Gestión de Profesores</h1>
+        <h1>Gestión de Alumnos</h1>
+        <form action="abmAlumnos.php" method="POST" name="FiltrarConsultas">
+            <label for="contiene">Buscar:</label>
+            <?php
+            if (empty($_POST ['contiene'])) {
+            ?>
+                <input type="text" id="contiene" name="contiene">
+            <?php
+            }
+            else {
+            ?>
+                <input type="text" id="contiene" name="contiene" value=<?php echo ($_POST ['contiene'])?>>
+            <?php
+            }
+            ?>
+            </select>
+            <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-block">Filtrar</button>
+        </form>
+
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
                 <tr>
