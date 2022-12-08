@@ -13,7 +13,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
-    $vIDalumno = 1; #$_POST ['id_alumno'];
+    $vIDalumno = $_SESSION['usuario'];
 
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="cancelar") {
         $vIDconsulta = $_POST["inputIDconsulta"];

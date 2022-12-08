@@ -30,13 +30,13 @@
     
             <ul class="list-unstyled components">
                 <li>
-                    <a href="#">Inicio</a>
+                    <a href="index.php">Inicio</a>
                 </li>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Consultas</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="#">Inscripción a consultas</a>
+                            <a href="inscribir.php">Inscripción a consultas</a>
                         </li>
                         <li>
                             <a href="misinscripciones.php">Mis inscripciones</a>
@@ -50,7 +50,7 @@
                             <a href="#">Preferencias</a>
                         </li>
                         <li>
-                            <a href="#">Editar perfil</a>
+                            <a href="perfil.php">Perfil</a>
                         </li>
                     </ul>
                 </li>
@@ -102,7 +102,7 @@
                             </svg>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
-                          <a class="dropdown-item" href="https://v4-alpha.getbootstrap.com/">Perfil</a>
+                          <a class="dropdown-item" href="perfil.php">Perfil</a>
                           <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
                           <form action="login.php" method="post">
                             <button type="submit" name="actionType" value="logout" class="download">
@@ -128,7 +128,7 @@
                           <a href="inscribir.php" class="stretched-link"></a>
                         </div>
                     </div>
-                    <div class="card" href="https://es.wikipedia.org/wiki/Sabana" >
+                    <div class="card">
                         <img src="images/iconMyInscriptions.png" class="card-img-top" alt="Habitat: sabana">
                         <div class="card-body content-center">
                           <h5 class="card-title">Mis inscripciones</h5> 
