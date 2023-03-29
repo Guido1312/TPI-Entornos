@@ -212,8 +212,6 @@ a.article:hover {
 }
 
 
-@media print {
-    div,a {display:none}
-    .ver {display:block}
-    .nover {display:none}
-}
+.center {
+    padding: 8%;
+  }

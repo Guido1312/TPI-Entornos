@@ -1,3 +1,4 @@
+
     <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
@@ -7,16 +8,16 @@
     
             <ul class="list-unstyled components">
                 <li>
-                    <a href="#">Inicio</a>
+                    <a href="index.php">Inicio</a>
                 </li>
                 <li class="active">
                     <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Consultas</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li>
-                            <a href="#">Inscripción a consultas</a>
+                            <a href="inscribir.php">Inscripción a consultas</a>
                         </li>
                         <li>
-                            <a href="#">Mis inscripciones</a>
+                            <a href="misinscripciones.php">Mis inscripciones</a>
                         </li>
                     </ul>
                 </li>
@@ -27,18 +28,24 @@
                             <a href="#">Preferencias</a>
                         </li>
                         <li>
-                            <a href="#">Editar perfil</a>
+                            <a href="perfil.php">Perfil</a>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#">Calendario académico</a>
+                    <a class="nav-item" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario" style="float:right;">
+                        Calendario Academico
+                    </a>
                 </li>
             </ul>
 
             <ul class="list-unstyled CTAs align-items-end">
                 <li>
-                    <a href="https://bootstrapious.com/tutorial/files/sidebar.zip" class="download">Cerrar sesión</a>
+                    <form action="login.php" method="post">
+                    <button type="submit" name="actionType" value="logout">
+                            Cerrar sesión
+                        </button>
+                    </form>
                 </li>
             </ul>
         </nav>
@@ -57,7 +64,7 @@
                     </button> <!-- este es el boton negro que aparece cuando lo ponemos modo celu  -->
                     
                     <div class="content-center" style="max-width: fit-content;">
-                        <a href="index.html">
+                        <a href="index.php">
                             <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="" style="max-inline-size: 15%;">
                         </a>
                     </div>
@@ -75,13 +82,41 @@
                             </svg>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
-                          <a class="dropdown-item" href="https://v4-alpha.getbootstrap.com/">Perfil</a>
+                          <a class="dropdown-item" href="perfil.php">Perfil</a>
                           <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
-                          <a class="dropdown-item" href="https://getbootstrap.com/2.3.2/">Cerrar sesión</a>
+                          <form action="login.php" method="post">
+                            <button type="submit" name="actionType" value="logout">
+                                Cerrar sesión
+                            </button>
+                          </form>
                         </div>
                     </div>
 
                 </div>
             </nav>
 
-            <div class="container content-center">
+            <!-- Modal Calendario -->
+            <div class="modal fade" id="modalCalendario" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleAlabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Calendario Academico</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="images/Calendario2022.jpg" style="width: 100%; height: 100%"> 
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="container-fluid">
+            <?php include("mensaje.php"); ?>
+            <div class="content-center">
