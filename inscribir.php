@@ -53,8 +53,9 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
-    $vIDalumno = 1; #$_SESSION['usuario'];
-    $vIDespecialidad = 1; #$_POST ['especialidad'];
+    $vIDalumno = $_SESSION['id_alumno'];
+
+    $vIDespecialidad = $_SESSION['especialidad'];
 
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="inscribirse") {
         $vIDconsulta = $_POST["inputIDconsulta"];
@@ -154,7 +155,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia FROM materias m
                     inner join especialidades e on m.id_especialidad = e.id_especialidad
                     inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
-                    where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+                    where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'"; 
 
     $vSqlProfesores = "SELECT DISTINCT p.id_profesor, p.nombre_apellido FROM profesores p
                         inner join consultas c on c.id_profesor = p.id_profesor
@@ -223,7 +224,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 }
             }
             ?>   
-            &nbsp;</select> 
+            </select> 
             <label for="profesor">Profesor:</label>
             <select name="profesor" id="profesor">
             <?php

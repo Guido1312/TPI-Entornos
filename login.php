@@ -62,23 +62,41 @@ elseif (!empty($_POST ['actionType']) && $_POST ['actionType']=="recuperacion") 
 elseif(isset($_POST['ingresar'])){
     $Lusuario = $_POST["inputUser"];
     $Lpass = $_POST["inputPass"];
-    $vSql = "SELECT * FROM usuarios u WHERE u.nombre_usuario = '$Lusuario' 
+    $vSql = "SELECT u.*, ea.id_alumno, ea.id_especialidad, p.id_profesor FROM usuarios u 
+            LEFT JOIN alumnos a ON a.id_usuario = u.id_usuario
+            LEFT JOIN especialidades_alumnos ea ON ea.id_alumno = a.legajo
+            LEFT JOIN profesores p ON p.id_usuario = u.id_usuario
+             WHERE u.nombre_usuario = '$Lusuario' 
                                     and u.password = '$Lpass'";
     $vResult = mysqli_query($link, $vSql);
-
+    
     while ($fila = mysqli_fetch_array($vResult))
     {
       $usuarioOk = $fila['nombre_usuario']; 
       $passwordOk = $fila['password'];
       $idUsuarioOk= $fila['id_usuario'];
-      $rolUsuarioOk= $fila['rol'];
+      $rolUsuarioOk= $fila['rol'];  
+      if (isset($fila['id_alumno'])){
+        $especialidad = $fila['id_especialidad'];
+        $idAlumno = $fila['id_alumno'];
+      }
+      if (isset($fila['id_profesor'])){
+        $idProfesor = $fila['id_profesor'];
+      }
     }
 
-    if(isset($Lusuario) && isset($Lusuario))
+    if(isset($Lusuario) && isset($Lpass))
     {
       if($Lusuario==$usuarioOk && $Lpass==$passwordOk){
         $_SESSION['usuario']=$idUsuarioOk;
         $_SESSION['rol']=$rolUsuarioOk;
+        if ($rolUsuarioOk == 1) {
+          $_SESSION['especialidad'] = $especialidad;
+          $_SESSION['id_alumno'] = $idAlumno;
+        }
+        elseif ($rolUsuarioOk == 2) {
+          $_SESSION['id_profesor'] = $idProfesor;
+        }
         header("location:index.php");
       }
       else{

@@ -24,10 +24,10 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
-    include(" headerAlumno.php");
+    include("headerAlumno.php");
     include("conexion.inc");
-    $vIDprofesor = 1; #$_POST ['id_profesor'];
-    $vIDconsulta = 2; #$_POST ['id_consulta'];
+    $vIDprofesor = $_SESSION['id_profesor'];
+    $vIDconsulta = $_POST['idconsulta'];
 
     $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                         inner join consultas c on i.id_consulta = c.id_consulta
@@ -53,8 +53,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             </thead>
     <?php
 
-    while ($fila = mysqli_fetch_array($vResultado))
-    {?>
+    while ($fila = mysqli_fetch_array($vResultado)){?>
             <tr>
                 <td><?php echo ($fila['legajo']); ?></td>
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
@@ -70,6 +69,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         </table>
     </div>
         <p>&nbsp;</p>
+    <a href="consultasProfesor.php"><button type="button" class="btn btn-info"> Volver a Consultas </button></a>
     <?php
     include("footer.html");
 }
