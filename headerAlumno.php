@@ -33,20 +33,21 @@
                     </ul>
                 </li>
                 <li>
-                    <a class="nav-item" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario" style="float:right;">
+                    <a class="nav-item" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario">
                         Calendario Academico
                     </a>
                 </li>
             </ul>
 
             <ul class="list-unstyled CTAs align-items-end">
-                <li>
+            <li>
                     <form action="login.php" method="post">
-                    <button type="submit" name="actionType" value="logout">
-                            Cerrar sesión
-                        </button>
-                    </form>
-                </li>
+                                <input type="hidden" name="idconsulta" value="logout">
+                                <button type="submit" class="btn btn-light" name="actionType" value="logout" >
+                                    Cerrar sesión
+                                </button>
+                            </form>
+                    </li>
             </ul>
         </nav>
         <div id="content">
@@ -85,10 +86,11 @@
                           <a class="dropdown-item" href="perfil.php">Perfil</a>
                           <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
                           <form action="login.php" method="post">
-                            <button type="submit" name="actionType" value="logout">
-                                Cerrar sesión
-                            </button>
-                          </form>
+                                <input type="hidden" name="idconsulta" value="logout">
+                                <button type="submit" class="btn btn-light" name="actionType" value="logout" >
+                                    Cerrar sesión
+                                </button>
+                            </form>
                         </div>
                     </div>
 
