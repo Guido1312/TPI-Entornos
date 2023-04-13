@@ -54,7 +54,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
-    include("headerAlumno.php");
+    include("headerAdmin.php");
     include("conexion.inc");
 
     if (!empty($_POST['from'])) {
