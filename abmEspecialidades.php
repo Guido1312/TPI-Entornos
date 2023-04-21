@@ -62,7 +62,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
 
 
-    include("headerAlumno.php");
+    include("headerAdmin.php");
     
 
     $vSql = "SELECT * FROM especialidades";
@@ -72,14 +72,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
 
     <h1>Gestión de especialidades</h1>
+        <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
-                <tr>
+            <tr>
                     <th><b>ID de especialidad</b></td>
                     <th><b>Nombre</b></td>
                     <th><b></b></td>
                     <th><b></b></td>
-                        <a class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
+                        <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
                             <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
                             <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
@@ -87,7 +88,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </a>
                 </tr>
             </thead>
-
+            
             <?php
     while ($fila = mysqli_fetch_array($vResultado))
     {?>
@@ -95,7 +96,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 <td><?php echo ($fila['id_especialidad']); ?></td>
                 <td><?php echo ($fila['descripcion']); ?></td>
                 <td>
-                    <a class="nav-item" href="#modalModif<?php echo ($fila['id_especialidad']);?>" data-toggle="modal"
+                    <a title="Editar" class="nav-item" href="#modalModif<?php echo ($fila['id_especialidad']);?>" data-toggle="modal"
                         data-target="#modalModif<?php echo ($fila['id_especialidad']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -105,7 +106,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </a>
                 </td>
                 <td>
-                    <a class="nav-item" href="#modalbaja<?php echo ($fila['id_especialidad']);?>" data-toggle="modal"
+                    <a title="Eliminar" class="nav-item" href="#modalbaja<?php echo ($fila['id_especialidad']);?>" data-toggle="modal"
                         data-target="#modalbaja<?php echo ($fila['id_especialidad']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -214,7 +215,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
-
+    </div>
         <p>&nbsp;</p>
     <?php
     include("footer.html");

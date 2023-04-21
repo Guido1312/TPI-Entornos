@@ -52,7 +52,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
-    include("headerAlumno.php");
+    include("headerProfesor.php");
     include("conexion.inc");
     $vIDprofesor = $_SESSION['id_profesor'];
 
@@ -72,9 +72,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     }
                                     
         $vResultado = mysqli_query($link, $vSql);
-
         ?>
-            <form action="consultasProfesor.php" method="POST" name="FiltrarConsultas">
+        <h1>Administración de consultas</h1>
+        <div class="container">
+            <form Class="content-center" action="consultasProfesor.php" method="POST" name="FiltrarConsultas">
                 <label for="from">Fecha desde:</label>
                 <?php
                 if (empty($_POST ['from'])) {
@@ -101,9 +102,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 <?php
                 }
                 ?>
-                <button type="submit" class="btn btn-primary btn-block">Filtrar</button>
+                <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
             </form>
-            <table border=1>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead style="background-color: #077b83; color: #ffff ;">
                 <tr>
                     <td><b>Especialidad</b></td>
                     <td><b>Materia</b></td>
@@ -112,6 +116,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                     <td></td>
                     <td></td>
                 </tr>
+                </thead>
         <?php
 
         while ($fila = mysqli_fetch_array($vResultado))
@@ -140,8 +145,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         ?>
 
             </table>
-            <p>&nbsp;</p>
-
+        </div>
+        <p>&nbsp;</p>
         <?php
         include("footer.html");
 }

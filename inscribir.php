@@ -266,8 +266,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 <td></td>
             </tr>
         </thead>
+        
     <?php
-
     while ($fila = mysqli_fetch_array($vResultado))
     {
     ?>

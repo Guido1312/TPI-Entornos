@@ -17,6 +17,14 @@
     JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <title>TPI</title>
     <link rel="stylesheet" type="text/css" href="styles.css" />
+    <style>
+        .card:hover {
+    transform: scale(1.1);
+    }
+    .card{
+    transition: transform .5s;
+    }
+    </style>
 </head>
 <body>
 <?php
@@ -31,10 +39,10 @@
                 </div>
         
                 <ul class="list-unstyled components">
-                    <li>
+                    <li class="active">
                         <a href="index.php">Inicio</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Consultas</a>
                         <ul class="collapse list-unstyled" id="homeSubmenu">
                             <li>
@@ -83,26 +91,23 @@
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
         
-                        <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <button type="button" title="Cerrar o abrir barra laterar"  id="sidebarCollapse" class="btn btn-info">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                             </svg>
                         </button>
-                        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="fas fa-align-justify"></i>
-                        </button>
                         
                         <div class="content-center" style="max-width: fit-content;">
-                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="" style="max-inline-size: 15%;">
+                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="UTN - Ir al incio" style="max-inline-size: 15%;">
                         </div>
 
-                        <a class="nav-item" href="#">
+                        <a class="nav-item" title="Notificaciones" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
                                 <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                             </svg>
                         </a>
                         <div class="nav-item dropdown">
-                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Perfil" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
@@ -113,7 +118,7 @@
                             <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
                             <form action="login.php" method="post">
                                 <input type="hidden" name="idconsulta" value="logout">
-                                <button type="submit" class="btn btn-light" name="actionType" value="logout" >
+                                <button type="submit" class="dropdown-item" name="actionType" value="logout" >
                                     Cerrar sesión
                                 </button>
                             </form>
@@ -130,24 +135,24 @@
 
                     <div class="row card-deck">
                         <div class="card">
-                            <img src="images/iconList.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconList.png" class="card-img-top" alt="Inscribirse a consultas">
                             <div class="card-body content-center">
                             <h5 class="card-title">Inscribirse de consultas</h5> 
                             <a href="inscribir.php" class="stretched-link"></a>
                             </div>
                         </div>
                         <div class="card">
-                            <img src="images/iconMyInscriptions.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconMyInscriptions.png" class="card-img-top" alt="Mis inscripciones">
                             <div class="card-body content-center">
                             <h5 class="card-title">Mis inscripciones</h5> 
                             <a href="misinscripciones.php" class="stretched-link"></a>
                             </div>
                         </div>
                         <div class="card">
-                            <img src="images/iconCalendar.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconCalendar.png" class="card-img-top" alt="Calendario academico">
                             <div class="card-body content-center">
                             <h5 class="card-title">Calendario académico</h5> 
-                            <a href="https://es.wikipedia.org/wiki/Desierto" class="stretched-link"></a>
+                            <a class="stretched-link" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario" > </a>
                             </div>
                         </div>
                     </div>
@@ -165,10 +170,10 @@
                 </div>
         
                 <ul class="list-unstyled components">
-                    <li>
+                    <li class="active">
                         <a href="index.php">Inicio</a>
                     </li>
-                    <li class="active">
+                    <li>
                             <li>
                                 <a href="consultasProfesor.php">Administrar consultas</a>
                             </li>
@@ -211,26 +216,23 @@
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
         
-                        <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <button type="button" title="Cerrar o abrir barra laterar"  id="sidebarCollapse" class="btn btn-info">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                             </svg>
                         </button>
-                        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="fas fa-align-justify"></i>
-                        </button>
                         
                         <div class="content-center" style="max-width: fit-content;">
-                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="" style="max-inline-size: 15%;">
+                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="Logo UTN" style="max-inline-size: 15%;">
                         </div>
 
-                        <a class="nav-item" href="#">
+                        <a class="nav-item" title="Notificaciones" href="#">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
                                 <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                             </svg>
                         </a>
                         <div class="nav-item dropdown">
-                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Perfil" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
@@ -241,7 +243,7 @@
                             <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
                             <form action="login.php" method="post">
                                 <input type="hidden" name="idconsulta" value="logout">
-                                <button type="submit" class="btn btn-light" name="actionType" value="logout">
+                                <button type="submit" class="dropdown-item" name="actionType" value="logout">
                                     Cerrar sesión
                                 </button>
                             </form>
@@ -258,14 +260,14 @@
 
                     <div class="row card-deck" style="margin: 0px 120px 0px 120px;">
                         <div class="card">
-                            <img src="images/adminConsultas.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/adminConsultas.png" class="card-img-top" alt="Administrar consultas">
                             <div class="card-body content-center">
                             <h5 class="card-title">Administrar consultas</h5> 
                             <a href="consultasProfesor.php" class="stretched-link"></a>
                             </div>
                         </div>
                         <div class="card">
-                            <img src="images/iconCalendar.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconCalendar.png" class="card-img-top" alt="Calendario academico">
                             <div class="card-body content-center">
                             <h5 class="card-title">Calendario académico</h5> 
                             <a href="https://es.wikipedia.org/wiki/Desierto" class="stretched-link"></a>
@@ -286,10 +288,10 @@
                 </div>
         
                 <ul class="list-unstyled components">
-                    <li>
+                    <li class="active">
                         <a href="index.php">Inicio</a>
                     </li>
-                    <li class="active">
+                    <li>
                         <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Edicion de datos</a>
                         <ul class="collapse list-unstyled" id="homeSubmenu">
                             <li>
@@ -313,15 +315,9 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Perfil</a>
-                        <ul class="collapse list-unstyled" id="pageSubmenu">
-                            <li>
-                                <a href="#">Preferencias</a>
-                            </li>
-                            <li>
-                                <a href="perfil.php">Perfil</a>
-                            </li>
-                        </ul>
+                    <a class="nav-item" href="listadocentesdia.php" >
+                            Planilla: docentes-consulta
+                        </a>
                     </li>
                     <li>
                     <a class="nav-item" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario" >
@@ -350,41 +346,30 @@
                 <nav class="navbar navbar-expand-lg navbar-light bg-light">
                     <div class="container-fluid">
         
-                        <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <button type="button" title="Cerrar o abrir barra laterar"  id="sidebarCollapse" class="btn btn-info">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                             </svg>
                         </button>
-                        <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                            <i class="fas fa-align-justify"></i>
-                        </button>
                         
                         <div class="content-center" style="max-width: fit-content;">
-                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="" style="max-inline-size: 15%;">
+                            <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="UTN" style="max-inline-size: 15%;">
                         </div>
 
-                        <a class="nav-item" href="#">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
-                            </svg>
-                        </a>
                         <div class="nav-item dropdown">
-                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Pefil" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
                                 </svg>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
-                            <a class="dropdown-item" href="perfil.php">Perfil</a>
-                            <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">Preferencias</a>
                             <form action="login.php" method="post">
                                 <input type="hidden" name="idconsulta" value="logout">
-                                <button type="submit" class="btn btn-light" name="actionType" value="logout">
+                                <button type="submit" class="dropdown-item" name="actionType" value="logout">
                                     Cerrar sesión
                                 </button>
                             </form>
-
                             </div>
                         </div>
 
@@ -398,21 +383,21 @@
 
                     <div class="row card-deck">
                         <div class="card">
-                            <img src="images/iconAlumno.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconAlumno.png" class="card-img-top" alt="ABM Alumnos">
                             <div class="card-body content-center">
                             <h5 class="card-title">ABM Alumnos</h5> 
                             <a href="abmAlumnos.php" class="stretched-link"></a>
                             </div>
                         </div>
                         <div class="card">
-                            <img src="images/iconProfesor.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconProfesor.png" class="card-img-top" alt="ABM Profesores">
                             <div class="card-body content-center">
                             <h5 class="card-title">ABM Profesores</h5> 
                             <a href="abmProfesores.php" class="stretched-link"></a>
                             </div>
                         </div>
                         <div class="card">
-                            <img src="images/iconUser.png" class="card-img-top" alt="Habitat: sabana">
+                            <img src="images/iconUser.png" class="card-img-top" alt="ABM Usuarios">
                             <div class="card-body content-center">
                             <h5 class="card-title">ABM Usuarios</h5> 
                             <a href="abmUsuarios.php" class="stretched-link"></a>
