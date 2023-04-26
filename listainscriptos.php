@@ -24,7 +24,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
-    include("headerAlumno.php");
+    include("headerProfesor.php");
     include("conexion.inc");
     $vIDprofesor = $_SESSION['id_profesor'];
     $vIDconsulta = $_POST['idconsulta'];
@@ -42,13 +42,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 <th><b>Legajo</b></td>
                 <th><b>Nombre y apellido</b></td>
                 <th><b>Email</b></td>
-                    
-                <a class="nav-item" href="javascript:imprSelec('myPrintArea')" style="float:right;">
+                <a title="Imprimir" class="nav-item" href="javascript:imprSelec('myPrintArea')" style="float:right;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
                             <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
                             <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
                     </svg>
-                </a>        
+                </a>                
             </tr>
             </thead>
     <?php

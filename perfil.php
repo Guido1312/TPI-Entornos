@@ -11,12 +11,12 @@
 <body>
     <?php
 
-
-if (isset($_SESSION['usuario'])){
+if (isset($_SESSION['usuario']) & ($_SESSION['rol']==1 || $_SESSION['rol']==2)){
 include("conexion.inc");
 
 $vIdUsuario = $_SESSION['usuario'];
 
+if ($_SESSION['rol']==1){
 $vSqlDatos = "SELECT * FROM alumnos a inner join especialidades_alumnos ea on a.legajo = ea.id_alumno
                                         inner join especialidades e on e.id_especialidad = ea.id_especialidad
                                         inner join usuarios u on u.id_usuario = a.id_usuario
@@ -32,6 +32,22 @@ $vSqlDatos = "SELECT * FROM alumnos a inner join especialidades_alumnos ea on a.
       $mail= $fila['mail'];
       $especialidad= $fila['descripcion'];
       mysqli_data_seek($vDatos, 0);
+      include("headerAlumno.php");
+}
+else{
+    $vSqlDatos = "SELECT * FROM profesores p inner join usuarios u on u.id_usuario = p.id_usuario
+                                        where p.id_usuario = '$vIdUsuario' ";
+    $vDatos = mysqli_query($link, $vSqlDatos);
+    
+    $fila = mysqli_fetch_array($vDatos);
+      $usuario = $fila['nombre_usuario'];
+      $password = $fila['password'];
+      $nombre = $fila['nombre_apellido']; 
+      $legajo = $fila['id_profesor'];
+      $dni= $fila['dni'];
+      $mail= $fila['mail'];
+      include("headerProfesor.php");
+}
 
 
 
@@ -63,8 +79,6 @@ $vSqlDatos = "SELECT * FROM alumnos a inner join especialidades_alumnos ea on a.
             }
         }
     }
-
-include("headerAlumno.php");
 ?>
 <br>
 <br>
@@ -75,7 +89,7 @@ include("headerAlumno.php");
         </div>
         <div class="row">
             <div class="col-12" style="text-align: center">
-                <h2> <?php echo $usuario; // ver si el boton de abajo se va a usar ?> </h2>
+                <h2> <?php echo $usuario; ?> </h2>
             </div>
         </div>
         <div class="row" style="display: flex; justify-content: center;">
@@ -95,13 +109,15 @@ include("headerAlumno.php");
                 Legajo: <?php echo $legajo; ?> <br>
                 DNI: <?php echo $dni; ?> <br>
                 Mail: <?php echo $mail; ?>  <br>
+                <?php if ($_SESSION['rol']==1){?>
                 Especialidad: <br>
                 <?php while ($fila2 = mysqli_fetch_array($vDatos))
                             {
                             ?>
                             &nbsp; &nbsp; - <?php echo ($fila2['descripcion']); ?> <br>
                                     <?php
-                            }?>
+                            }
+                }?>
                 </p>
                 
             </div>

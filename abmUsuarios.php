@@ -66,8 +66,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     }
 
 
-    include("headerAlumno.php");
+    include("headerAdmin.php");
 
+    if (!empty($_POST ['contiene'])) {
+        $vContiene = $_POST ['contiene'];
+    }
     $vSqlRol = "SELECT * FROM roles_usuario";
     $vRoles = mysqli_query($link, $vSqlRol);
     $roles = mysqli_fetch_all($vRoles,MYSQLI_ASSOC);
@@ -76,13 +79,36 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         FROM usuarios u inner join roles_usuario r on r.id_rol_usuario = u.rol
                                         left join alumnos a on u.id_usuario = a.id_usuario
                                         left join profesores p on u.id_usuario = p.id_usuario";
+    if (!empty($_POST ['contiene'])) {
+        $vSql .= " WHERE u.nombre_usuario LIKE '%$vContiene%'";
+    }
     $vResultado = mysqli_query($link, $vSql);
     ?>
 
-    <h1>Gestión de usuarios</h1>
+    <div class="container">
+    <h1 class="content-center">Gestión de usuarios</h1>
+    <form class="content-center" action="abmUsuarios.php" method="POST" name="FiltrarConsultas">
+            <label for="contiene">Buscar por nombre de usuario:</label>
+            <?php
+            if (empty($_POST ['contiene'])) {
+            ?>
+                <input type="text" id="contiene" name="contiene">
+            <?php
+            }
+            else {
+            ?>
+                <input type="text" id="contiene" name="contiene" value=<?php echo ($_POST ['contiene'])?>>
+            <?php
+            }
+            ?>
+            </select>
+            <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
+        </form>
+        </div>
+        <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
-                <tr>
+            <tr>
                     <th><b>Rol</b></td>
                     <th><b>Dni</b></td>
                     <th><b>Usuario</b></td>
@@ -91,7 +117,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     <th><b>Nombre y apellido</b></td>
                     <th><b></b></td>
                     <th><b></b></td>
-                        <a class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
+                        <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
@@ -111,7 +137,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 <td><?php echo ($fila['id_externo']); ?></td>
                 <td><?php echo ($fila['nombre_externo']); ?></td>
                 <td>
-                    <a class="nav-item" href="#modalModif<?php echo ($fila['id_usuario']);?>" data-toggle="modal"
+                    <a title="Editar" class="nav-item" href="#modalModif<?php echo ($fila['id_usuario']);?>" data-toggle="modal"
                         data-target="#modalModif<?php echo ($fila['id_usuario']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -121,7 +147,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </a>
                 </td>
                 <td>
-                    <a class="nav-item" href="#modalbaja<?php echo ($fila['id_usuario']);?>" data-toggle="modal"
+                    <a title="Eliminar" class="nav-item" href="#modalbaja<?php echo ($fila['id_usuario']);?>" data-toggle="modal"
                         data-target="#modalbaja<?php echo ($fila['id_usuario']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -294,7 +320,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
-
+        </div>
         <p>&nbsp;</p>
         <?php
     include("footer.html");

@@ -20,32 +20,6 @@ function imprSelec(nombre) {
   ventimp.close();
 }
 </script>
-<script>
-$( function() {
-var dateFormat = "yy-mm-dd",
-    from = $( "#from" )
-    .datepicker({
-        defaultDate: "+1w",
-        changeMonth: true,
-        dateFormat: "yy-mm-dd",
-        numberOfMonths: 3
-    })
-    .on( "change", function() {
-        to.datepicker( "option", "minDate", getDate( this ) );
-    });
-
-function getDate( element ) {
-    var date;
-    try {
-    date = $.datepicker.parseDate( dateFormat, element.value );
-    } catch( error ) {
-    date = null;
-    }
-
-    return date;
-}
-} );
-</script>
 </head>
 
 <body>  
@@ -71,22 +45,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         where c.fecha_consulta = '$vFechaSeleccionada';";
     $vResultado = mysqli_query($link, $vSql);
     ?>
-        
-
+    
         <form action="listadocentesdia.php" method="POST" name="FiltrarPorDia">
             <label for="from">Fecha:</label>
-            <?php
-            if (empty($_POST ['from'])) {
-            ?>
-                <input type="text" id="from" name="from">
-            <?php
-            }
-            else {
-            ?>
-                <input type="date" id="from" name="from" value=<?php echo ($_POST ['from'])?>>
-            <?php
-            }
-            ?>
+            <input type="date" id="from" name="from" value=<?php echo ($vFechaSeleccionada)?>>
             <button type="submit" class="btn btn-primary btn-block">Seleccionar</button>
         </form>
 

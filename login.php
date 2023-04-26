@@ -10,6 +10,7 @@ include("head.html");
 
 <body>
   <?php
+error_reporting(0); //evita que se muestren los warning
 include("conexion.inc");
 if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
   session_destroy();
@@ -30,7 +31,7 @@ elseif (!empty($_POST ['actionType']) && $_POST ['actionType']=="recuperacion") 
         $nombreUsuario = $fila['nombre_usuario']; 
         $password = $fila['password']; 
         }
-//esto tira error en nombreusuario y pass
+
         $destinatario = $vEmail;
         $asunto = "Contraseña sistema de consultas UTN";
         $cuerpo = "
@@ -47,7 +48,7 @@ elseif (!empty($_POST ['actionType']) && $_POST ['actionType']=="recuperacion") 
         $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $cabeceras .= 'From: me@you.com' . "\r\n";
-        echo $destinatario.$asunto.$cuerpo.$cabeceras;
+
         if(mail($destinatario,$asunto,$cuerpo,$cabeceras)){
             $vTipoMensaje = "success"; 
             $vMensaje = "Se ha enviado la contraseña";

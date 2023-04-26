@@ -66,7 +66,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     }
 
 
-    include("headerAlumno.php");
+    include("headerAdmin.php");
 
 
     if (!empty($_POST ['contiene'])) {
@@ -92,8 +92,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     $vResultado = mysqli_query($link, $vSql);
     ?>
 
-        <h1>Gestión de Alumnos</h1>
-        <form action="abmAlumnos.php" method="POST" name="FiltrarConsultas">
+        <div class="container">
+        <h1 class="content-center">Gestión de Alumnos</h1>
+        <form class="content-center" action="abmAlumnos.php" method="POST" name="FiltrarConsultas">
             <label for="contiene">Buscar:</label>
             <?php
             if (empty($_POST ['contiene'])) {
@@ -108,12 +109,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             }
             ?>
             </select>
-            <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-block">Filtrar</button>
+            <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
-
+        </div>
+        <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
-                <tr>
+            <tr>
                     <th><b>Legajo Alumno</b></td>
                     <th><b>Nombre y apellido</b></td>
                     <th><b>DNI</b></td>
@@ -121,7 +123,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     <th><b>Nombre de usuario</b></td>
                     <th><b></b></td>
                     <th><b></b></td>
-                        <a class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
+                        <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
@@ -129,8 +131,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </a>
                 </tr>
             </thead>
-
-            <?php
+            
+        <?php
     while ($fila = mysqli_fetch_array($vResultado))
     {?>
             <tr>
@@ -140,7 +142,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 <td><?php echo ($fila['mail']); ?></td>
                 <td><?php echo ($fila['nombre_usuario']); ?></td>
                 <td>
-                    <a class="nav-item" href="#modalModif<?php echo ($fila['legajo']);?>" data-toggle="modal"
+                    <a title="Editar" class="nav-item" href="#modalModif<?php echo ($fila['legajo']);?>" data-toggle="modal"
                         data-target="#modalModif<?php echo ($fila['legajo']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-pencil-fill" viewBox="0 0 16 16">
@@ -150,7 +152,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </a>
                 </td>
                 <td>
-                    <a class="nav-item" href="#modalbaja<?php echo ($fila['legajo']);?>" data-toggle="modal"
+                    <a title="Eliminar" class="nav-item" href="#modalbaja<?php echo ($fila['legajo']);?>" data-toggle="modal"
                         data-target="#modalbaja<?php echo ($fila['legajo']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-trash-fill" viewBox="0 0 16 16">
@@ -323,7 +325,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
-
+    </div>
         <p>&nbsp;</p>
         <?php
     include("footer.html");

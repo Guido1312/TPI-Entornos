@@ -38,6 +38,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                                         where i.id_alumno = '$vIDalumno' and i.estado_inscripcion != 4";
     $vResultado = mysqli_query($link, $vSql);
 
+    if (mysqli_num_rows($vResultado)==0)
+    {
+        echo("No tienes inscripciones a ninguna materia");
+    }
+    else
+    {
+
     ?>
     <div class="table-responsive">
         <table class="table">
@@ -68,6 +75,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 </td>
             </tr>
             <?php
+    }
     }
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
