@@ -8,6 +8,7 @@ include("head.html");
 </head>
 <body> 
 <?php
+error_reporting(0); //evita que se muestren los warning
 if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
     header("location:index.php");
 }
