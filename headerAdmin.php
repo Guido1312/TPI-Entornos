@@ -138,9 +138,16 @@
                         $vResultado = mysqli_query($link, $vSql);
                         while ($fila = mysqli_fetch_array($vResultado))
                         {
-                        ?> 
-                            <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
-                        <?php
+                            if ($fila['orden'] == 0){
+                                ?> 
+                                <a href="#" ><?php echo (' > '.$fila['descripcion']) ?> </a>
+                                <?php
+                            }
+                            else {
+                                ?> 
+                                <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
+                                <?php
+                            }
                         }
                         ?>
                     </div>
