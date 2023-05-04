@@ -1,3 +1,5 @@
+CREATE DATABASE  IF NOT EXISTS `consultasutn` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `consultasutn`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
 -- Host: localhost    Database: consultasutn
@@ -236,6 +238,63 @@ INSERT INTO `inscripciones` VALUES (1,'2022-06-20',1,1,1),(2,'2022-06-21',4,2,2)
 UNLOCK TABLES;
 
 --
+-- Table structure for table `mapa_sitio`
+--
+
+DROP TABLE IF EXISTS `mapa_sitio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mapa_sitio` (
+  `idmapa_sitio` int NOT NULL,
+  `id_rol_usuario` int NOT NULL,
+  `descripcion` varchar(45) NOT NULL,
+  `path` varchar(100) NOT NULL,
+  PRIMARY KEY (`idmapa_sitio`),
+  KEY `fk_mapa_sitio_roles_usuario_idx` (`id_rol_usuario`),
+  CONSTRAINT `fk_mapa_sitio_roles_usuario` FOREIGN KEY (`id_rol_usuario`) REFERENCES `roles_usuario` (`id_rol_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mapa_sitio`
+--
+
+LOCK TABLES `mapa_sitio` WRITE;
+/*!40000 ALTER TABLE `mapa_sitio` DISABLE KEYS */;
+INSERT INTO `mapa_sitio` VALUES (1,3,'Alumnos','abmAlumnos.php'),(2,3,'Profesores','abmProfesores.php'),(3,3,'Especialidades','abmEspecialidades.php'),(4,3,'Materias','abmMaterias.php'),(5,3,'Usuarios','abmUsuarios.php'),(6,3,'Consultas','abmConsultas.php'),(7,3,'Planilla Consultas','listadocentesdia.php'),(8,2,'Administrar Consultas','consultasProfesor.php'),(9,2,'Ver Inscriptos','listaInscriptos.php'),(10,2,'Perfil','perfil.php'),(11,1,'Perfil','perfil.php'),(12,1,'Inscripción a consultas','inscribir.php'),(13,1,'Mis Inscripciones','misinscripciones.php');
+/*!40000 ALTER TABLE `mapa_sitio` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `mapa_sitio_previos`
+--
+
+DROP TABLE IF EXISTS `mapa_sitio_previos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mapa_sitio_previos` (
+  `idmapa_sitio` int NOT NULL,
+  `idmapa_sitio_anterior` int NOT NULL,
+  `orden` int NOT NULL,
+  PRIMARY KEY (`idmapa_sitio`,`idmapa_sitio_anterior`),
+  KEY `fk_mp_previos_actual_idx` (`idmapa_sitio`),
+  KEY `fk_mp_previos_anterior_idx` (`idmapa_sitio_anterior`),
+  CONSTRAINT `fk_mp_previos_actual` FOREIGN KEY (`idmapa_sitio`) REFERENCES `mapa_sitio` (`idmapa_sitio`),
+  CONSTRAINT `fk_mp_previos_anterior` FOREIGN KEY (`idmapa_sitio_anterior`) REFERENCES `mapa_sitio` (`idmapa_sitio`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mapa_sitio_previos`
+--
+
+LOCK TABLES `mapa_sitio_previos` WRITE;
+/*!40000 ALTER TABLE `mapa_sitio_previos` DISABLE KEYS */;
+INSERT INTO `mapa_sitio_previos` VALUES (9,8,1);
+/*!40000 ALTER TABLE `mapa_sitio_previos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `materias`
 --
 
@@ -260,6 +319,35 @@ LOCK TABLES `materias` WRITE;
 /*!40000 ALTER TABLE `materias` DISABLE KEYS */;
 INSERT INTO `materias` VALUES (1,'Paradigmas de la programacion    ',1),(2,'Sistemas y organizaciones',1),(3,'Quimica organica',2),(4,'Termodinamica',3),(5,'Estabildiad',3),(6,'Quimica inorganica',2),(8,'Gestion de datos',1);
 /*!40000 ALTER TABLE `materias` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `notificaciones`
+--
+
+DROP TABLE IF EXISTS `notificaciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `notificaciones` (
+  `id_notificacion` int NOT NULL,
+  `id_usuario` int NOT NULL,
+  `titulo` varchar(45) NOT NULL,
+  `texto` varchar(300) NOT NULL,
+  `leida` tinyint NOT NULL,
+  `fecha` date NOT NULL,
+  PRIMARY KEY (`id_notificacion`),
+  KEY `fk_notificaciones_usuarios_idx` (`id_usuario`),
+  CONSTRAINT `fk_notificaciones_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `notificaciones`
+--
+
+LOCK TABLES `notificaciones` WRITE;
+/*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
+/*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -353,4 +441,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-03 20:38:58
+-- Dump completed on 2023-05-03 20:58:28

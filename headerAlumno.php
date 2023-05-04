@@ -70,11 +70,51 @@
                         </a>
                     </div>
 
-                    <a class="nav-item" title="Notificaciones" href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
-                        </svg>
-                    </a>
+                    <div class="nav-item dropdown">
+                        <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Notificaciones" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
+                                <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                            <?php
+                            $vUserNotif = $_SESSION['usuario'];
+                            $vSql = "SELECT * from notificaciones n
+                                        where n.id_usuario = '$vUserNotif'
+                                        and leida = 0
+                                        order by id_notificacion desc";
+                            $vResultado = mysqli_query($link, $vSql);
+                            while ($fila = mysqli_fetch_array($vResultado))
+                            {
+                            ?> 
+                            <form action="<?php echo ( $_SERVER['REQUEST_URI']) ?>" method="post">     
+                            <div class="container dropdown-item" style="align-items: center;"> 
+                                <div class="row">
+                                    <div class="col-12 col-md-8">
+                                        <h6><?php echo ($fila['titulo']) ?></h6>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <a type="submit" class="nav-item" title="Marcar como leida" name="actionType" value="leer">
+                                            <input type="hidden" name="idnotificacion" value="<?php echo ($fila['id_notificacion']) ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                                                <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                                                <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p><?php echo ($fila['texto']) ?></p>
+                                    </div>
+                                </div>
+                            </div>          
+                                </form>                             
+                            <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
                     <div class="nav-item dropdown">
                         <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Perfil" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -120,5 +160,29 @@
                 </div>
 
             <div class="container-fluid">
+                    <div>
+                        <?php
+                        $vRol = $_SESSION['rol'];
+
+                        $vUrlActual = $_SERVER['REQUEST_URI'];
+                        $vSql = "SELECT *, 0 orden from mapa_sitio m
+                                    where m.id_rol_usuario = '$vRol'
+                                    and instr('$vUrlActual',m.path)!=0
+                                    union
+                                SELECT ma.*,msp.orden from mapa_sitio m, mapa_sitio_previos msp, mapa_sitio ma
+                                where m.id_rol_usuario = '$vRol'
+                                and instr('$vUrlActual',m.path)!=0
+                                and m.idmapa_sitio=msp.idmapa_sitio
+                                and msp.idmapa_sitio_anterior=ma.idmapa_sitio
+                                order by orden desc";
+                        $vResultado = mysqli_query($link, $vSql);
+                        while ($fila = mysqli_fetch_array($vResultado))
+                        {
+                        ?> 
+                            <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
+                        <?php
+                        }
+                        ?>
+                    </div>
             <?php include("mensaje.php"); ?>
             <div class="content-center">

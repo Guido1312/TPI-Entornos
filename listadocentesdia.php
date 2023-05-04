@@ -28,8 +28,8 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
-    include("headerAdmin.php");
     include("conexion.inc");
+    include("headerAdmin.php");
 
     if (!empty($_POST['from'])) {
         $vFechaSeleccionada = $_POST['from'];

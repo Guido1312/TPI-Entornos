@@ -114,5 +114,29 @@
                 </div>
 
             <div class="container-fluid">
+                    <div>
+                        <?php
+                        $vRol = $_SESSION['rol'];
+
+                        $vUrlActual = $_SERVER['REQUEST_URI'];
+                        $vSql = "SELECT *, 0 orden from mapa_sitio m
+                                    where m.id_rol_usuario = '$vRol'
+                                    and instr('$vUrlActual',m.path)!=0
+                                    union
+                                SELECT ma.*,msp.orden from mapa_sitio m, mapa_sitio_previos msp, mapa_sitio ma
+                                where m.id_rol_usuario = '$vRol'
+                                and instr('$vUrlActual',m.path)!=0
+                                and m.idmapa_sitio=msp.idmapa_sitio
+                                and msp.idmapa_sitio_anterior=ma.idmapa_sitio
+                                order by orden desc";
+                        $vResultado = mysqli_query($link, $vSql);
+                        while ($fila = mysqli_fetch_array($vResultado))
+                        {
+                        ?> 
+                            <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
+                        <?php
+                        }
+                        ?>
+                    </div>
             <?php include("mensaje.php"); ?>
             <div class="content-center">

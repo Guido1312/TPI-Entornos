@@ -52,8 +52,8 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
-    include("headerProfesor.php");
     include("conexion.inc");
+    include("headerProfesor.php");
     $vIDprofesor = $_SESSION['id_profesor'];
 
     if (!empty($_POST ['from'])) {
