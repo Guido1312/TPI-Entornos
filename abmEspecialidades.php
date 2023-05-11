@@ -1,4 +1,25 @@
-<?php session_start(); ?>
+<?php session_start(); 
+//validacion del lado del servidor
+function validarDatos($vNombre,&$vMensaje) {
+    if(empty($vNombre))
+    {
+     $vTipoMensaje = "danger";
+     $vMensaje = "No se han rellenado todos los campos";
+     return false;
+    }
+    else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombre))
+    {
+     $vTipoMensaje = "danger";
+     $vMensaje = "Solo se deben usar letras en el nombre";
+     return false;
+    }
+    else
+    {
+       return true;
+    }
+   
+   }
+   ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,6 +31,7 @@
 
 <body>
 <?php
+$vMensaje;
 if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
     header("location:index.php");
 }
@@ -18,16 +40,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaEspecialidad") {
-        $vNombre = $_POST["inputNombre"];
-        $vSql = "INSERT INTO especialidades (descripcion)
-                Values ('$vNombre')";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha creado la especialidad";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        $vNombre = trim($_POST["inputNombre"]);
+        if (validarDatos($vNombre,$vMensaje)){
+            $vSql = "INSERT INTO especialidades (descripcion)
+                    Values ('$vNombre')";
+            if(mysqli_query($link, $vSql)) {
+                $vTipoMensaje = "success";
+                $vMensaje = "Se ha creado la especialidad";
+            }
+            else{
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            }
         }
     }
     // Se guardan los cambios de eliminar
@@ -46,16 +70,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     // Se guardan los cambios de modificar
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDespecialidad"]) && $_POST ['actionType']=="modificarEspecialidad") {
         $vIDespecialidad = $_POST["inputIDespecialidad"];
-        $vNombre = $_POST["inputNombre"];
-        $vSql = "UPDATE especialidades SET descripcion = '$vNombre'
-                WHERE id_especialidad = '$vIDespecialidad'";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha modificado la especialidad";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        $vNombre = trim($_POST["inputNombre"]);
+        if (validarDatos($vNombre,$vMensaje)){
+            $vSql = "UPDATE especialidades SET descripcion = '$vNombre'
+                    WHERE id_especialidad = '$vIDespecialidad'";
+            if(mysqli_query($link, $vSql)) {
+                $vTipoMensaje = "success";
+                $vMensaje = "Se ha modificado la especialidad";
+            }
+            else{
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            }
         }
     }
 

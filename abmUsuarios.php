@@ -1,4 +1,32 @@
-<?php session_start(); ?>
+<?php session_start(); 
+//validacion del lado del servidor
+function validarDatos($vDNI,$vNombre,&$vMensaje) {
+    if(empty($vDNI)|| empty($vNombre))
+    {
+     $vTipoMensaje = "danger";
+     $vMensaje = "No se han rellenado todos los campos";
+     return false;
+    }
+    else if(!preg_match('/^[a-zA-Z]+$/', $vNombre))
+    {
+     $vTipoMensaje = "danger";
+     $vMensaje = "Solo se deben usar letras en el nombre";
+     return false;
+    }
+    else if(!is_numeric($vDNI))
+    {
+       $vTipoMensaje = "danger";
+       $vMensaje = "Solo se deben usar numeros en el DNI";
+       return false;
+    }
+    else
+    {
+       return true;
+    }
+   
+   }
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -10,6 +38,7 @@
 
 <body>
     <?php
+    $vMensaje;
 if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
     header("location:index.php");
 }
@@ -18,19 +47,21 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaUsuario") {
-        $vDNI = $_POST["inputDni"];
-        $vNombre = $_POST["inputNombre"];
-        $vPassword= $_POST["inputPassword"];
+        $vDNI = trim($_POST["inputDni"]);
+        $vNombre = trim($_POST["inputNombre"]);
+        $vPassword= trim($_POST["inputPassword"]);
         $vRol= $_POST["selectRole"];
-        $vSql = "INSERT INTO usuarios (rol, dni, nombre_usuario, password)
-                Values ($vRol, $vDNI, '$vNombre', '$vPassword')";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha creado el usuario";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        if (validarDatos($vDNI,$vNombre,$vMensaje)){
+            $vSql = "INSERT INTO usuarios (rol, dni, nombre_usuario, password)
+                    Values ($vRol, $vDNI, '$vNombre', '$vPassword')";
+            if(mysqli_query($link, $vSql)) {
+                $vTipoMensaje = "success";
+                $vMensaje = "Se ha creado el usuario";
+            }
+            else{
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            }
         }
     }
     // Se guardan los cambios de eliminar
@@ -48,20 +79,22 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     }
     // Se guardan los cambios de modificar
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDusuario"]) && $_POST ['actionType']=="modificarUsuario") {
-        $vIDusuario = $_POST["inputIDusuario"];
-        $vDNI = $_POST["inputDni"];
-        $vNombre = $_POST["inputNombre"];
-        $vPassword= $_POST["inputPassword"];
+        $vIDusuario = trim($_POST["inputIDusuario"]);
+        $vDNI = trim($_POST["inputDni"]);
+        $vNombre = trim($_POST["inputNombre"]);
+        $vPassword= trim($_POST["inputPassword"]);
         $vRol= $_POST["selectRole"];
-        $vSql = "UPDATE usuarios SET dni = '$vDNI', nombre_usuario = '$vNombre', password = '$vPassword', rol = '$vRol'
-                WHERE id_usuario = '$vIDusuario'";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha modificado el usuario";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        if (validarDatos($vDNI,$vNombre,$vMensaje)){
+            $vSql = "UPDATE usuarios SET dni = '$vDNI', nombre_usuario = '$vNombre', password = '$vPassword', rol = '$vRol'
+                    WHERE id_usuario = '$vIDusuario'";
+            if(mysqli_query($link, $vSql)) {
+                $vTipoMensaje = "success";
+                $vMensaje = "Se ha modificado el usuario";
+            }
+            else{
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            }
         }
     }
 
