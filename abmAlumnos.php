@@ -1,7 +1,40 @@
-<?php session_start(); ?>
+<?php session_start(); 
+//validacion del lado del servidor
+function validarDatos($vLegajo,$vNombre,$vMail,&$vMensaje) {
+ if(empty($vLegajo)|| empty($vNombre) || empty($vMail))
+ {
+  $vTipoMensaje = "danger";
+  $vMensaje = "No se han rellenado todos los campos";
+  return false;
+ }
+ else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombre))
+ {
+  $vTipoMensaje = "danger";
+  $vMensaje = "Solo se deben usar letras en el nombre";
+  return false;
+ }
+ else if(!filter_var($vMail,FILTER_VALIDATE_EMAIL))
+ {
+    $vTipoMensaje = "danger";
+    $vMensaje = "El email ingresado es invalido";
+    return false;
+ }
+ else if(!is_numeric($vLegajo))
+ {
+    $vTipoMensaje = "danger";
+    $vMensaje = "Solo se deben usar numeros en el legajo";
+    return false;
+ }
+ else
+ {
+    return true;
+ }
+
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <?php
         include("head.html");
@@ -9,7 +42,8 @@
 </head>
 
 <body>
-<?php
+<?php  
+$vMensaje;
 if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
     header("location:index.php");
 }
@@ -18,19 +52,35 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaAlumno") {
-        $vLegajo = $_POST["inputLegajo"];
-        $vNombre = $_POST["inputNombre"];
-        $vMail= $_POST["inputMail"];
+        $vLegajo = trim($_POST["inputLegajo"]);
+        $vNombre = trim($_POST["inputNombre"]);
+        $vMail= trim($_POST["inputMail"]);
         $vUser= $_POST["selectUser"];
-        $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
-                Values ('$vLegajo','$vNombre', '$vMail', $vUser)";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha creado el alumno";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        if (validarDatos($vLegajo,$vNombre,$vMail,$vMensaje)){
+            if(empty($vUser)){
+                $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail)
+                Values ('$vLegajo','$vNombre', '$vMail')";
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = "success";
+                    $vMensaje = "Se ha creado el alumno";
+                }
+                else{
+                    $vTipoMensaje = "danger";
+                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
+                }
+            }
+            else{
+                $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
+                        Values ('$vLegajo','$vNombre', '$vMail', $vUser)";
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = "success";
+                    $vMensaje = "Se ha creado el alumno";
+                }
+                else{
+                    $vTipoMensaje = "danger";
+                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
+                }
+            }
         }
     }
     // Se guardan los cambios de eliminar
@@ -48,26 +98,41 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     }
     // Se guardan los cambios de modificar
     if (!empty($_POST ['actionType']) && !empty($_POST["inputLegajoAlumno"]) && $_POST ['actionType']=="modificarAlumno") {
-        $vLegajoNuevo = $_POST["inputLegajoNuevo"];
-        $vLegajo = $_POST["inputLegajoAlumno"];
-        $vNombre = $_POST["inputNombre"];
-        $vMail= $_POST["inputMail"];
+        $vLegajoNuevo = trim($_POST["inputLegajoNuevo"]);
+        $vLegajo = trim($_POST["inputLegajoAlumno"]);
+        $vNombre = trim($_POST["inputNombre"]);
+        $vMail= trim($_POST["inputMail"]);
         $vUser= $_POST["selectUser"];
-        $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
-                WHERE legajo = '$vLegajo'";
-        if(mysqli_query($link, $vSql)) {
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha modificado el alumno";
-        }
-        else{
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+        if (validarDatos($vLegajoNuevo,$vNombre,$vMail,$vMensaje)){
+            if(empty($vUser)){
+                $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = null
+                        WHERE legajo = '$vLegajo'";
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = "success";
+                    $vMensaje = "Se ha modificado el alumno";
+                }
+                else{
+                    $vTipoMensaje = "danger";
+                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
+                }
+            }
+            else{
+                $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
+                        WHERE legajo = '$vLegajo'";
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = "success";
+                    $vMensaje = "Se ha modificado el alumno";
+                }
+                else{
+                    $vTipoMensaje = "danger";
+                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
+                }
+            }
         }
     }
 
 
     include("headerAdmin.php");
-
 
     if (!empty($_POST ['contiene'])) {
         $vContiene = $_POST ['contiene'];
@@ -76,7 +141,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 	                    WHERE NOT EXISTS (SELECT * FROM alumnos a 
 					                        WHERE u.id_usuario = a.id_usuario) 
 	                    AND NOT EXISTS (SELECT * FROM profesores p 
-					                        WHERE u.id_usuario = p.id_usuario) ;";
+					                        WHERE u.id_usuario = p.id_usuario)
+                        AND u.rol=1 ;";
 
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
@@ -191,6 +257,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     <div class="form-group col-md-6">
                                         <label for="selectUser">Usuario</label>
                                         <select name="selectUser" id="selectUser">
+                                        <option value="">Sin asignar</option>
                                             <?php 
                                     foreach($users as $user)
                                     {   
@@ -253,6 +320,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     <div class="form-group col-md-6">
                                         <label for="selectUser">Usuario</label>
                                         <select name="selectUser" id="selectUser">
+                                        <option value="">Sin asignar</option>
                                             <?php 
                                     foreach($users as $user)
                                     {   
