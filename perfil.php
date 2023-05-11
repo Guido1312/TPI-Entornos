@@ -186,7 +186,7 @@ else{
 include("footer.html");
 }
 else {
-    header("location:login.php");
+    header("location:index.php");
 }?>
 
 </body>

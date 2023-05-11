@@ -22,10 +22,19 @@ include("head.html");
         //index alumno
         if ($_SESSION['rol']==1){
             include("headerAlumno.php");
+            
+            $vUsuario = $_SESSION['usuario'];
+            $vSql = "SELECT a.nombre_apellido FROM usuarios u INNER JOIN alumnos a on a.id_usuario = u.id_usuario
+                                    WHERE u.id_usuario = '$vUsuario'";
+            $vResult = mysqli_query($link, $vSql);
+            while ($fila = mysqli_fetch_array($vResult))
+            {
+            $nombrePersona = $fila['nombre_apellido']; 
+            }
             ?>
-                
+    
                     <div class="row">
-                        <h2>Bienvenido <?php echo $_SESSION['usuario']; ?></h2>
+                        <h2>Bienvenido <?php echo $nombrePersona  ; ?></h2>
                     </div>
 
                     <div class="row card-deck">
@@ -57,9 +66,18 @@ include("head.html");
         //index profesor
         elseif($_SESSION['rol']==2){
             include("headerProfesor.php");
+
+            $vUsuario = $_SESSION['usuario'];
+            $vSql = "SELECT p.nombre_apellido FROM usuarios u INNER JOIN profesores p on p.id_usuario = u.id_usuario
+                                    WHERE u.id_usuario = '$vUsuario'";
+            $vResult = mysqli_query($link, $vSql);
+            while ($fila = mysqli_fetch_array($vResult))
+            {
+            $nombrePersona = $fila['nombre_apellido']; 
+            }
             ?>
                     <div class="row">
-                        <h2>Bienvenido <?php echo $_SESSION['usuario']; ?></h2>
+                        <h2>Bienvenido <?php echo $nombrePersona; ?></h2>
                     </div>
 
                     <div class="row card-deck" style="margin: 0px 120px 0px 120px;">

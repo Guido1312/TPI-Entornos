@@ -326,7 +326,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("footer.html");
 }
 else {
-    header("location:login.php");
+    header("location:index.php");
 }
 
 ?>
