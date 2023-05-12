@@ -167,6 +167,23 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
+         <!-- Paginacion -->
+        <?php $results_per_page = 3;
+        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+        $total_pages = ceil(count($data) / $results_per_page);
+
+        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+            $current_page = (int) $_GET['page'];
+        } else {
+            $current_page = 1;
+        }
+        
+        $offset = ($current_page - 1) * $results_per_page;
+        
+        $data_page = array_slice($data, $offset, $results_per_page);
+        
+        ?>
+        
         </div>
         <div class="table-responsive">
         <table class="table">
@@ -187,9 +204,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </a>
                 </tr>
             </thead>
-
+            <tbody>
             <?php
-    while ($fila = mysqli_fetch_array($vResultado))
+    foreach ($data_page as $fila)
     {?>
             <tr>
                 <td><?php echo ($fila['id_profesor']); ?></td>
@@ -369,9 +386,14 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                     </div>
                 </div>
-            </tr>
+                
+                </tr>
+            
             <?php
-    }
+        }?>
+        </tbody>
+    
+        <?php
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
     mysqli_free_result($vUsers);
@@ -379,7 +401,19 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
-    </div>
+        </div>
+        <ul class="pagination">
+        <?php
+for ($page = 1; $page <= $total_pages; $page++) {?>
+    <li class="page-item
+    <?php
+    if ($page == $current_page) {
+        echo 'active';
+    }?>"><a class="page-link" href="<?php echo('abmProfesores.php?page='.$page)?>"><?php echo($page)?></a></li>
+<?php }
+?>
+</ul>
+        
         <p>&nbsp;</p>
         <?php
     include("footer.html");
@@ -387,5 +421,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 else {
     header("location:index.php");
 }
+
 ?>
 </body>
