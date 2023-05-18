@@ -41,8 +41,35 @@ CREATE TABLE `alumnos` (
 
 LOCK TABLES `alumnos` WRITE;
 /*!40000 ALTER TABLE `alumnos` DISABLE KEYS */;
-INSERT INTO `alumnos` VALUES (1,'Lautaro Canoo ','lcano@gmail.com',3),(2,'Guido Lorenzotti','guidolorenzotti@gmail.com',2),(3,'Franco Teclado','fteclado@gmail.com',4),(1222,'nuevoooa  ','pruba@gmail.com',11);
+INSERT INTO `alumnos` VALUES (1,'Lautaro Canoo ','lcano@gmail.com',3),(2,'Guido Lorenzotti','guidolorenzotti@gmail.com',2),(3,'Franco Teclado','fteclado@gmail.com',4),(4,'prueba edicion','pruba@gmail.com',1),(112232,'prueba aalta','preubalata@hotmail.com',NULL);
 /*!40000 ALTER TABLE `alumnos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ciclos_lectivos`
+--
+
+DROP TABLE IF EXISTS `ciclos_lectivos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `ciclos_lectivos` (
+  `id_ciclo_lectivo` int NOT NULL AUTO_INCREMENT,
+  `fecha_inicio` date NOT NULL,
+  `fecha_fin` date NOT NULL,
+  `activo` tinyint NOT NULL,
+  `descripcion` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id_ciclo_lectivo`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ciclos_lectivos`
+--
+
+LOCK TABLES `ciclos_lectivos` WRITE;
+/*!40000 ALTER TABLE `ciclos_lectivos` DISABLE KEYS */;
+INSERT INTO `ciclos_lectivos` VALUES (1,'2023-03-15','2024-03-14',1,'2023'),(2,'2024-03-15','2025-03-14',0,'2024');
+/*!40000 ALTER TABLE `ciclos_lectivos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -67,7 +94,7 @@ CREATE TABLE `consultas` (
   CONSTRAINT `fk_consultas_estado_consulta` FOREIGN KEY (`id_estado_consulta`) REFERENCES `estados_consulta` (`id_estado_consulta`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_consultas_materias` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_consultas_profesores` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,8 +103,33 @@ CREATE TABLE `consultas` (
 
 LOCK TABLES `consultas` WRITE;
 /*!40000 ALTER TABLE `consultas` DISABLE KEYS */;
-INSERT INTO `consultas` VALUES (1,'10:00:00','2022-06-29',1,NULL,1,1),(2,'12:30:00','2022-06-27',1,NULL,1,2),(3,'10:00:00','2022-06-26',1,NULL,2,2),(4,'11:00:00','2023-04-12',3,'asdasd',2,2);
+INSERT INTO `consultas` VALUES (1,'10:00:00','2022-06-29',1,NULL,1,1),(2,'12:30:00','2022-06-27',1,NULL,1,2),(3,'10:00:00','2022-06-26',1,NULL,2,2),(4,'11:00:00','2023-04-12',3,'asdasd',2,2),(5,'09:48:00','2023-05-18',1,NULL,1,3),(6,'09:48:00','2023-05-25',1,NULL,1,3),(7,'09:48:00','2023-06-01',1,NULL,1,3),(8,'09:48:00','2023-06-08',1,NULL,1,3),(9,'09:48:00','2023-06-15',1,NULL,1,3),(10,'09:48:00','2023-06-22',1,NULL,1,3),(11,'09:48:00','2023-06-29',1,NULL,1,3),(12,'09:48:00','2023-07-06',1,NULL,1,3),(13,'09:48:00','2023-07-13',1,NULL,1,3),(14,'09:48:00','2023-07-20',1,NULL,1,3),(15,'09:48:00','2023-07-27',1,NULL,1,3),(16,'09:48:00','2023-08-03',1,NULL,1,3),(17,'09:48:00','2023-08-10',1,NULL,1,3),(18,'09:48:00','2023-08-17',1,NULL,1,3),(19,'09:48:00','2023-08-24',1,NULL,1,3),(20,'09:48:00','2023-08-31',1,NULL,1,3),(21,'09:48:00','2023-09-07',1,NULL,1,3),(22,'09:48:00','2023-09-14',1,NULL,1,3),(23,'09:48:00','2023-09-21',1,NULL,1,3),(24,'09:48:00','2023-09-28',1,NULL,1,3),(25,'09:48:00','2023-10-05',1,NULL,1,3),(26,'09:48:00','2023-10-12',1,NULL,1,3),(27,'09:48:00','2023-10-19',1,NULL,1,3),(28,'09:48:00','2023-10-26',1,NULL,1,3),(29,'09:48:00','2023-11-02',1,NULL,1,3),(30,'09:48:00','2023-11-09',1,NULL,1,3),(31,'09:48:00','2023-11-16',1,NULL,1,3),(32,'09:48:00','2023-11-23',1,NULL,1,3),(33,'09:48:00','2023-11-30',1,NULL,1,3),(34,'09:48:00','2023-12-07',1,NULL,1,3),(35,'09:48:00','2023-12-14',1,NULL,1,3),(36,'09:48:00','2023-12-21',1,NULL,1,3),(37,'09:48:00','2023-12-28',1,NULL,1,3),(38,'09:48:00','2024-01-04',1,NULL,1,3),(39,'09:48:00','2024-01-11',1,NULL,1,3),(40,'09:48:00','2024-01-18',1,NULL,1,3),(41,'09:48:00','2024-01-25',1,NULL,1,3),(42,'09:48:00','2024-02-01',1,NULL,1,3),(43,'09:48:00','2024-02-08',1,NULL,1,3),(44,'09:48:00','2024-02-15',1,NULL,1,3),(45,'09:48:00','2024-02-22',1,NULL,1,3),(46,'09:48:00','2024-02-29',1,NULL,1,3),(47,'09:48:00','2024-03-07',1,NULL,1,3),(48,'09:48:00','2024-03-14',1,NULL,1,3);
 /*!40000 ALTER TABLE `consultas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dias_consulta`
+--
+
+DROP TABLE IF EXISTS `dias_consulta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dias_consulta` (
+  `id_dia_consulta` int NOT NULL,
+  `dia` varchar(45) NOT NULL,
+  `dia_mysql` varchar(45) NOT NULL,
+  PRIMARY KEY (`id_dia_consulta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dias_consulta`
+--
+
+LOCK TABLES `dias_consulta` WRITE;
+/*!40000 ALTER TABLE `dias_consulta` DISABLE KEYS */;
+INSERT INTO `dias_consulta` VALUES (1,'Lunes','Monday'),(2,'Martes','Tuesday'),(3,'Miércoles','Wednesday'),(4,'Jueves','Thursday'),(5,'Viernes','Friday');
+/*!40000 ALTER TABLE `dias_consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -322,6 +374,33 @@ INSERT INTO `materias` VALUES (1,'Paradigmas de la programacion    ',1),(2,'Sist
 UNLOCK TABLES;
 
 --
+-- Table structure for table `materias_profesor`
+--
+
+DROP TABLE IF EXISTS `materias_profesor`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `materias_profesor` (
+  `id_materia` int NOT NULL,
+  `id_profesor` int NOT NULL,
+  PRIMARY KEY (`id_materia`,`id_profesor`),
+  KEY `fk_materias_profesor_profesor_idx` (`id_profesor`),
+  CONSTRAINT `fk_materias_profesor_materia` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_materias_profesor_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `materias_profesor`
+--
+
+LOCK TABLES `materias_profesor` WRITE;
+/*!40000 ALTER TABLE `materias_profesor` DISABLE KEYS */;
+INSERT INTO `materias_profesor` VALUES (1,1),(2,1),(3,1);
+/*!40000 ALTER TABLE `materias_profesor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `notificaciones`
 --
 
@@ -351,6 +430,39 @@ LOCK TABLES `notificaciones` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `profesor_consulta`
+--
+
+DROP TABLE IF EXISTS `profesor_consulta`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `profesor_consulta` (
+  `id_profesor_consulta` int NOT NULL AUTO_INCREMENT,
+  `id_profesor` int NOT NULL,
+  `id_dia_consulta` int NOT NULL,
+  `hora` time NOT NULL,
+  `id_materia` int NOT NULL,
+  PRIMARY KEY (`id_profesor_consulta`),
+  KEY `fk_profesor_consulta_profesor_idx` (`id_profesor`),
+  KEY `fk_profesor_consulta_materia_idx` (`id_materia`),
+  KEY `fk_profesor_consulta_dia_idx` (`id_dia_consulta`),
+  CONSTRAINT `fk_profesor_consulta_dia` FOREIGN KEY (`id_dia_consulta`) REFERENCES `dias_consulta` (`id_dia_consulta`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_profesor_consulta_materia` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_profesor_consulta_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `profesor_consulta`
+--
+
+LOCK TABLES `profesor_consulta` WRITE;
+/*!40000 ALTER TABLE `profesor_consulta` DISABLE KEYS */;
+INSERT INTO `profesor_consulta` VALUES (1,1,1,'10:00:00',1),(4,1,4,'14:02:00',2),(7,1,4,'09:48:00',3);
+/*!40000 ALTER TABLE `profesor_consulta` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `profesores`
 --
 
@@ -365,7 +477,7 @@ CREATE TABLE `profesores` (
   PRIMARY KEY (`id_profesor`),
   KEY `fk_profesores_usuarios_idx` (`id_usuario`),
   CONSTRAINT `fk_profesores_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,7 +486,7 @@ CREATE TABLE `profesores` (
 
 LOCK TABLES `profesores` WRITE;
 /*!40000 ALTER TABLE `profesores` DISABLE KEYS */;
-INSERT INTO `profesores` VALUES (1,'Iwanow','lavarropas@gmail.com',6),(2,'Hergenreder','aherg@hotmail.com',5),(3,'Villamontee ','mvilla@gmail.com',10),(4,'Toscano','jtoscano@gmail.com',NULL),(5,'Marinsaldi','marinsaldi@outlook.com',NULL),(6,'Pedraza','jaunpedr@gmail.com',NULL),(7,'Montaldi','mmonti@gmail.com',NULL),(8,'Garnacho','garnacho79@gmail.com',NULL);
+INSERT INTO `profesores` VALUES (1,'Iwanow','lavarropas@gmail.com',6),(2,'Hergenreder','aherg@hotmail.com',5),(3,'Villamontee ','mvilla@gmail.com',10),(4,'Toscano','jtoscano@gmail.com',NULL),(5,'Marinsaldi','marinsaldi@outlook.com',NULL),(6,'Pedraza','jaunpedr@gmail.com',NULL),(7,'Montaldi','mmonti@gmail.com',NULL),(8,'Garnacho','garnacho79@gail.com',NULL),(12,'diana claudia','ass@gmail.com',12);
 /*!40000 ALTER TABLE `profesores` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -419,7 +531,7 @@ CREATE TABLE `usuarios` (
   UNIQUE KEY `nombre_usuario_UNIQUE` (`nombre_usuario`),
   KEY `fk_usuarios_roles_usuario_idx` (`rol`),
   CONSTRAINT `fk_usuarios_roles_usuario` FOREIGN KEY (`rol`) REFERENCES `roles_usuario` (`id_rol_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,7 +540,7 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,3,40111222,'admin','admin'),(2,1,41656727,'guidolorenzotti','guido1312'),(3,1,41662762,'lautarojuancano','mesa123'),(4,1,32847777,'francotecla','letritas123'),(5,1,27632243,'alvaherge  ','compu111 '),(6,2,22736000,'iwanow','montana288'),(7,2,36750093,'mariatoscano','asdqwe123'),(10,1,34546978,'elnuevo','nuevo01'),(11,1,22222222,'elsegundo','segundo01'),(12,1,12333212,'prueba','prueba');
+INSERT INTO `usuarios` VALUES (1,3,40111222,'admin','admin'),(2,1,41656727,'guidolorenzotti','guido1312'),(3,1,41662762,'lautarojuancano','mesa123'),(4,1,32847777,'francotecla','letritas123'),(5,1,27632243,'alvaherge  ','compu111 '),(6,2,22736000,'iwanow','montana288'),(7,2,36750093,'mariatoscanoo','asdqwe123'),(10,1,34546978,'elnuevo','nuevo01'),(11,1,22222222,'elsegundo','segundo01'),(12,1,12333212,'prueba','prueba');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -441,4 +553,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-03 20:58:28
+-- Dump completed on 2023-05-17 23:06:23
