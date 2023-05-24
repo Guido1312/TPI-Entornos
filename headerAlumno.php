@@ -76,7 +76,7 @@
                                 <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
                             </svg>
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
+                        <div class="dropdown-menu dropdown-notif" aria-labelledby="bd-versions">
                             <?php
                             $vUserNotif = $_SESSION['usuario'];
                             $vSql = "SELECT * from notificaciones n
@@ -90,10 +90,10 @@
                             <form action="<?php echo ( $_SERVER['REQUEST_URI']) ?>" method="post">     
                             <div class="container dropdown-item" style="align-items: center;"> 
                                 <div class="row">
-                                    <div class="col-12 col-md-8">
+                                    <div class="col-12 col-md-10">
                                         <h6><?php echo ($fila['titulo']) ?></h6>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-2 eye-icon">
                                         <a type="submit" class="nav-item" title="Marcar como leida" name="actionType" value="leer">
                                             <input type="hidden" name="idnotificacion" value="<?php echo ($fila['id_notificacion']) ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">

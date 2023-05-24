@@ -211,7 +211,22 @@ a.article:hover {
     color:#6d7fcc;
 }
 
+.eye-icon svg:hover path {
+    fill: #6d7fcc;
+}
 
 .center {
     padding: 8%;
   }
+
+.dropdown-notif {
+    right: 0;
+    left: auto;
+}
+ 
+@media screen and (max-width: 768px) {
+    .dropdown-notif {
+        right: auto;
+        left: 0;
+    }
+}  

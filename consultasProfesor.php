@@ -104,6 +104,25 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 ?>
                 <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
             </form>
+
+            <!-- Paginacion -->
+         <?php $results_per_page = 15;
+        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+        $total_pages = ceil(count($data) / $results_per_page);
+
+        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+            $current_page = (int) $_GET['page'];
+        } else {
+            $current_page = 1;
+        }
+        
+        $offset = ($current_page - 1) * $results_per_page;
+        
+        $data_page = array_slice($data, $offset, $results_per_page);
+        
+        ?>
+
+
         </div>
         <div class="table-responsive">
             <table class="table">
@@ -119,9 +138,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 </thead>
         <?php
 
-        while ($fila = mysqli_fetch_array($vResultado))
-        {
-        ?>
+        foreach ($data_page as $fila)
+        {?>
+
                     <tr>
                         <td><?php echo ($fila['descripcion']); ?></td>
                         <td><?php echo ($fila['nombre_materia']); ?></td>
@@ -146,6 +165,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
 
             </table>
         </div>
+        <ul class="pagination">
+        <?php
+for ($page = 1; $page <= $total_pages; $page++) {?>
+    <li class="page-item
+    <?php
+    if ($page == $current_page) {
+        echo 'active';
+    }?>"><a class="page-link" href="<?php echo('consultasProfesor.php?page='.$page)?>"><?php echo($page)?></a></li>
+<?php }
+?>
+</ul>
         <p>&nbsp;</p>
         <?php
         include("footer.html");

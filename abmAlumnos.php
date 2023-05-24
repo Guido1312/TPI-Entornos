@@ -178,7 +178,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
          <!-- Paginacion -->
-         <?php $results_per_page = 3;
+         <?php $results_per_page = 50;
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
