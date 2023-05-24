@@ -58,8 +58,10 @@ CREATE TABLE `ciclos_lectivos` (
   `fecha_fin` date NOT NULL,
   `activo` tinyint NOT NULL,
   `descripcion` varchar(45) DEFAULT NULL,
+  `fecha_inicio_vacaciones` date NOT NULL,
+  `fecha_fin_vacaciones` date NOT NULL,
   PRIMARY KEY (`id_ciclo_lectivo`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,7 +70,7 @@ CREATE TABLE `ciclos_lectivos` (
 
 LOCK TABLES `ciclos_lectivos` WRITE;
 /*!40000 ALTER TABLE `ciclos_lectivos` DISABLE KEYS */;
-INSERT INTO `ciclos_lectivos` VALUES (1,'2023-03-15','2024-03-14',1,'2023'),(2,'2024-03-15','2025-03-14',0,'2024');
+INSERT INTO `ciclos_lectivos` VALUES (1,'2023-03-15','2024-03-14',1,'2023','0000-00-00','0000-00-00'),(2,'2024-03-15','2025-03-14',0,'2024','0000-00-00','0000-00-00'),(3,'2025-03-15','2026-03-14',0,'2025','2025-12-14','2026-02-14');
 /*!40000 ALTER TABLE `ciclos_lectivos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,14 +89,17 @@ CREATE TABLE `consultas` (
   `motivo_cancelacion` varchar(100) DEFAULT NULL,
   `id_profesor` int NOT NULL,
   `id_materia` int NOT NULL,
+  `id_profesor_consulta` int DEFAULT NULL,
   PRIMARY KEY (`id_consulta`),
   KEY `fk_consultas_estado_consulta_idx` (`id_estado_consulta`),
   KEY `fk_consultas_profesores_idx` (`id_profesor`),
   KEY `fk_consultas_materias_idx` (`id_materia`),
+  KEY `fk_consultas_profesor_consulta_idx` (`id_profesor_consulta`),
   CONSTRAINT `fk_consultas_estado_consulta` FOREIGN KEY (`id_estado_consulta`) REFERENCES `estados_consulta` (`id_estado_consulta`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_consultas_materias` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_consultas_profesor_consulta` FOREIGN KEY (`id_profesor_consulta`) REFERENCES `profesor_consulta` (`id_profesor_consulta`) ON DELETE SET NULL,
   CONSTRAINT `fk_consultas_profesores` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=349 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +108,7 @@ CREATE TABLE `consultas` (
 
 LOCK TABLES `consultas` WRITE;
 /*!40000 ALTER TABLE `consultas` DISABLE KEYS */;
-INSERT INTO `consultas` VALUES (1,'10:00:00','2022-06-29',1,NULL,1,1),(2,'12:30:00','2022-06-27',1,NULL,1,2),(3,'10:00:00','2022-06-26',1,NULL,2,2),(4,'11:00:00','2023-04-12',3,'asdasd',2,2),(5,'09:48:00','2023-05-18',1,NULL,1,3),(6,'09:48:00','2023-05-25',1,NULL,1,3),(7,'09:48:00','2023-06-01',1,NULL,1,3),(8,'09:48:00','2023-06-08',1,NULL,1,3),(9,'09:48:00','2023-06-15',1,NULL,1,3),(10,'09:48:00','2023-06-22',1,NULL,1,3),(11,'09:48:00','2023-06-29',1,NULL,1,3),(12,'09:48:00','2023-07-06',1,NULL,1,3),(13,'09:48:00','2023-07-13',1,NULL,1,3),(14,'09:48:00','2023-07-20',1,NULL,1,3),(15,'09:48:00','2023-07-27',1,NULL,1,3),(16,'09:48:00','2023-08-03',1,NULL,1,3),(17,'09:48:00','2023-08-10',1,NULL,1,3),(18,'09:48:00','2023-08-17',1,NULL,1,3),(19,'09:48:00','2023-08-24',1,NULL,1,3),(20,'09:48:00','2023-08-31',1,NULL,1,3),(21,'09:48:00','2023-09-07',1,NULL,1,3),(22,'09:48:00','2023-09-14',1,NULL,1,3),(23,'09:48:00','2023-09-21',1,NULL,1,3),(24,'09:48:00','2023-09-28',1,NULL,1,3),(25,'09:48:00','2023-10-05',1,NULL,1,3),(26,'09:48:00','2023-10-12',1,NULL,1,3),(27,'09:48:00','2023-10-19',1,NULL,1,3),(28,'09:48:00','2023-10-26',1,NULL,1,3),(29,'09:48:00','2023-11-02',1,NULL,1,3),(30,'09:48:00','2023-11-09',1,NULL,1,3),(31,'09:48:00','2023-11-16',1,NULL,1,3),(32,'09:48:00','2023-11-23',1,NULL,1,3),(33,'09:48:00','2023-11-30',1,NULL,1,3),(34,'09:48:00','2023-12-07',1,NULL,1,3),(35,'09:48:00','2023-12-14',1,NULL,1,3),(36,'09:48:00','2023-12-21',1,NULL,1,3),(37,'09:48:00','2023-12-28',1,NULL,1,3),(38,'09:48:00','2024-01-04',1,NULL,1,3),(39,'09:48:00','2024-01-11',1,NULL,1,3),(40,'09:48:00','2024-01-18',1,NULL,1,3),(41,'09:48:00','2024-01-25',1,NULL,1,3),(42,'09:48:00','2024-02-01',1,NULL,1,3),(43,'09:48:00','2024-02-08',1,NULL,1,3),(44,'09:48:00','2024-02-15',1,NULL,1,3),(45,'09:48:00','2024-02-22',1,NULL,1,3),(46,'09:48:00','2024-02-29',1,NULL,1,3),(47,'09:48:00','2024-03-07',1,NULL,1,3),(48,'09:48:00','2024-03-14',1,NULL,1,3);
+INSERT INTO `consultas` VALUES (214,'20:00:00','2023-06-02',1,NULL,1,1,14),(215,'20:00:00','2023-06-09',1,NULL,1,1,14),(216,'20:00:00','2023-06-16',1,NULL,1,1,14),(217,'20:00:00','2023-06-23',1,NULL,1,1,14),(218,'20:00:00','2023-06-30',1,NULL,1,1,14),(219,'20:00:00','2023-07-07',1,NULL,1,1,14),(220,'20:00:00','2023-07-14',1,NULL,1,1,14),(221,'20:00:00','2023-07-21',1,NULL,1,1,14),(222,'20:00:00','2023-07-28',1,NULL,1,1,14),(223,'20:00:00','2023-08-04',1,NULL,1,1,14),(224,'20:00:00','2023-08-11',1,NULL,1,1,14),(225,'20:00:00','2023-08-18',1,NULL,1,1,14),(226,'20:00:00','2023-08-25',1,NULL,1,1,14),(227,'20:00:00','2023-09-01',1,NULL,1,1,14),(228,'20:00:00','2023-09-08',1,NULL,1,1,14),(229,'20:00:00','2023-09-15',1,NULL,1,1,14),(230,'20:00:00','2023-09-22',1,NULL,1,1,14),(231,'20:00:00','2023-09-29',1,NULL,1,1,14),(232,'20:00:00','2023-10-06',1,NULL,1,1,14),(233,'20:00:00','2023-10-20',1,NULL,1,1,14),(234,'20:00:00','2023-10-27',1,NULL,1,1,14),(235,'20:00:00','2023-11-03',1,NULL,1,1,14),(236,'20:00:00','2023-11-10',1,NULL,1,1,14),(237,'20:00:00','2023-11-17',1,NULL,1,1,14),(238,'20:00:00','2023-11-24',1,NULL,1,1,14),(239,'20:00:00','2023-12-01',1,NULL,1,1,14),(240,'20:00:00','2023-12-15',1,NULL,1,1,14),(241,'20:00:00','2024-02-09',1,NULL,1,1,14),(242,'20:00:00','2024-02-16',1,NULL,1,1,14),(243,'20:00:00','2024-02-23',1,NULL,1,1,14),(244,'20:00:00','2024-03-01',1,NULL,1,1,14),(245,'20:00:00','2024-03-08',1,NULL,1,1,14),(246,'22:33:00','2023-05-29',1,NULL,1,1,15),(247,'22:33:00','2023-06-05',1,NULL,1,1,15),(248,'22:33:00','2023-06-12',1,NULL,1,1,15),(249,'22:33:00','2023-06-26',1,NULL,1,1,15),(250,'22:33:00','2023-07-03',1,NULL,1,1,15),(251,'22:33:00','2023-07-10',1,NULL,1,1,15),(252,'22:33:00','2023-07-17',1,NULL,1,1,15),(253,'22:33:00','2023-07-24',1,NULL,1,1,15),(254,'22:33:00','2023-07-31',1,NULL,1,1,15),(255,'22:33:00','2023-08-07',1,NULL,1,1,15),(256,'22:33:00','2023-08-14',1,NULL,1,1,15),(257,'22:33:00','2023-08-28',1,NULL,1,1,15),(258,'22:33:00','2023-09-04',1,NULL,1,1,15),(259,'22:33:00','2023-09-11',1,NULL,1,1,15),(260,'22:33:00','2023-09-18',1,NULL,1,1,15),(261,'22:33:00','2023-09-25',1,NULL,1,1,15),(262,'22:33:00','2023-10-02',1,NULL,1,1,15),(263,'22:33:00','2023-10-09',1,NULL,1,1,15),(264,'22:33:00','2023-10-23',1,NULL,1,1,15),(265,'22:33:00','2023-10-30',1,NULL,1,1,15),(266,'22:33:00','2023-11-06',1,NULL,1,1,15),(267,'22:33:00','2023-11-13',1,NULL,1,1,15),(268,'22:33:00','2023-11-27',1,NULL,1,1,15),(269,'22:33:00','2023-12-04',1,NULL,1,1,15),(270,'22:33:00','2023-12-11',1,NULL,1,1,15),(271,'22:33:00','2023-12-18',1,NULL,1,1,15),(272,'22:33:00','2024-02-12',1,NULL,1,1,15),(273,'22:33:00','2024-02-19',1,NULL,1,1,15),(274,'22:33:00','2024-02-26',1,NULL,1,1,15),(275,'22:33:00','2024-03-04',1,NULL,1,1,15),(276,'22:33:00','2024-03-11',1,NULL,1,1,15),(277,'17:35:00','2023-05-24',1,NULL,1,3,16),(278,'17:35:00','2023-05-31',1,NULL,1,3,16),(279,'17:35:00','2023-06-07',1,NULL,1,3,16),(280,'17:35:00','2023-06-14',1,NULL,1,3,16),(281,'17:35:00','2023-06-21',1,NULL,1,3,16),(282,'17:35:00','2023-06-28',1,NULL,1,3,16),(283,'17:35:00','2023-07-05',1,NULL,1,3,16),(284,'17:35:00','2023-07-12',1,NULL,1,3,16),(285,'17:35:00','2023-07-19',1,NULL,1,3,16),(286,'17:35:00','2023-07-26',1,NULL,1,3,16),(287,'17:35:00','2023-08-02',1,NULL,1,3,16),(288,'17:35:00','2023-08-09',1,NULL,1,3,16),(289,'17:35:00','2023-08-16',1,NULL,1,3,16),(290,'17:35:00','2023-08-23',1,NULL,1,3,16),(291,'17:35:00','2023-08-30',1,NULL,1,3,16),(292,'17:35:00','2023-09-06',1,NULL,1,3,16),(293,'17:35:00','2023-09-13',1,NULL,1,3,16),(294,'17:35:00','2023-09-20',1,NULL,1,3,16),(295,'17:35:00','2023-09-27',1,NULL,1,3,16),(296,'17:35:00','2023-10-04',1,NULL,1,3,16),(297,'17:35:00','2023-10-11',1,NULL,1,3,16),(298,'17:35:00','2023-10-18',1,NULL,1,3,16),(299,'17:35:00','2023-10-25',1,NULL,1,3,16),(300,'17:35:00','2023-11-01',1,NULL,1,3,16),(301,'17:35:00','2023-11-08',1,NULL,1,3,16),(302,'17:35:00','2023-11-15',1,NULL,1,3,16),(303,'17:35:00','2023-11-22',1,NULL,1,3,16),(304,'17:35:00','2023-11-29',1,NULL,1,3,16),(305,'17:35:00','2023-12-06',1,NULL,1,3,16),(306,'17:35:00','2023-12-13',1,NULL,1,3,16),(307,'17:35:00','2024-02-07',1,NULL,1,3,16),(308,'17:35:00','2024-02-14',1,NULL,1,3,16),(309,'17:35:00','2024-02-21',1,NULL,1,3,16),(310,'17:35:00','2024-02-28',1,NULL,1,3,16),(311,'17:35:00','2024-03-06',1,NULL,1,3,16),(312,'17:35:00','2024-03-13',1,NULL,1,3,16),(313,'19:20:00','2023-05-24',1,NULL,1,2,17),(314,'19:20:00','2023-05-31',1,NULL,1,2,17),(315,'19:20:00','2023-06-07',1,NULL,1,2,17),(316,'19:20:00','2023-06-14',1,NULL,1,2,17),(317,'19:20:00','2023-06-21',1,NULL,1,2,17),(318,'19:20:00','2023-06-28',1,NULL,1,2,17),(319,'19:20:00','2023-07-05',1,NULL,1,2,17),(320,'19:20:00','2023-07-12',1,NULL,1,2,17),(321,'19:20:00','2023-07-19',1,NULL,1,2,17),(322,'19:20:00','2023-07-26',1,NULL,1,2,17),(323,'19:20:00','2023-08-02',1,NULL,1,2,17),(324,'19:20:00','2023-08-09',1,NULL,1,2,17),(325,'19:20:00','2023-08-16',1,NULL,1,2,17),(326,'19:20:00','2023-08-23',1,NULL,1,2,17),(327,'19:20:00','2023-08-30',1,NULL,1,2,17),(328,'19:20:00','2023-09-06',1,NULL,1,2,17),(329,'19:20:00','2023-09-13',1,NULL,1,2,17),(330,'19:20:00','2023-09-20',1,NULL,1,2,17),(331,'19:20:00','2023-09-27',1,NULL,1,2,17),(332,'19:20:00','2023-10-04',1,NULL,1,2,17),(333,'19:20:00','2023-10-11',1,NULL,1,2,17),(334,'19:20:00','2023-10-18',1,NULL,1,2,17),(335,'19:20:00','2023-10-25',1,NULL,1,2,17),(336,'19:20:00','2023-11-01',1,NULL,1,2,17),(337,'19:20:00','2023-11-08',1,NULL,1,2,17),(338,'19:20:00','2023-11-15',1,NULL,1,2,17),(339,'19:20:00','2023-11-22',1,NULL,1,2,17),(340,'19:20:00','2023-11-29',1,NULL,1,2,17),(341,'19:20:00','2023-12-06',1,NULL,1,2,17),(342,'19:20:00','2023-12-13',1,NULL,1,2,17),(343,'19:20:00','2024-02-07',1,NULL,1,2,17),(344,'19:20:00','2024-02-14',1,NULL,1,2,17),(345,'19:20:00','2024-02-21',1,NULL,1,2,17),(346,'19:20:00','2024-02-28',1,NULL,1,2,17),(347,'19:20:00','2024-03-06',1,NULL,1,2,17),(348,'19:20:00','2024-03-13',1,NULL,1,2,17);
 /*!40000 ALTER TABLE `consultas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +149,7 @@ CREATE TABLE `dias_sin_consulta` (
   `fecha` date NOT NULL,
   `descripcion` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_dia_s_c`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +158,7 @@ CREATE TABLE `dias_sin_consulta` (
 
 LOCK TABLES `dias_sin_consulta` WRITE;
 /*!40000 ALTER TABLE `dias_sin_consulta` DISABLE KEYS */;
-INSERT INTO `dias_sin_consulta` VALUES (1,'2022-05-25','Dia de la patria'),(2,'2022-06-17','Dia de la libertad');
+INSERT INTO `dias_sin_consulta` VALUES (1,'2023-05-25','25 de mayo'),(2,'2023-05-26','Puente'),(3,'2023-03-24','24 de marzo'),(4,'2023-04-06','Jueves santo'),(5,'2023-04-07','Viernes santo'),(6,'2023-05-01','Dìa del trabajador'),(7,'2023-06-19','Puente'),(8,'2023-06-20','Dìa de la bandera'),(9,'2023-08-21','Sanma'),(10,'2023-09-21','Dìa del estudiante'),(11,'2023-10-13','Puente'),(12,'2023-10-16','Dìa del resp a la diver'),(13,'2023-11-20','Día de la soberanía'),(14,'2023-12-08','Día de la virgen'),(15,'2023-12-19','Vacaciones'),(16,'2023-12-20','Vacaciones'),(17,'2023-12-21','Vacaciones'),(18,'2023-12-22','Vacaciones'),(19,'2023-12-23','Vacaciones'),(20,'2023-12-24','Vacaciones'),(21,'2023-12-25','Vacaciones'),(22,'2023-12-26','Vacaciones'),(23,'2023-12-27','Vacaciones'),(24,'2023-12-28','Vacaciones'),(25,'2023-12-29','Vacaciones'),(26,'2023-12-30','Vacaciones'),(27,'2023-12-31','Vacaciones'),(28,'2024-01-01','Vacaciones'),(29,'2024-01-02','Vacaciones'),(30,'2024-01-03','Vacaciones'),(31,'2024-01-04','Vacaciones'),(32,'2024-01-05','Vacaciones'),(33,'2024-01-06','Vacaciones'),(34,'2024-01-07','Vacaciones'),(35,'2024-01-08','Vacaciones'),(36,'2024-01-09','Vacaciones'),(37,'2024-01-10','Vacaciones'),(38,'2024-01-11','Vacaciones'),(39,'2024-01-12','Vacaciones'),(40,'2024-01-13','Vacaciones'),(41,'2024-01-14','Vacaciones'),(42,'2024-01-15','Vacaciones'),(43,'2024-01-16','Vacaciones'),(44,'2024-01-17','Vacaciones'),(45,'2024-01-18','Vacaciones'),(46,'2024-01-19','Vacaciones'),(47,'2024-01-20','Vacaciones'),(48,'2024-01-21','Vacaciones'),(49,'2024-01-22','Vacaciones'),(50,'2024-01-23','Vacaciones'),(51,'2024-01-24','Vacaciones'),(52,'2024-01-25','Vacaciones'),(53,'2024-01-26','Vacaciones'),(54,'2024-01-27','Vacaciones'),(55,'2024-01-28','Vacaciones'),(56,'2024-01-29','Vacaciones'),(57,'2024-01-30','Vacaciones'),(58,'2024-01-31','Vacaciones'),(59,'2024-02-01','Vacaciones'),(60,'2024-02-02','Vacaciones'),(61,'2024-02-03','Vacaciones'),(62,'2024-02-04','Vacaciones'),(63,'2024-02-05','Vacaciones'),(64,'2025-12-14','Vacaciones'),(65,'2025-12-15','Vacaciones'),(66,'2025-12-16','Vacaciones'),(67,'2025-12-17','Vacaciones'),(68,'2025-12-18','Vacaciones'),(69,'2025-12-19','Vacaciones'),(70,'2025-12-20','Vacaciones'),(71,'2025-12-21','Vacaciones'),(72,'2025-12-22','Vacaciones'),(73,'2025-12-23','Vacaciones'),(74,'2025-12-24','Vacaciones'),(75,'2025-12-25','Vacaciones'),(76,'2025-12-26','Vacaciones'),(77,'2025-12-27','Vacaciones'),(78,'2025-12-28','Vacaciones'),(79,'2025-12-29','Vacaciones'),(80,'2025-12-30','Vacaciones'),(81,'2025-12-31','Vacaciones'),(82,'2026-01-01','Vacaciones'),(83,'2026-01-02','Vacaciones'),(84,'2026-01-03','Vacaciones'),(85,'2026-01-04','Vacaciones'),(86,'2026-01-05','Vacaciones'),(87,'2026-01-06','Vacaciones'),(88,'2026-01-07','Vacaciones'),(89,'2026-01-08','Vacaciones'),(90,'2026-01-09','Vacaciones'),(91,'2026-01-10','Vacaciones'),(92,'2026-01-11','Vacaciones'),(93,'2026-01-12','Vacaciones'),(94,'2026-01-13','Vacaciones'),(95,'2026-01-14','Vacaciones'),(96,'2026-01-15','Vacaciones'),(97,'2026-01-16','Vacaciones'),(98,'2026-01-17','Vacaciones'),(99,'2026-01-18','Vacaciones'),(100,'2026-01-19','Vacaciones'),(101,'2026-01-20','Vacaciones'),(102,'2026-01-21','Vacaciones'),(103,'2026-01-22','Vacaciones'),(104,'2026-01-23','Vacaciones'),(105,'2026-01-24','Vacaciones'),(106,'2026-01-25','Vacaciones'),(107,'2026-01-26','Vacaciones'),(108,'2026-01-27','Vacaciones'),(109,'2026-01-28','Vacaciones'),(110,'2026-01-29','Vacaciones'),(111,'2026-01-30','Vacaciones'),(112,'2026-01-31','Vacaciones'),(113,'2026-02-01','Vacaciones'),(114,'2026-02-02','Vacaciones'),(115,'2026-02-03','Vacaciones'),(116,'2026-02-04','Vacaciones'),(117,'2026-02-05','Vacaciones'),(118,'2026-02-06','Vacaciones'),(119,'2026-02-07','Vacaciones'),(120,'2026-02-08','Vacaciones'),(121,'2026-02-09','Vacaciones'),(122,'2026-02-10','Vacaciones'),(123,'2026-02-11','Vacaciones'),(124,'2026-02-12','Vacaciones'),(125,'2026-02-13','Vacaciones'),(126,'2026-02-14','Vacaciones');
 /*!40000 ALTER TABLE `dias_sin_consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,7 +281,7 @@ CREATE TABLE `inscripciones` (
   KEY `fk_inscripciones_alumno_idx` (`id_alumno`),
   CONSTRAINT `fk_inscripciones_alumno` FOREIGN KEY (`id_alumno`) REFERENCES `alumnos` (`legajo`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_inscripciones_consultas` FOREIGN KEY (`id_consulta`) REFERENCES `consultas` (`id_consulta`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,7 +290,6 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (1,'2022-06-20',1,1,1),(2,'2022-06-21',4,2,2),(4,'2022-06-13',1,2,1),(5,'2022-06-13',1,3,1),(6,'2023-03-08',1,1,2);
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -342,7 +346,7 @@ CREATE TABLE `mapa_sitio_previos` (
 
 LOCK TABLES `mapa_sitio_previos` WRITE;
 /*!40000 ALTER TABLE `mapa_sitio_previos` DISABLE KEYS */;
-INSERT INTO `mapa_sitio_previos` VALUES (9,8,1);
+INSERT INTO `mapa_sitio_previos` VALUES (6,2,1),(9,8,1);
 /*!40000 ALTER TABLE `mapa_sitio_previos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -426,6 +430,7 @@ CREATE TABLE `notificaciones` (
 
 LOCK TABLES `notificaciones` WRITE;
 /*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
+INSERT INTO `notificaciones` VALUES (1,2,'Prueba','Texto de prueba para una notificación',0,'2023-05-23');
 /*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -449,7 +454,7 @@ CREATE TABLE `profesor_consulta` (
   CONSTRAINT `fk_profesor_consulta_dia` FOREIGN KEY (`id_dia_consulta`) REFERENCES `dias_consulta` (`id_dia_consulta`) ON UPDATE CASCADE,
   CONSTRAINT `fk_profesor_consulta_materia` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON UPDATE CASCADE,
   CONSTRAINT `fk_profesor_consulta_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -458,7 +463,7 @@ CREATE TABLE `profesor_consulta` (
 
 LOCK TABLES `profesor_consulta` WRITE;
 /*!40000 ALTER TABLE `profesor_consulta` DISABLE KEYS */;
-INSERT INTO `profesor_consulta` VALUES (1,1,1,'10:00:00',1),(4,1,4,'14:02:00',2),(7,1,4,'09:48:00',3);
+INSERT INTO `profesor_consulta` VALUES (14,1,5,'20:00:00',1),(15,1,1,'22:33:00',1),(16,1,3,'17:35:00',3),(17,1,3,'19:20:00',2);
 /*!40000 ALTER TABLE `profesor_consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -553,4 +558,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-17 23:06:23
+-- Dump completed on 2023-05-23 22:40:43
