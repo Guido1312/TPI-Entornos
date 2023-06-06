@@ -180,6 +180,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     </div>
                             </div>
                             <div class="modal-footer">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">  
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="actionType" value="altaEspecialidad" class="btn btn-success">Crear especialidad</button>
                                 </form>
@@ -211,8 +213,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDespecialidad" type="text" class="form-control" style="display:none"
+                                <input name="inputIDespecialidad" type="hidden" class="form-control"
                                     id="inputIDespecialidad" value="<?php echo ($fila['id_especialidad']); ?>">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">      
                                 <button type="submit" name="actionType" value="modificarEspecialidad"
                                     class="btn btn-primary">Guardar cambios</button>
                                 </form>
@@ -241,8 +245,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <form action="abmEspecialidades.php" method="post">
-                                    <input name="inputIDespecialidad" type="text" class="form-control" style="display:none"
+                                    <input name="inputIDespecialidad" type="hidden" class="form-control"
                                         id="inputIDespecialidad" value="<?php echo ($fila['id_especialidad']); ?>">
+                                    <input name="page" type="hidden" class="form-control"
+                                        id="page" value="<?php echo ($current_page); ?>">      
                                     <button type="submit" name="actionType" value="eliminarEspecialidad"
                                         class="btn btn-danger">Eliminar</button>
                                 </form>

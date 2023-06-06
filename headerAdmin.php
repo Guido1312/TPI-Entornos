@@ -27,9 +27,6 @@
                             <li>
                                 <a href="abmMaterias.php">Materias</a>
                             </li>
-                            <li>
-                                <a href="#">Dias de consulta</a>
-                            </li>
                         </ul>
                     </li>
                     <li>

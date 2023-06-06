@@ -125,8 +125,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
     }
+    else {
+        $vFechaDesde = new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires'));
+        $vFechaDesde = $vFechaDesde->format('Y-m-d');
+    }
+
     if (!empty($_POST ['to'])) {
         $vFechaHasta = $_POST ['to'];
+    }
+    else {
+        $vFechaHasta = date_add(new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires')),date_interval_create_from_date_string('30 days'));
+        $vFechaHasta = $vFechaHasta->format('Y-m-d');
     }
 
     $vSql = "SELECT * FROM consultas c inner join materias m on c.id_materia = m.id_materia
@@ -174,7 +183,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             <?php
             if (empty($_POST ['from'])) {
             ?>
-                <input type="text" id="from" name="from">
+                <input type="text" id="from" name="from" value=<?php echo ($vFechaDesde)?>>
             <?php
             }
             else {
@@ -187,7 +196,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             <?php
             if (empty($_POST ['to'])) {
             ?>
-                <input type="text" id="to" name="to">
+                <input type="text" id="to" name="to" value=<?php echo ($vFechaHasta)?>>
             <?php
             }
             else {

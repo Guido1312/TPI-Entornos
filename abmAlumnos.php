@@ -178,13 +178,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
          <!-- Paginacion -->
-         <?php $results_per_page = 50;
+         <?php $results_per_page = 5;
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
         if (isset($_GET['page']) && is_numeric($_GET['page'])) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+            $current_page = (int) $_POST['page'];
+        }    
+        else {
             $current_page = 1;
         }
         
@@ -296,6 +300,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     </div>
                             </div>
                             <div class="modal-footer">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">  
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="actionType" value="altaAlumno" class="btn btn-success">Crear alumno</button>
                                 </form>
@@ -361,8 +367,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputLegajoAlumno" type="text" class="form-control" style="display:none"
+                                <input name="inputLegajoAlumno" type="hidden" class="form-control"
                                     id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">    
                                 <button type="submit" name="actionType" value="modificarAlumno"
                                     class="btn btn-primary">Guardar cambios</button>
                                 </form>
@@ -391,8 +399,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <form action="abmAlumnos.php" method="post">
-                                    <input name="inputLegajoAlumno" type="text" class="form-control" style="display:none"
+                                    <input name="inputLegajoAlumno" type="hidden" class="form-control"
                                         id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
+                                    <input name="page" type="hidden" class="form-control"
+                                        id="page" value="<?php echo ($current_page); ?>">      
                                     <button type="submit" name="actionType" value="eliminarAlumno"
                                         class="btn btn-danger">Eliminar</button>
                                 </form>

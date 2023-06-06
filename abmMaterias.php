@@ -103,7 +103,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
          <!-- Paginacion -->
-         <?php $results_per_page = 3;
+         <?php $results_per_page = 10;
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
@@ -206,6 +206,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     </div>
                             </div>
                             <div class="modal-footer">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">  
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="actionType" value="altaMateria" class="btn btn-success">Crear materia</button>
                                 </form>
@@ -260,8 +262,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDmateria" type="text" class="form-control" style="display:none"
+                                <input name="inputIDmateria" type="hidden" class="form-control"
                                     id="inputIDmateria" value="<?php echo ($fila['id_materia']); ?>">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page" value="<?php echo ($current_page); ?>">      
                                 <button type="submit" name="actionType" value="modificarMateria"
                                     class="btn btn-primary">Guardar cambios</button>
                                 </form>
@@ -290,8 +294,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <form action="abmMaterias.php" method="post">
-                                    <input name="inputIDmateria" type="text" class="form-control" style="display:none"
+                                    <input name="inputIDmateria" type="hidden" class="form-control"
                                         id="inputIDmateria" value="<?php echo ($fila['id_materia']); ?>">
+                                    <input name="page" type="hidden" class="form-control"
+                                        id="page" value="<?php echo ($current_page); ?>">      
                                     <button type="submit" name="actionType" value="eliminarMateria"
                                         class="btn btn-danger">Eliminar</button>
                                 </form>
