@@ -126,11 +126,11 @@ else{
             </div>
             <div class="col-12 col-md-4">
                 <h4>Otras opciones</h4>
-                <p style="color: blue">
-                <a href="https://www.alumnos.frro.utn.edu.ar/" >Inscripcion a cursado</a><br>
-                <a href="https://www.frro.utn.edu.ar/">Pagina UTN</a><br>
-                <a href="https://www.frro.utn.edu.ar/bolsa.php?cont=130&subc=2">Bolsa de trabajo</a><br>
-                </p>
+
+                <a class="link" href="https://www.alumnos.frro.utn.edu.ar/" >Inscripcion a cursado</a><br>
+                <a class="link" href="https://www.frro.utn.edu.ar/">Pagina UTN</a><br>
+                <a class="link" href="https://www.frro.utn.edu.ar/bolsa.php?cont=130&subc=2">Bolsa de trabajo</a><br>
+
             </div>
             
         </div>

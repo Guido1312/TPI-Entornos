@@ -255,9 +255,9 @@ CREATE TABLE `especialidades_alumnos` (
   PRIMARY KEY (`id_especialidad_alumno`),
   KEY `fk_especialidades_alumnos_alumnos_idx` (`id_alumno`),
   KEY `fk_especialidades_alumnos_especialidades_idx` (`id_especialidad`),
-  CONSTRAINT `fk_especialidades_alumnos_alumnos` FOREIGN KEY (`id_alumno`) REFERENCES `alumnos` (`legajo`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_especialidades_alumnos_alumnos` FOREIGN KEY (`id_alumno`) REFERENCES `alumnos` (`legajo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_especialidades_alumnos_especialidades` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id_especialidad`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -734,6 +734,62 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `insertar_alumno` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
+BEGIN
+	if p_id_usuario != '' THEN
+		INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
+		Values (p_legajo,p_nombre_apellido, p_mail, p_id_usuario);
+    ELSE
+		INSERT INTO alumnos (legajo, nombre_apellido, mail)
+		Values (p_legajo,p_nombre_apellido, p_mail);
+    END IF;
+    insert into especialidades_alumnos(id_especialidad, id_alumno)
+		SELECT id_especialidad, p_legajo FROM especialidades WHERE instr(p_especialidades,concat(";",id_especialidad,";"))!=0;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `modificar_alumno` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `modificar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
+BEGIN
+	if p_id_usuario != '' THEN
+		UPDATE alumnos SET legajo = p_legajo, nombre_apellido = p_nombre_apellido, mail = p_mail, id_usuario = p_id_usuario
+                        WHERE legajo = p_legajo;
+    ELSE
+		UPDATE alumnos SET legajo = p_legajo, nombre_apellido = p_nombre_apellido, mail = p_mail, id_usuario = null
+                        WHERE legajo = p_legajo;
+    END IF;
+	
+    delete from especialidades_alumnos where id_alumno =  p_legajo;   
+    insert into especialidades_alumnos(id_especialidad, id_alumno)
+		SELECT id_especialidad, p_legajo FROM especialidades WHERE instr(p_especialidades,concat(';',id_especialidad,';'))!=0;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -744,4 +800,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-06 19:10:56
+-- Dump completed on 2023-06-06 23:07:45

@@ -230,3 +230,11 @@ a.article:hover {
         left: 0;
     }
 }  
+
+.link{
+    text-decoration: underline;
+    color: blue;
+    }
+.link:visited{
+    color:#752ef8;
+}

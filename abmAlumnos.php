@@ -50,36 +50,58 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
 
-    // Se guardan los cambios de alta
-    if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaAlumno") {
+    function buscarEspecialidadAlumno($array, $valor1, $valor2) {
+        foreach ($array as $registro) {
+            if ($registro['id_especialidad'] == $valor1 && $registro['id_alumno'] == $valor2) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Se guardan los cambios de alta y modificación
+    if (!empty($_POST ['actionType']) && ($_POST ['actionType']=="altaAlumno" || $_POST ['actionType']=="modificarAlumno")) {
+        if ($_POST ['actionType']=="altaAlumno") {
+            $vProcedure = "insertar_alumno";
+            $vCheckBox = "especialidadesAlta";
+            $vMensaje = "Se ha creado el alumno";
+        }
+        else {
+            $vProcedure = "modificar_alumno";
+            $vCheckBox = "especialidadesModif";
+            $vMensaje = "Se ha modificado el alumno";
+        }
+        
         $vLegajo = trim($_POST["inputLegajo"]);
         $vNombre = trim($_POST["inputNombre"]);
         $vMail= trim($_POST["inputMail"]);
         $vUser= $_POST["selectUser"];
-        if (validarDatos($vLegajo,$vNombre,$vMail,$vMensaje)){
-            if(empty($vUser)){
-                $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail)
-                Values ('$vLegajo','$vNombre', '$vMail')";
-                if(mysqli_query($link, $vSql)) {
-                    $vTipoMensaje = "success";
-                    $vMensaje = "Se ha creado el alumno";
-                }
-                else{
-                    $vTipoMensaje = "danger";
-                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
-                }
+        $vEspecialidades = ';';
+        if(!empty($_POST[$vCheckBox])) {
+            foreach($_POST[$vCheckBox] as $check) {
+                $vEspecialidades .= $check.';';
             }
-            else{
-                $vSql = "INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
-                        Values ('$vLegajo','$vNombre', '$vMail', $vUser)";
-                if(mysqli_query($link, $vSql)) {
-                    $vTipoMensaje = "success";
-                    $vMensaje = "Se ha creado el alumno";
+        }
+        if (validarDatos($vLegajo,$vNombre,$vMail,$vMensaje)){
+            $link->begin_transaction();
+            try {
+                // Llamar al procedimiento almacenado
+                $result = $link->query("CALL $vProcedure($vLegajo,'$vNombre','$vMail','$vUser','$vEspecialidades');");
+            
+                // Verificar si ocurrió algún error durante la ejecución
+                if (!$result) {
+                    throw new Exception($link->error);
                 }
-                else{
-                    $vTipoMensaje = "danger";
-                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
-                }
+            
+                // Confirmar la transacción
+                $link->commit();
+                $vTipoMensaje = "success";
+            } catch (Exception $e) {
+                // Revertir la transacción en caso de error
+                $link->rollback();
+                echo "Error durante la ejecución del procedimiento almacenado: " . $e->getMessage();
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
             }
         }
     }
@@ -96,41 +118,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             $vMensaje = "Ha ocurrido un error, intente nuevamente";
         }
     }
-    // Se guardan los cambios de modificar
-    if (!empty($_POST ['actionType']) && !empty($_POST["inputLegajoAlumno"]) && $_POST ['actionType']=="modificarAlumno") {
-        $vLegajoNuevo = trim($_POST["inputLegajoNuevo"]);
-        $vLegajo = trim($_POST["inputLegajoAlumno"]);
-        $vNombre = trim($_POST["inputNombre"]);
-        $vMail= trim($_POST["inputMail"]);
-        $vUser= $_POST["selectUser"];
-        if (validarDatos($vLegajoNuevo,$vNombre,$vMail,$vMensaje)){
-            if(empty($vUser)){
-                $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = null
-                        WHERE legajo = '$vLegajo'";
-                if(mysqli_query($link, $vSql)) {
-                    $vTipoMensaje = "success";
-                    $vMensaje = "Se ha modificado el alumno";
-                }
-                else{
-                    $vTipoMensaje = "danger";
-                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
-                }
-            }
-            else{
-                $vSql = "UPDATE alumnos SET legajo = '$vLegajoNuevo', nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
-                        WHERE legajo = '$vLegajo'";
-                if(mysqli_query($link, $vSql)) {
-                    $vTipoMensaje = "success";
-                    $vMensaje = "Se ha modificado el alumno";
-                }
-                else{
-                    $vTipoMensaje = "danger";
-                    $vMensaje = "Ha ocurrido un error, intente nuevamente";
-                }
-            }
-        }
-    }
-
 
     include("headerAdmin.php");
 
@@ -146,6 +133,21 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
+
+    $vSqlEspecialidades = "SELECT * FROM especialidades;";
+
+    $vEspecialidades = mysqli_query($link, $vSqlEspecialidades);
+    $especialidades = mysqli_fetch_all($vEspecialidades,MYSQLI_ASSOC);
+
+    $vSqlEspecialidades = "SELECT * FROM especialidades;";
+
+    $vEspecialidades = mysqli_query($link, $vSqlEspecialidades);
+    $especialidades = mysqli_fetch_all($vEspecialidades,MYSQLI_ASSOC);
+
+    $vSqlEspecialidadesAlumnos = "SELECT * FROM especialidades_alumnos;";
+
+    $vEspecialidadesAlumnos = mysqli_query($link, $vSqlEspecialidadesAlumnos);
+    $especialidadesAlumnos = mysqli_fetch_all($vEspecialidadesAlumnos,MYSQLI_ASSOC);
 
     $vSql = "SELECT a.*, u.nombre_usuario, u.dni
                     FROM alumnos a left join usuarios u 
@@ -298,6 +300,22 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     ?>
                                         </select>
                                     </div>
+                                    <div name="checkEspecialidad" id="checkEspecialidad" class="form-check col-md-6">
+                                        <label for="checkEspecialidad">Especialidades</label>
+                                            <?php 
+                                            foreach($especialidades as $especialidad)
+                                            {   
+                                                ?>
+                                                <div>
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="checkbox" id="especialidadesAlta[]" name="especialidadesAlta[]" value="<?php echo ($especialidad['id_especialidad'])?>">
+                                                    <?php echo ($especialidad['descripcion'])?>
+                                                </label>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
+                                    </div>
                             </div>
                             <div class="modal-footer">
                                 <input name="page" type="hidden" class="form-control"
@@ -325,11 +343,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-body">
                                 <form action="abmAlumnos.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputLegajoNuevo"> Legajo </label>
-                                        <input name="inputLegajoNuevo" type="text" class="form-control" id="inputLegajoNuevo"
-                                            value="<?php echo ($fila['legajo'])?> " required/>
-                                    </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido</label>
                                         <input name="inputNombre" type="text" class="form-control" id="inputNombre"
@@ -363,12 +376,40 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     ?>
                                         </select>
                                     </div>
-
+                                    <div name="checkEspecialidad" id="checkEspecialidad" class="form-check col-md-6">
+                                        <label for="checkEspecialidad">Especialidades</label>
+                                            <?php 
+                                            foreach($especialidades as $especialidad)
+                                            {   
+                                                if (buscarEspecialidadAlumno($especialidadesAlumnos, $especialidad['id_especialidad'], $fila['legajo'])) {
+                                                ?>
+                                                    <div>
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="especialidadesModif[]" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" checked>
+                                                        <?php echo ($especialidad['descripcion'])?>
+                                                    </label>
+                                                    </div>
+                                                <?php        
+                                                }
+                                                else {
+                                                ?>
+                                                    <div>
+                                                    <label class="form-check-label">
+                                                        <input class="form-check-input" type="checkbox" id="especialidadesModif[]" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" >
+                                                        <?php echo ($especialidad['descripcion'])?>
+                                                    </label>
+                                                    </div>
+                                                <?php
+                                                }
+                                            }
+                                            ?>
+                                        </fieldset>
+                                    </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputLegajoAlumno" type="hidden" class="form-control"
-                                    id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
+                                <input name="inputLegajo" type="hidden" class="form-control"
+                                    id="inputLegajo" value="<?php echo ($fila['legajo']); ?>">
                                 <input name="page" type="hidden" class="form-control"
                                     id="page" value="<?php echo ($current_page); ?>">    
                                 <button type="submit" name="actionType" value="modificarAlumno"
