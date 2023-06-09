@@ -264,6 +264,25 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-block">Filtrar</button>
         </form>
+
+        <!-- Paginacion -->
+        <?php $results_per_page = 5;
+        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+        $total_pages = ceil(count($data) / $results_per_page);
+
+        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+            $current_page = (int) $_GET['page'];
+        } else {
+            $current_page = 1;
+        }
+        
+        $offset = ($current_page - 1) * $results_per_page;
+        
+        $data_page = array_slice($data, $offset, $results_per_page);
+        
+        ?>
+
+
         <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
@@ -277,9 +296,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         </thead>
         
     <?php
-    while ($fila = mysqli_fetch_array($vResultado))
-    {
-    ?>
+    foreach ($data_page as $fila)
+    {?>
                 <tr>
                     <td><?php echo ($fila['nombre_materia']); ?></td>
                     <td><?php echo ($fila['nombre_apellido']); ?></td>
@@ -302,12 +320,24 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     ?>
         </table>
     </div>
-        <p>&nbsp;</p>
-    <?php
-    include("footer.html");
-}
-else {
-    header("location:index.php");
-}
-?>
+    <ul class="pagination">
+            <?php
+    for ($page = 1; $page <= $total_pages; $page++) {?>
+        <li class="page-item
+        <?php
+        if ($page == $current_page) {
+            echo 'active';
+        }?>"><a class="page-link" href="<?php echo('inscribir.php?page='.$page)?>"><?php echo($page)?></a></li>
+    <?php }
+    ?>
+    </ul>
+            
+            <p>&nbsp;</p>
+            <?php
+        include("footer.html");
+    }
+    else {
+        header("location:index.php");
+    }
+    ?>
 </body>
