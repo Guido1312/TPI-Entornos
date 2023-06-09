@@ -16,6 +16,19 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
     $vIdProfesor = $_POST['id_profesor'];
+
+    $vSqlProfesor = "SELECT * FROM profesores where id_profesor = $vIdProfesor";
+    $vProfesor = mysqli_query($link, $vSqlProfesor);
+    while ($fila = mysqli_fetch_array($vProfesor))
+    {
+        $nombreProfesor = $fila['nombre_apellido'];
+    }
+    if (!isset($nombreProfesor)) 
+    {
+        header("location:abmProfesores.php");
+    }
+
+ 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaConsulta") {
         $vMateria = $_POST["selectMateria"];
@@ -71,7 +84,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
 
     <div class="container">
-        <h1 class="content-center">Consultas de X</h1>
+        <h1 class="content-center">Consultas de <?php echo ($nombreProfesor) ?></h1>
     </div>
         <div class="table-responsive">
         <table class="table">
@@ -94,7 +107,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     while ($fila = mysqli_fetch_array($vResultado))
     {?>
             <tr>
-                <td><?php echo ($fila['nombre_materia']); ?></td>
+                <td><?php echo ($fila['nombre_materia'].' - '.$fila['descripcion']); ?></td>
                 <td><?php echo ($fila['dia']); ?></td>
                 <td><?php echo ($fila['hora']); ?></td>
                 <td>

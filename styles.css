@@ -222,12 +222,14 @@ a.article:hover {
 .dropdown-notif {
     right: 0;
     left: auto;
+    min-width:30vw;
 }
  
 @media screen and (max-width: 768px) {
     .dropdown-notif {
         right: auto;
         left: 0;
+        min-width:85vw;
     }
 }  
 
