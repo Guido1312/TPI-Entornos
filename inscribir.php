@@ -52,6 +52,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
+    error_reporting(0); //evita que se muestren los warning
     include("conexion.inc");
     $vIDalumno = $_SESSION['id_alumno'];
 

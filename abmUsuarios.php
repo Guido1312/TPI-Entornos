@@ -10,7 +10,7 @@ function validarDatos($vDNI,$vNombre,&$vMensaje) {
     else if(!preg_match('/^[a-zA-Z]+$/', $vNombre))
     {
      $vTipoMensaje = "danger";
-     $vMensaje = "Solo se deben usar letras en el nombre";
+     $vMensaje = "Solo se deben usar letras en el nombre de usuario";
      return false;
     }
     else if(!is_numeric($vDNI))

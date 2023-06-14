@@ -18,7 +18,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     {
         header("location:abmProfesores.php");
     }
-
     include("conexion.inc");
     $vIdProfesor = $_POST['id_profesor'];
 
@@ -35,15 +34,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
  
     // Se guardan los cambios de alta
-    if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaConsulta") {
+    if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaMateriaProfesor") {
         $vMateria = $_POST["selectMateria"];
-        $vDia = $_POST["selectDia"];
-        $vHora = $_POST["inputHora"];
-        $vSql = "INSERT INTO profesor_consulta (id_profesor, id_dia_consulta, hora, id_materia)
-                Values ($vIdProfesor, $vDia, '$vHora', $vMateria)";
+        $vSql = "INSERT INTO materias_profesor (id_profesor, id_materia)
+                Values ($vIdProfesor, $vMateria)";
         if(mysqli_query($link, $vSql)) {
             $vTipoMensaje = "success";
-            $vMensaje = "Se agregó la consulta";
+            $vMensaje = "Se agregó la materia";
         }
         else{
             $vTipoMensaje = "danger";
@@ -51,12 +48,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         }
     }
     // Se guardan los cambios de eliminar
-    if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="eliminarConsulta") {
-        $vIDconsulta= $_POST["inputIDconsulta"];
-        $vSql = "DELETE FROM profesor_consulta WHERE id_profesor_consulta = '$vIDconsulta'";
+    if (!empty($_POST ['actionType']) && !empty($_POST["inputIDmateria"]) && $_POST ['actionType']=="eliminarMateriaProfesor") {
+        $vIDMateria= $_POST["inputIDmateria"];
+        $vSql = "DELETE FROM materias_profesor WHERE id_materia = '$vIDMateria' and id_profesor = '$vIdProfesor'";
         if(mysqli_query($link, $vSql)) {
             $vTipoMensaje = "success";
-            $vMensaje = "Se ha eliminado la consulta";
+            $vMensaje = "Se quitó la materia";
         }
         else{
             $vTipoMensaje = "danger";
@@ -66,38 +63,30 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
 
     include("headerAdmin.php");
-    
-    $vSqlDias = "SELECT * FROM dias_consulta";
-    $vDias = mysqli_query($link, $vSqlDias);
-    $dias = mysqli_fetch_all($vDias,MYSQLI_ASSOC);
 
     $vSqlMaterias = "SELECT m.*, e.descripcion FROM materias m
-                     inner join especialidades e on m.id_especialidad = e.id_especialidad
-                     inner join materias_profesor mp on m.id_materia = mp.id_materia
-                     and mp.id_profesor = $vIdProfesor";
+                     inner join especialidades e on m.id_especialidad = e.id_especialidad;";
     $vMaterias = mysqli_query($link, $vSqlMaterias);
     $materias = mysqli_fetch_all($vMaterias,MYSQLI_ASSOC);
 
-    $vSql = "SELECT * FROM profesor_consulta pc 
-            inner join materias m on m.id_materia = pc.id_materia
+    $vSql = "SELECT m.*, e.descripcion FROM materias m
             inner join especialidades e on m.id_especialidad = e.id_especialidad
-            inner join dias_consulta dc on dc.id_dia_consulta = pc.id_dia_consulta
-            where pc.id_profesor = $vIdProfesor";
+            inner join materias_profesor mp on m.id_materia = mp.id_materia
+            and mp.id_profesor = $vIdProfesor";
     $vResultado = mysqli_query($link, $vSql);
 
     ?>
 
 
     <div class="container">
-        <h1 class="content-center">Consultas de <?php echo ($nombreProfesor) ?></h1>
+        <h1 class="content-center">Materias dictadas por <?php echo ($nombreProfesor) ?></h1>
     </div>
         <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
                     <th><b>Materia</b></td>
-                    <th><b>Día</b></td>
-                    <th><b>Hora</b></td>
+                    <th><b>Especialidad</b></td>
                     <th><b></b></td>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
@@ -112,12 +101,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     while ($fila = mysqli_fetch_array($vResultado))
     {?>
             <tr>
-                <td><?php echo ($fila['nombre_materia'].' - '.$fila['descripcion']); ?></td>
-                <td><?php echo ($fila['dia']); ?></td>
-                <td><?php echo ($fila['hora']); ?></td>
+                <td><?php echo ($fila['nombre_materia']); ?></td>
+                <td><?php echo ($fila['descripcion']); ?></td>
                 <td>
-                    <a title="Eliminar" class="nav-item" href="#modalbaja<?php echo ($fila['id_profesor_consulta']);?>" data-toggle="modal"
-                        data-target="#modalbaja<?php echo ($fila['id_profesor_consulta']); ?>" style="float:right;">
+                    <a title="Eliminar" class="nav-item" href="#modalbaja<?php echo ($fila['id_materia']);?>" data-toggle="modal"
+                        data-target="#modalbaja<?php echo ($fila['id_materia']); ?>" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
                             class="bi bi-trash-fill" viewBox="0 0 16 16">
                             <path
@@ -127,30 +115,23 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 </td>
 
                 <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor_consulta']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_profesor_consulta']); ?>" aria-hidden="true">
+                <div class="modal fade" id="modalbaja<?php echo ($fila['id_materia']); ?>" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_materia']); ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor_consulta']); ?>">Baja de
-                                    Consulta <?php echo ($fila['id_materia']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
                             <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_profesor_consulta']); ?>">Está a punto de eliminar
-                                    esta consulta</p>
+                                <p id="modalLabel<?php echo ($fila['id_materia']); ?>">Está a punto de quitar
+                                    la materia <?php echo ($fila['nombre_materia']); ?></p>
                                 <p>¿Esta seguro de querer hacerlo?</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmConsultas.php" method="post">
-                                    <input name="inputIDconsulta" type="text" class="form-control" style="display:none"
-                                        id="inputIDconsulta" value="<?php echo ($fila['id_profesor_consulta']); ?>">
-                                    <input name="id_profesor" type="text" class="form-control" style="display:none"
+                                <form action="abmMateriasProfesor.php" method="post">
+                                    <input name="inputIDmateria" type="hidden" class="form-control"
+                                        id="inputIDmateria" value="<?php echo ($fila['id_materia']); ?>">
+                                    <input name="id_profesor" type="hidden" class="form-control"
                                         id="id_profesor" value="<?php echo ($vIdProfesor); ?>">     
-                                    <button type="submit" name="actionType" value="eliminarConsulta"
+                                    <button type="submit" name="actionType" value="eliminarMateriaProfesor"
                                         class="btn btn-danger">Eliminar</button>
                                 </form>
                             </div>
@@ -163,7 +144,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
     mysqli_free_result($vMaterias);
-    mysqli_free_result($vDias);
     // Cerrar la conexion
     mysqli_close($link);
     ?>
@@ -176,14 +156,14 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelAlta">Alta de consulta</h5>
+                    <h5 class="modal-title" id="modalLabelAlta">Alta de materia</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form action="abmConsultas.php" method="post">
-                        <div class="form-group col-12">
+                    <form action="abmMateriasProfesor.php" method="post">
+                        <div class="form-group">
                         <label for="selectMateria">Materia</label>
                             <select class="select-materias" name="selectMateria" id="selectMateria" required>
                                 <?php 
@@ -197,32 +177,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         ?>
                             </select>
                         </div>
-
-                        <div class="form-group col-4">
-                        <label for="selectDia">Día</label>
-                            <select name="selectDia" id="selectDia" required>
-                                <?php 
-                        foreach($dias as $dia)
-                        {   
-                            ?>
-                                <option value=<?php echo ($dia['id_dia_consulta'])?>>
-                                    <?php echo ($dia['dia'])?></option>
-                                <?php
-                        }
-                        ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-4">
-                            <label for="inputHora">Hora</label>
-                            <input name="inputHora" type="time" class="form-control" id="inputHora" required/>
-                        </div>
                 </div>
                 <div class="modal-footer">
-                    <input name="id_profesor" type="text" class="form-control" style="display:none"
+                    <input name="id_profesor" type="hidden" class="form-control"
                                     id="id_profesor" value="<?php echo ($vIdProfesor); ?>">    
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="actionType" value="altaConsulta" class="btn btn-success">Crear consulta</button>
+                    <button type="submit" name="actionType" value="altaMateriaProfesor" class="btn btn-success">Agregar materia</button>
                     </form>
                 </div>
             </div>

@@ -197,6 +197,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     <th><b></b></td>
                     <th><b></b></td>
                     <th><b></b></td>
+                    <th><b></b></td>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
@@ -239,6 +240,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     <form action="abmConsultas.php" method="post">
                         <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
                         <button type="submit" class="btn btn-info"> Ver consultas </button>
+                    </form>
+                </td>
+                <td>
+                    <form action="abmMateriasProfesor.php" method="post">
+                        <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
+                        <button type="submit" class="btn btn-info"> Ver materias </button>
                     </form>
                 </td>
 
