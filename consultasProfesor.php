@@ -53,8 +53,40 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     include("conexion.inc");
-    include("headerProfesor.php");
     $vIDprofesor = $_SESSION['id_profesor'];
+    date_default_timezone_set("America/Argentina/Buenos_Aires");
+    $vHoraLimiteBloqueo = strtotime('+ 2 hour');
+
+    if (!empty($_POST ['actionType']) && ($_POST ['actionType'] == 'bloquear'))
+    {
+        if (empty($_POST ['id_consulta']))
+        {
+            $vMensaje = 'Invalid request.';
+        }
+        elseif (empty($_POST ['motivo']) || ($_POST ['motivo'] == ''))
+        {
+            $vMensaje = 'Debe ingresar un motivo de bloqueo.';
+        }
+        else
+        {
+            $vIdConsulta = $_POST['id_consulta'];
+            $vMotivoBloqueo = $_POST['motivo'];
+            $vSql = "UPDATE consultas SET motivo_cancelacion = '$vMotivoBloqueo', id_estado_consulta = 3
+            where id_consulta = $vIdConsulta";
+            echo ($vSql);
+
+            if(mysqli_query($link, $vSql)) {
+                $vTipoMensaje = 'success';
+                $vMensaje = 'Consulta bloqueada.';
+            }
+            else {
+                $vTipoMensaje = 'success';
+                $vMensaje = 'Error al bloquear la consulta.';
+            }
+        }
+    }
+
+    include("headerProfesor.php");
 
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
@@ -63,10 +95,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         $vFechaHasta = $_POST ['to'];
     }
 
-    $vSql = "SELECT e.descripcion, m.nombre_materia, c.fecha_consulta, c.hora_consulta, c.id_consulta FROM consultas c inner join materias m on c.id_materia = m.id_materia
-                                        inner join especialidades e on m.id_especialidad = e.id_especialidad
-                                        inner join profesores p on c.id_profesor = p.id_profesor
-                                        where c.id_profesor = '$vIDprofesor'";
+    $vSql = "SELECT e.descripcion, m.nombre_materia, c.fecha_consulta, c.hora_consulta, c.id_consulta, c.id_estado_consulta
+                FROM consultas c inner join materias m on c.id_materia = m.id_materia
+                inner join especialidades e on m.id_especialidad = e.id_especialidad
+                inner join profesores p on c.id_profesor = p.id_profesor
+                where c.id_profesor = '$vIDprofesor'";
     if (!empty($_POST ['from'])) {
         $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
     }
@@ -152,7 +185,53 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                                 <button type="submit" class="btn btn-info"> Ver inscriptos </button>
                             </form>
                         </td>
-                        <td><button type="button" class="btn btn-danger"> Bloquear </button></td>
+                        <?php
+                        if($fila['id_estado_consulta'] == 3) {
+                            ?>
+                            <td><button type="button" class="btn btn-danger" disabled
+                            title="Consulta bloqueada."> Bloqueada </button></td>
+                        <?php
+                        }
+                        else if (strtotime($fila['fecha_consulta'])>$vHoraLimiteBloqueo or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteBloqueo))) {
+                        ?>
+                            <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal<?php echo ($fila['id_consulta']); ?>"> Bloquear </button></td>
+                            
+                            <!-- Modal Baja -->
+                        <div class="modal fade" id="modal<?php echo ($fila['id_consulta']); ?>" tabindex="-1" role="dialog"
+                            aria-labelledby="modalbloqueo<?php echo ($fila['id_consulta']); ?>" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <form action="consultasProfesor.php" method="post">  
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_consulta']); ?>">Ingrese 
+                                            motivo de bloqueo:</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>  
+                                        <div class="modal-body">
+                                            <input name="motivo" type="text" class="form-control" id="motivo">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <input name="id_consulta" type="hidden" class="form-control"
+                                                id="id_consulta" value="<?php echo ($fila['id_consulta']); ?>">
+                                            <button type="submit" name="actionType" value="bloquear"
+                                                class="btn btn-danger">Bloquear</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                        }
+                        else {
+                            ?>
+                            <td><button type="button" class="btn btn-danger" disabled
+                            title="El bloqueo ya no está disponible para esta consulta."> Bloquear </button></td>
+                        <?php
+                        }
+                        ?>
 
                     </tr>
         <?php
