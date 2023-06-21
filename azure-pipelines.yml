@@ -29,7 +29,7 @@ steps:
 - task: AzureRmWebAppDeployment@4
   inputs:
     ConnectionType: 'AzureRM'
-    azureSubscription: 'Azure for Students(92a0a0b6-7a6a-4889-a268-e9e268ec1b9a)'
+    azureSubscription: 'Azure for Students(2e63faa2-2c36-48bb-b337-791d02ccc222)'
     appType: 'webAppLinux'
     WebAppName: 'consultasutn'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
