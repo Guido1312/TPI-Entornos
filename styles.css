@@ -210,3 +210,45 @@ a.article:hover {
 .nav-item:hover {
     color:#6d7fcc;
 }
+
+.eye-icon svg:hover path {
+    fill: #6d7fcc;
+}
+
+.center {
+    padding: 8%;
+  }
+
+.dropdown-notif {
+    right: 0;
+    left: auto;
+    min-width:30vw;
+}
+ 
+@media screen and (max-width: 768px) {
+    .dropdown-notif {
+        right: auto;
+        left: 0;
+        min-width:85vw;
+    }
+}  
+
+.link{
+    text-decoration: underline;
+    color: blue;
+    }
+.link:visited{
+    color:#752ef8;
+}
+
+.modal-content {
+    width: auto !important;
+    max-width: 90% !important;
+}
+
+.select-materias {
+    max-width: 95%; /* Establece el ancho máximo deseado */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
