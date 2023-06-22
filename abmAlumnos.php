@@ -134,6 +134,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
 
+    $vSqlUserAsignados = "SELECT * FROM usuarios u, alumnos a
+	                    WHERE u.id_usuario = a.id_usuario;";
+
+    $vUsersAsignados = mysqli_query($link, $vSqlUserAsignados);
+    $usersAsignados = mysqli_fetch_all($vUsersAsignados,MYSQLI_ASSOC);
+
     $vSqlEspecialidades = "SELECT * FROM especialidades;";
 
     $vEspecialidades = mysqli_query($link, $vSqlEspecialidades);
@@ -284,18 +290,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                             <?php 
                                     foreach($users as $user)
                                     {   
-                                        if ($fila['nombre_usuario']==$user['nombre_usuario']) {
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?> selected>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php        
-                                        }
-                                        else {
                                         ?>
                                             <option value=<?php echo ($user['id_usuario'])?>>
                                                 <?php echo ($user['nombre_usuario'])?></option>
                                             <?php
-                                        }
                                     }
                                     ?>
                                         </select>
@@ -357,23 +355,24 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         <label for="selectUser">Usuario</label>
                                         <select name="selectUser" id="selectUser">
                                         <option value="">Sin asignar</option>
-                                            <?php 
-                                    foreach($users as $user)
-                                    {   
-                                        if ($fila['nombre_usuario']==$user['nombre_usuario']) {
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?> selected>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php        
-                                        }
-                                        else {
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?>>
-                                                <?php echo ($user['nombre_usuario'])?></option>
                                             <?php
-                                        }
-                                    }
-                                    ?>
+                                            foreach($users as $user)
+                                            {   
+                                                ?>
+                                                    <option value=<?php echo ($user['id_usuario'])?>>
+                                                        <?php echo ($user['nombre_usuario'])?></option>
+                                                    <?php
+                                            }
+                                            foreach($usersAsignados as $userAsignado) 
+                                            {
+                                                if ($fila['legajo']==$userAsignado['legajo']) {
+                                            ?>
+                                                <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
+                                                    <?php echo ($userAsignado['nombre_usuario'])?></option>
+                                                <?php
+                                                }
+                                            }
+                                            ?>
                                         </select>
                                     </div>
                                     <div name="checkEspecialidad" id="checkEspecialidad" class="form-check col-md-6">

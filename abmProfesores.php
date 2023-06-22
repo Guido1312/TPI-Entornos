@@ -138,6 +138,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     $vUsers = mysqli_query($link, $vSqlUser);
     $users = mysqli_fetch_all($vUsers,MYSQLI_ASSOC);
 
+    $vSqlUserAsignados = "SELECT * FROM usuarios u, profesores p
+	                    WHERE u.id_usuario = p.id_usuario;";
+
+    $vUsersAsignados = mysqli_query($link, $vSqlUserAsignados);
+    $usersAsignados = mysqli_fetch_all($vUsersAsignados,MYSQLI_ASSOC);
+
     $vSql = "SELECT p.*, u.nombre_usuario, u.dni
                     FROM profesores p left join usuarios u 
                     on p.id_usuario = u.id_usuario";
@@ -278,18 +284,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                             <?php 
                                     foreach($users as $user)
                                     {   
-                                        if ($fila['nombre_usuario']==$user['nombre_usuario']) {
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?> selected>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php        
-                                        }
-                                        else {
                                         ?>
                                             <option value=<?php echo ($user['id_usuario'])?>>
                                                 <?php echo ($user['nombre_usuario'])?></option>
                                             <?php
-                                        }
                                     }
                                     ?>
                                         </select>
@@ -343,17 +341,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         <?php }
                                     foreach($users as $user)
                                     {   
-                                        if ($fila['nombre_usuario']==$user['nombre_usuario']) {
                                         ?>
-                                            <option value=<?php echo ($user['id_usuario'])?> selected>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php        
-                                        }
-                                        else {
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?>>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php
+                                        <option value=<?php echo ($user['id_usuario'])?>>
+                                            <?php echo ($user['nombre_usuario'])?></option>
+                                        <?php
+                                    }
+                                    foreach($usersAsignados as $userAsignado) 
+                                    {
+                                        if ($fila['id_profesor']==$userAsignado['id_profesor']) {
+                                    ?>
+                                        <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
+                                            <?php echo ($userAsignado['nombre_usuario'])?></option>
+                                        <?php
                                         }
                                     }
                                     ?>
