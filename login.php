@@ -116,7 +116,7 @@ elseif(isset($_POST['ingresar'])){
             </div>
             <div class="card-body" id="cardLogin">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
-              <p class="text-success text-center card-title" id="labelForm">Digita tus credenciales</p>
+              <h1 class="text-success text-center card-title" id="labelForm" style="font-size: 20px">Digita tus credenciales</h1>
               <div class="form-grup">
                   <div class="input-group">
                     <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
@@ -148,7 +148,7 @@ elseif(isset($_POST['ingresar'])){
       <div class="modal-content">
       <form action="login.php" method="post">
         <div class="modal-header">
-          <h5 class="modal-title" id="labellRecuperacion">Ingrese su email</h5>
+          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Ingrese su email</h1>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
