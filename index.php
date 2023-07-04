@@ -131,26 +131,4 @@ include("head.html");
     else {
         header("location:login.php");
     }?>
-
-    <!-- Modal Calendario -->
-    <div class="modal fade" id="modalCalendario" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleAlabel" aria-hidden="true">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Calendario Academico</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="images/Calendario2022.jpg" style="width: 100%; height: 100%"> 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 </body>
