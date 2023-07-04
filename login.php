@@ -124,7 +124,7 @@ elseif(isset($_POST['ingresar'])){
                        <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
                      </div>
                      <div class="input-group py-2">
-                       <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="Password" class="form-control" required>
+                       <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="Contraseña" class="form-control" required>
                      </div>
                      <div class="input-group">
                        <input type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-info btn-block">
