@@ -148,14 +148,14 @@ elseif(isset($_POST['ingresar'])){
       <div class="modal-content">
       <form action="login.php" method="post">
         <div class="modal-header">
-          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Ingrese su email</h1>
+          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Ingrese su correo electronico</h1>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
             <div class="form-group col-md-6">
-              <label for="inputEmail">Email</label>
+              <label for="inputEmail">Correo</label>
               <input name="inputEmail" type="text" class="form-control" id="inputEmail" required />
             </div>
         </div>
