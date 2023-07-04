@@ -142,18 +142,18 @@ elseif(isset($_POST['ingresar'])){
   <?php include("mensaje.php"); ?>
 
   <!-- Modal Recuperacion -->
-  <div class="modal fade" id="modalRecuperacion" tabindex="-1" role="dialog" aria-labelledby="exampleAlabel"
+  <div class="modal fade" id="modalRecuperacion" tabindex="-1" role="dialog" aria-labelledby="labellRecuperacion"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
+      <form action="login.php" method="post">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalLabel">Ingrese su email</h5>
+          <h5 class="modal-title" id="labellRecuperacion">Ingrese su email</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <form action="login.php" method="post">
             <div class="form-group col-md-6">
               <label for="inputEmail">Email</label>
               <input name="inputEmail" type="text" class="form-control" id="inputEmail" required />
@@ -162,8 +162,8 @@ elseif(isset($_POST['ingresar'])){
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
           <button type="submit" name="actionType" value="recuperacion" class="btn btn-success">Enviar</button>
-          </form>
         </div>
+        </form>
       </div>
     </div>
   </div>
