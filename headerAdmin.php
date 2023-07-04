@@ -69,7 +69,7 @@
                         
                         <div class="container" style="max-width: fit-content;">
                             <a class="content-center" href="index.php" title="Ir al incio">
-                                <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="Ir al incio" style="max-inline-size: 15%;">
+                                <img src="images/iconLogoUTN.png" alt="Ir al incio" style="max-inline-size: 15%;">
                             </a>
                         </div>
 

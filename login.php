@@ -111,11 +111,10 @@ elseif(isset($_POST['ingresar'])){
 <div class="container py-4">
      <div class="row justify-content-center h-100 py-4">
          <div class="card col-sm-6 col-md-6 col-lg-6 shadow-lg p-3 mb-5 bg-white rounded">
-            <article class="card-body">
+            <article class="card-body" id="cardLogin">
                 <div style="text-align: center";>
-                  <img src="https://caimasegall.com.ar/wp-content/uploads/2020/08/logo-UTN-1.png" alt="UTN" style="max-inline-size: 30%;">
+                  <img src="images/iconLogoUTN.png" alt="UTN" style="max-inline-size: 30%;">
                 </div>
-                <h4 class="card-title text-center">Consultas</h4>
                 <hr>
                 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
                   <p class="text-success text-center" id="labelForm">Digita tus credenciales</p>
