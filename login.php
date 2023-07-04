@@ -108,31 +108,30 @@ elseif(isset($_POST['ingresar'])){
 }
 ?>
 
-<div class="container py-4">
-     <div class="row justify-content-center h-100 py-4">
-         <div class="card col-sm-6 col-md-6 col-lg-6 shadow-lg p-3 mb-5 bg-white rounded">
-            <article class="card-body" id="cardLogin">
-                <div style="text-align: center";>
-                  <img src="images/iconLogoUTN.png" alt="UTN" style="max-inline-size: 30%;">
-                </div>
-                <hr>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
-                  <p class="text-success text-center" id="labelForm">Digita tus credenciales</p>
-                  <div class="form-grup">
-                     <div class="input-group">
-                       <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
-                     </div>
-                     <div class="input-group py-2">
-                       <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="Contraseña" class="form-control" required>
-                     </div>
-                     <div class="input-group">
-                       <button type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-info btn-block"> Ingresar </button>
-                     </div>
+  <div class="container py-4">
+    <div class="row justify-content-center h-100 py-4">
+        <div class="card col-sm-6 col-md-6 col-lg-6 shadow-lg p-3 mb-5 bg-white rounded">
+            <div class="card-header content-center">
+              <img class="card-img-top" src="images/iconLogoUTN.png" alt="UTN" style="max-inline-size: 30%;">
+            </div>
+            <div class="card-body" id="cardLogin">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
+              <p class="text-success text-center card-title" id="labelForm">Digita tus credenciales</p>
+              <div class="form-grup">
+                  <div class="input-group">
+                    <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
                   </div>
-                </form>
-            </article>
-         </div>
-     </div>
+                  <div class="input-group py-2">
+                    <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="Contraseña" class="form-control" required>
+                  </div>
+                  <div class="input-group">
+                    <button type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-info btn-block"> Ingresar </button>
+                  </div>
+              </div>
+            </form>
+          </div>
+        </div>
+    </div>
 
     <div class="text-center">
         <a href="#modalRecuperacion" data-toggle="modal" data-target="#modalRecuperacion">
