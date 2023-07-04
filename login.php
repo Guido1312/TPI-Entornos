@@ -117,8 +117,8 @@ elseif(isset($_POST['ingresar'])){
                 </div>
                 <h4 class="card-title text-center">Consultas</h4>
                 <hr>
-                <p class="text-success text-center">Digita tus credenciales</p>
-                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+                <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
+                  <p class="text-success text-center" id="labelForm">Digita tus credenciales</p>
                   <div class="form-grup">
                      <div class="input-group">
                        <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
