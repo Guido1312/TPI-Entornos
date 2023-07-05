@@ -306,7 +306,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                     <td><?php echo ($fila['hora_consulta']); ?></td>
                     <td> 
                         <form action="inscribir.php" method="post">
-                            <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
+                            <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta<?php echo ($fila['id_consulta']); ?>" value="<?php echo ($fila['id_consulta']); ?>">
                             <button type="submit" name="actionType" value="inscribirse" class="btn btn-info"> Inscribirse </button>
                         </form>
                     </td>

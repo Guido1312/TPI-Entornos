@@ -156,7 +156,7 @@ elseif(isset($_POST['ingresar'])){
         <div class="modal-body">
             <div class="form-group col-md-6">
               <label for="inputEmail">Correo</label>
-              <input name="inputEmail" type="text" class="form-control" id="inputEmail" required />
+              <input name="inputEmail" type="text" class="form-control" id="inputEmail" required>
             </div>
         </div>
         <div class="modal-footer">
