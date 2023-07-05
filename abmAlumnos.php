@@ -182,7 +182,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <?php
             }
             ?>
-            </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
          <!-- Paginacion -->
@@ -211,19 +210,19 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                    <th><b>Legajo Alumno</b></td>
-                    <th><b>Nombre y apellido</b></td>
-                    <th><b>DNI</b></td>
-                    <th><b>Email</b></td>
-                    <th><b>Nombre de usuario</b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
-                        <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
+                    <th><b>Legajo Alumno</b></th>
+                    <th><b>Nombre y apellido</b></th>
+                    <th><b>DNI</b></th>
+                    <th><b>Email</b></th>
+                    <th><b>Nombre de usuario</b></th>
+                    <th><b></b></th>
+                    <th><b><a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
                             </svg>
-                        </a>
+                        </a></b></th>
+                        
                 </tr>
             </thead>
             <tbody>
@@ -256,32 +255,172 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </svg>
                     </a>
                 </td>
+                
+            </tr>
+            
+            <?php
+        }?>
+        </tbody>
+        <?php
+    // Liberar conjunto de resultados
+    mysqli_free_result($vResultado);
+    mysqli_free_result($vUsers);
+    // Cerrar la conexion
+    mysqli_close($link);
+    ?>
+        </table>
 
-
-                <!-- Modal Alta -->
-                <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleAlabel" aria-hidden="true">
+        <?php foreach ($data_page as $fila)
+    {?>
+                <!-- Modal Modificacion -->
+                <div class="modal fade" id="modalModif<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
+                    aria-labelledby="modalLabelModif<?php echo ($fila['legajo']); ?>" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
+                        <form action="abmAlumnos.php" method="post">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Alta de Alumno</h5>
+                                <h5 class="modal-title" id="modalLabelModif<?php echo ($fila['legajo']); ?>">Modificar
+                                    Alumno <?php echo ($fila['legajo']); ?></h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
+                                <div class="form-group col-md-6">
+                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['legajo']); ?>"
+                                        value="<?php echo ($fila['nombre_apellido'])?> " required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputMail">Mail</label>
+                                    <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['legajo']); ?>"
+                                        value="<?php echo ($fila['mail'])?> " required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="selectUser">Usuario</label>
+                                    <select name="selectUser" id="selectUser<?php echo ($fila['legajo']); ?>">
+                                    <option value="">Sin asignar</option>
+                                        <?php
+                                        foreach($users as $user)
+                                        {   
+                                            ?>
+                                                <option value=<?php echo ($user['id_usuario'])?>>
+                                                    <?php echo ($user['nombre_usuario'])?></option>
+                                                <?php
+                                        }
+                                        foreach($usersAsignados as $userAsignado) 
+                                        {
+                                            if ($fila['legajo']==$userAsignado['legajo']) {
+                                        ?>
+                                            <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
+                                                <?php echo ($userAsignado['nombre_usuario'])?></option>
+                                            <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div id="checkEspecialidad<?php echo ($fila['legajo']); ?>" class="form-check col-md-6" aria-labelledby="labelCheckEspecialidad<?php echo ($fila['legajo']); ?>">
+                                    <label id="labelCheckEspecialidad<?php echo ($fila['legajo']); ?>">Especialidades</label>
+                                    <?php 
+                                    foreach($especialidades as $especialidad)
+                                    {   
+                                        if (buscarEspecialidadAlumno($especialidadesAlumnos, $especialidad['id_especialidad'], $fila['legajo'])) {
+                                        ?>
+                                            <div>
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" id="especialidadesModif[]<?php echo ($fila['legajo']."-".$especialidad['id_especialidad']);?>" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" checked>
+                                                <?php echo ($especialidad['descripcion'])?>
+                                            </label>
+                                            </div>
+                                        <?php        
+                                        }
+                                        else {
+                                        ?>
+                                            <div>
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="checkbox" id="especialidadesModif[]<?php echo ($fila['legajo']."-".$especialidad['id_especialidad']); ?>" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" >
+                                                <?php echo ($especialidad['descripcion'])?>
+                                            </label>
+                                            </div>
+                                        <?php
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <input name="inputLegajo" type="hidden" class="form-control"
+                                    id="inputLegajo<?php echo ($fila['legajo']); ?>" value="<?php echo ($fila['legajo']); ?>">
+                                <input name="page" type="hidden" class="form-control"
+                                    id="page<?php echo ($fila['legajo']); ?>" value="<?php echo ($current_page); ?>">    
+                                <button type="submit" name="actionType" value="modificarAlumno"
+                                    class="btn btn-primary">Guardar cambios</button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Baja -->
+                <div class="modal fade" id="modalbaja<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
+                    aria-labelledby="modalEliminarLabel<?php echo ($fila['legajo']); ?>" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalEliminarLabel<?php echo ($fila['legajo']); ?>">Baja de
+                                    Alumno <?php echo ($fila['legajo']); ?></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Está a punto de eliminar el alumno <?php echo ($fila['legajo']); ?></p>
+                                <p>¿Esta seguro de querer hacerlo?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <form action="abmAlumnos.php" method="post">
+                                    <input name="inputLegajoAlumno" type="hidden" class="form-control"
+                                        id="inputLegajoAlumnoDelete<?php echo ($fila['legajo']); ?>" value="<?php echo ($fila['legajo']); ?>">
+                                    <input name="page" type="hidden" class="form-control"
+                                        id="pageDelete<?php echo ($fila['legajo']); ?>" value="<?php echo ($current_page); ?>">      
+                                    <button type="submit" name="actionType" value="eliminarAlumno"
+                                        class="btn btn-danger">Eliminar</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+        }?>
+
+
+        <!-- Modal Alta -->
+        <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
+                    aria-labelledby="modalAltaLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                        <form action="abmAlumnos.php" method="post">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalAltaLabel">Alta de Alumno</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
                                 <div class="form-group col-md-6">
                                         <label for="inputLegajo">Legajo</label>
-                                        <input name="inputLegajo" type="text" class="form-control" id="inputLegajo" required/>
+                                        <input name="inputLegajo" type="text" class="form-control" id="inputLegajo" required>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre" required/>
+                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputMail">Mail</label>
-                                        <input name="inputMail" type="email" class="form-control" id="inputMail" required/>
+                                        <input name="inputMail" type="email" class="form-control" id="inputMail" required>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="selectUser">Usuario</label>
@@ -298,15 +437,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     ?>
                                         </select>
                                     </div>
-                                    <div name="checkEspecialidad" id="checkEspecialidad" class="form-check col-md-6">
-                                        <label for="checkEspecialidad">Especialidades</label>
+                                    <div id="checkEspecialidad" class="form-check col-md-6" aria-labelledby="labelCheckEspecialidad">
+                                        <label id="labelCheckEspecialidad">Especialidades</label>
                                             <?php 
                                             foreach($especialidades as $especialidad)
                                             {   
                                                 ?>
                                                 <div>
                                                 <label class="form-check-label">
-                                                    <input class="form-check-input" type="checkbox" id="especialidadesAlta[]" name="especialidadesAlta[]" value="<?php echo ($especialidad['id_especialidad'])?>">
+                                                    <input class="form-check-input" type="checkbox" id="especialidadesAlta[]<?php echo ($especialidad['id_especialidad']); ?>" name="especialidadesAlta[]" value="<?php echo ($especialidad['id_especialidad'])?>">
                                                     <?php echo ($especialidad['descripcion'])?>
                                                 </label>
                                                 </div>
@@ -320,151 +459,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     id="page" value="<?php echo ($current_page); ?>">  
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="actionType" value="altaAlumno" class="btn btn-success">Crear alumno</button>
-                                </form>
+                                
                             </div>
+                        </form>    
                         </div>
                     </div>
                 </div>
 
-
-                <!-- Modal Modificacion -->
-                <div class="modal fade" id="modalModif<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel<?php echo ($fila['legajo']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Modificar
-                                    Alumno <?php echo ($fila['legajo']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmAlumnos.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre y apellido</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                            value="<?php echo ($fila['nombre_apellido'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputMail">Mail</label>
-                                        <input name="inputMail" type="email" class="form-control" id="inputMail"
-                                            value="<?php echo ($fila['mail'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="selectUser">Usuario</label>
-                                        <select name="selectUser" id="selectUser">
-                                        <option value="">Sin asignar</option>
-                                            <?php
-                                            foreach($users as $user)
-                                            {   
-                                                ?>
-                                                    <option value=<?php echo ($user['id_usuario'])?>>
-                                                        <?php echo ($user['nombre_usuario'])?></option>
-                                                    <?php
-                                            }
-                                            foreach($usersAsignados as $userAsignado) 
-                                            {
-                                                if ($fila['legajo']==$userAsignado['legajo']) {
-                                            ?>
-                                                <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
-                                                    <?php echo ($userAsignado['nombre_usuario'])?></option>
-                                                <?php
-                                                }
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                    <div name="checkEspecialidad" id="checkEspecialidad" class="form-check col-md-6">
-                                        <label for="checkEspecialidad">Especialidades</label>
-                                            <?php 
-                                            foreach($especialidades as $especialidad)
-                                            {   
-                                                if (buscarEspecialidadAlumno($especialidadesAlumnos, $especialidad['id_especialidad'], $fila['legajo'])) {
-                                                ?>
-                                                    <div>
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input" type="checkbox" id="especialidadesModif[]" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" checked>
-                                                        <?php echo ($especialidad['descripcion'])?>
-                                                    </label>
-                                                    </div>
-                                                <?php        
-                                                }
-                                                else {
-                                                ?>
-                                                    <div>
-                                                    <label class="form-check-label">
-                                                        <input class="form-check-input" type="checkbox" id="especialidadesModif[]" name="especialidadesModif[]" value="<?php echo ($especialidad['id_especialidad'])?>" >
-                                                        <?php echo ($especialidad['descripcion'])?>
-                                                    </label>
-                                                    </div>
-                                                <?php
-                                                }
-                                            }
-                                            ?>
-                                        </fieldset>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputLegajo" type="hidden" class="form-control"
-                                    id="inputLegajo" value="<?php echo ($fila['legajo']); ?>">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">    
-                                <button type="submit" name="actionType" value="modificarAlumno"
-                                    class="btn btn-primary">Guardar cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['legajo']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['legajo']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['legajo']); ?>">Baja de
-                                    Alumno <?php echo ($fila['legajo']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['legajo']); ?>">Está a punto de eliminar
-                                    el alumno <?php echo ($fila['legajo']); ?></p>
-                                <p>¿Esta seguro de querer hacerlo?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmAlumnos.php" method="post">
-                                    <input name="inputLegajoAlumno" type="hidden" class="form-control"
-                                        id="inputLegajoAlumno" value="<?php echo ($fila['legajo']); ?>">
-                                    <input name="page" type="hidden" class="form-control"
-                                        id="page" value="<?php echo ($current_page); ?>">      
-                                    <button type="submit" name="actionType" value="eliminarAlumno"
-                                        class="btn btn-danger">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-            </tr>
-            
-            <?php
-        }?>
-        </tbody>
-    
-        <?php
-    // Liberar conjunto de resultados
-    mysqli_free_result($vResultado);
-    mysqli_free_result($vUsers);
-    // Cerrar la conexion
-    mysqli_close($link);
-    ?>
-        </table>
         </div>
         <ul class="pagination">
         <?php
