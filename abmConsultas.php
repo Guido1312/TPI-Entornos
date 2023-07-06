@@ -95,21 +95,23 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                    <th><b>Materia</b></td>
-                    <th><b>Día</b></td>
-                    <th><b>Hora</b></td>
-                    <th><b></b></td>
+                    <th><b>Materia</b></th>
+                    <th><b>Día</b></th>
+                    <th><b>Hora</b></th>
+                    <th>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
                             <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
                             <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
                         </svg>
                         </a>
+                    </th>    
                 </tr>
             </thead>
 
-            <?php
-    while ($fila = mysqli_fetch_array($vResultado))
+    <?php
+    $data_page = mysqli_fetch_all($vResultado,MYSQLI_ASSOC);
+    foreach ($data_page as $fila)
     {?>
             <tr>
                 <td><?php echo ($fila['nombre_materia'].' - '.$fila['descripcion']); ?></td>
@@ -125,40 +127,47 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </svg>
                     </a>
                 </td>
-
-                <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor_consulta']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_profesor_consulta']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor_consulta']); ?>">Baja de
-                                    Consulta <?php echo ($fila['id_materia']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_profesor_consulta']); ?>">Está a punto de eliminar
-                                    esta consulta</p>
-                                <p>¿Esta seguro de querer hacerlo?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmConsultas.php" method="post">
-                                    <input name="inputIDconsulta" type="text" class="form-control" style="display:none"
-                                        id="inputIDconsulta" value="<?php echo ($fila['id_profesor_consulta']); ?>">
-                                    <input name="id_profesor" type="text" class="form-control" style="display:none"
-                                        id="id_profesor" value="<?php echo ($vIdProfesor); ?>">     
-                                    <button type="submit" name="actionType" value="eliminarConsulta"
-                                        class="btn btn-danger">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </tr>
             <?php
+    }
+    ?>
+        </table>
+    </div>
+
+    <?php
+    foreach ($data_page as $fila)
+    {?>
+        <!-- Modal Baja -->
+        <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor_consulta']); ?>" tabindex="-1" role="dialog"
+            aria-labelledby="modalDeleteLabel<?php echo ($fila['id_profesor_consulta']); ?>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDeleteLabel<?php echo ($fila['id_profesor_consulta']); ?>">Baja de
+                            Consulta <?php echo ($fila['id_materia']); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Está a punto de eliminar esta consulta</p>
+                        <p>¿Esta seguro de querer hacerlo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form action="abmConsultas.php" method="post">
+                            <input name="inputIDconsulta" type="text" class="form-control" style="display:none"
+                                id="inputIDconsulta<?php echo ($fila['id_profesor_consulta']); ?>" value="<?php echo ($fila['id_profesor_consulta']); ?>">
+                            <input name="id_profesor" type="text" class="form-control" style="display:none"
+                                id="id_profesor<?php echo ($fila['id_profesor_consulta']); ?>" value="<?php echo ($vIdProfesor); ?>">     
+                            <button type="submit" name="actionType" value="eliminarConsulta"
+                                class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
     }
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
@@ -167,64 +176,62 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     // Cerrar la conexion
     mysqli_close($link);
     ?>
-        </table>
-    </div>
 
     <!-- Modal Alta -->
     <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
-        aria-labelledby="exampleAlabel" aria-hidden="true">
+        aria-labelledby="modalLabelAlta" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalLabelAlta">Alta de consulta</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="abmConsultas.php" method="post">
-                        <div class="form-group col-12">
-                        <label for="selectMateria">Materia</label>
-                            <select class="select-materias" name="selectMateria" id="selectMateria" required>
-                                <?php 
-                        foreach($materias as $materia)
-                        {   
+                <form action="abmConsultas.php" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabelAlta">Alta de consulta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-group col-12">
+                            <label for="selectMateria">Materia</label>
+                                <select class="select-materias" name="selectMateria" id="selectMateria" required>
+                                    <?php 
+                            foreach($materias as $materia)
+                            {   
+                                ?>
+                                    <option value=<?php echo ($materia['id_materia'])?>>
+                                        <?php echo ($materia['nombre_materia'].' - '.$materia['descripcion'])?></option>
+                                    <?php
+                            }
                             ?>
-                                <option value=<?php echo ($materia['id_materia'])?>>
-                                    <?php echo ($materia['nombre_materia'].' - '.$materia['descripcion'])?></option>
-                                <?php
-                        }
-                        ?>
-                            </select>
-                        </div>
+                                </select>
+                            </div>
 
-                        <div class="form-group col-4">
-                        <label for="selectDia">Día</label>
-                            <select name="selectDia" id="selectDia" required>
-                                <?php 
-                        foreach($dias as $dia)
-                        {   
+                            <div class="form-group col-4">
+                            <label for="selectDia">Día</label>
+                                <select name="selectDia" id="selectDia" required>
+                                    <?php 
+                            foreach($dias as $dia)
+                            {   
+                                ?>
+                                    <option value=<?php echo ($dia['id_dia_consulta'])?>>
+                                        <?php echo ($dia['dia'])?></option>
+                                    <?php
+                            }
                             ?>
-                                <option value=<?php echo ($dia['id_dia_consulta'])?>>
-                                    <?php echo ($dia['dia'])?></option>
-                                <?php
-                        }
-                        ?>
-                            </select>
-                        </div>
+                                </select>
+                            </div>
 
-                        <div class="form-group col-4">
-                            <label for="inputHora">Hora</label>
-                            <input name="inputHora" type="time" class="form-control" id="inputHora" required/>
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <input name="id_profesor" type="text" class="form-control" style="display:none"
-                                    id="id_profesor" value="<?php echo ($vIdProfesor); ?>">    
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" name="actionType" value="altaConsulta" class="btn btn-success">Crear consulta</button>
-                    </form>
-                </div>
+                            <div class="form-group col-4">
+                                <label for="inputHora">Hora</label>
+                                <input name="inputHora" type="time" class="form-control" id="inputHora" required/>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input name="id_profesor" type="text" class="form-control" style="display:none"
+                                        id="id_profesor" value="<?php echo ($vIdProfesor); ?>">    
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="actionType" value="altaConsulta" class="btn btn-success">Crear consulta</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

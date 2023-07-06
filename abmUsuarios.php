@@ -19,6 +19,12 @@ function validarDatos($vDNI,$vNombre,&$vMensaje) {
        $vMensaje = "Solo se deben usar numeros en el DNI";
        return false;
     }
+    else if($vDNI > 999999999)
+    {
+       $vTipoMensaje = "danger";
+       $vMensaje = "El DNI debe tener 9 dígitos o menos";
+       return false;
+    }
     else
     {
        return true;
@@ -134,7 +140,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <?php
             }
             ?>
-            </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
         <!-- Paginacion -->
@@ -142,9 +147,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+            $current_page = (int) $_POST['page'];
+        } 
+        else {
             $current_page = 1;
         }
         
@@ -160,20 +169,21 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                    <th><b>Rol</b></td>
-                    <th><b>Dni</b></td>
-                    <th><b>Usuario</b></td>
-                    <th><b>Password</b></td>
-                    <th><b>Legajo</b></td>
-                    <th><b>Nombre y apellido</b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
+                    <th><b>Rol</b></th>
+                    <th><b>Dni</b></th>
+                    <th><b>Usuario</b></th>
+                    <th><b>Password</b></th>
+                    <th><b>Legajo</b></th>
+                    <th><b>Nombre y apellido</b></th>
+                    <th><b></b></th>
+                    <th>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
                             </svg>
                         </a>
+                    </th>
                 </tr>
             </thead>
         <tbody>
@@ -207,167 +217,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </svg>
                     </a>
                 </td>
-
-
-                <!-- Modal Alta -->
-                <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleAlabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_usuario']); ?>">Alta de usuario</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmUsuarios.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputDni">DNI</label>
-                                        <input name="inputDni" type="text" class="form-control" id="inputDni" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre de Usuario</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputPassword">Contraseña</label>
-                                        <input name="inputPassword" type="text" class="form-control" id="inputPassword" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="selectRole">Rol</label>
-                                        <select name="selectRole" id="selectRole">
-                                            <?php 
-                                    foreach($roles as $rol)
-                                    {   
-                                        if ($fila['nombre_rol']==$rol['nombre_rol']) {
-                                        ?>
-                                            <option value=<?php echo ($rol['id_rol_usuario'])?> selected>
-                                                <?php echo ($rol['nombre_rol'])?></option>
-                                            <?php        
-                                        }
-                                        else {
-                                        ?>
-                                            <option value=<?php echo ($rol['id_rol_usuario'])?>>
-                                                <?php echo ($rol['nombre_rol'])?></option>
-                                            <?php
-                                        }
-                                    }
-                                    ?>
-                                        </select>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">  
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="actionType" value="altaUsuario" class="btn btn-success">Crear usuario</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Modal Modificacion -->
-                <div class="modal fade" id="modalModif<?php echo ($fila['id_usuario']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel<?php echo ($fila['id_usuario']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_usuario']); ?>">Modificar
-                                    Usuario <?php echo ($fila['id_usuario']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmUsuarios.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputDni">DNI</label>
-                                        <input name="inputDni" type="text" class="form-control" id="inputDni"
-                                            value="<?php echo ($fila['dni'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre de Usuario</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                            value="<?php echo ($fila['nombre_usuario'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputPassword">Contraseña</label>
-                                        <input name="inputPassword" type="text" class="form-control" id="inputPassword"
-                                            value="<?php echo ($fila['password'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="selectRole">Rol</label>
-                                        <select name="selectRole" id="selectRole">
-                                            <?php 
-                                    foreach($roles as $rol)
-                                    {   
-                                        if ($fila['nombre_rol']==$rol['nombre_rol']) {
-                                        ?>
-                                            <option value=<?php echo ($rol['id_rol_usuario'])?> selected>
-                                                <?php echo ($rol['nombre_rol'])?></option>
-                                            <?php        
-                                        }
-                                        else {
-                                        ?>
-                                            <option value=<?php echo ($rol['id_rol_usuario'])?>>
-                                                <?php echo ($rol['nombre_rol'])?></option>
-                                            <?php
-                                        }
-                                    }
-                                    ?>
-                                        </select>
-                                    </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDusuario" type="hidden" class="form-control"
-                                    id="inputIDusuario" value="<?php echo ($fila['id_usuario']); ?>">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">  
-                                <button type="submit" name="actionType" value="modificarUsuario"
-                                    class="btn btn-primary">Guardar cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_usuario']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_usuario']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_usuario']); ?>">Baja de
-                                    Usuario <?php echo ($fila['id_usuario']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_usuario']); ?>">Está a punto de eliminar
-                                    el usuario <?php echo ($fila['id_usuario']); ?></p>
-                                <p>¿Esta seguro de querer hacerlo?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmUsuarios.php" method="post">
-                                    <input name="inputIDusuario" type="hidden" class="form-control"
-                                        id="inputIDusuario" value="<?php echo ($fila['id_usuario']); ?>">
-                                    <input name="page" type="hidden" class="form-control"
-                                        id="page" value="<?php echo ($current_page); ?>">  
-                                    <button type="submit" name="actionType" value="eliminarUsuario"
-                                        class="btn btn-danger">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
             </tr>
             
             <?php
@@ -382,6 +231,168 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
+
+    <!-- Modal Alta -->
+    <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
+        aria-labelledby="modalAltaLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="abmUsuarios.php" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAltaLabel">Alta de usuario</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-group col-md-6">
+                                <label for="inputDni">DNI</label>
+                                <input name="inputDni" type="number" class="form-control" id="inputDni" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputNombre">Nombre de Usuario</label>
+                                <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword">Contraseña</label>
+                                <input name="inputPassword" type="text" class="form-control" id="inputPassword" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="selectRole">Rol</label>
+                                <select name="selectRole" id="selectRole">
+                                    <?php 
+                                    foreach($roles as $rol)
+                                    {   
+                                        if ($fila['nombre_rol']==$rol['nombre_rol']) {
+                                        ?>
+                                            <option value=<?php echo ($rol['id_rol_usuario'])?> selected>
+                                                <?php echo ($rol['nombre_rol'])?></option>
+                                            <?php        
+                                        }
+                                        else {
+                                        ?>
+                                            <option value=<?php echo ($rol['id_rol_usuario'])?>>
+                                                <?php echo ($rol['nombre_rol'])?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input name="page" type="hidden" class="form-control"
+                            id="page" value="<?php echo ($current_page); ?>">  
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" name="actionType" value="altaUsuario" class="btn btn-success">Crear usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <?php
+    foreach ($data_page as $fila)
+    {?>
+    <!-- Modal Modificacion -->
+    <div class="modal fade" id="modalModif<?php echo ($fila['id_usuario']); ?>" tabindex="-1" role="dialog"
+        aria-labelledby="modalModifLabel<?php echo ($fila['id_usuario']); ?>" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="abmUsuarios.php" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalModifLabel<?php echo ($fila['id_usuario']); ?>">Modificar
+                            Usuario <?php echo ($fila['nombre_usuario']); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-group col-md-6">
+                                <label for="inputDni">DNI</label>
+                                <input name="inputDni" type="number" class="form-control" id="inputDni<?php echo ($fila['id_usuario']); ?>"
+                                    value="<?php echo ($fila['dni'])?>" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputNombre">Nombre de Usuario</label>
+                                <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_usuario']); ?>"
+                                    value="<?php echo ($fila['nombre_usuario'])?> " required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword">Contraseña</label>
+                                <input name="inputPassword" type="text" class="form-control" id="inputPassword<?php echo ($fila['id_usuario']); ?>"
+                                    value="<?php echo ($fila['password'])?> " required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="selectRole">Rol</label>
+                                <select name="selectRole" id="selectRole<?php echo ($fila['id_usuario']); ?>">
+                                    <?php 
+                                    foreach($roles as $rol)
+                                    {   
+                                        if ($fila['nombre_rol']==$rol['nombre_rol']) {
+                                        ?>
+                                            <option value=<?php echo ($rol['id_rol_usuario'])?> selected>
+                                                <?php echo ($rol['nombre_rol'])?></option>
+                                            <?php        
+                                        }
+                                        else {
+                                        ?>
+                                            <option value=<?php echo ($rol['id_rol_usuario'])?>>
+                                                <?php echo ($rol['nombre_rol'])?></option>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <input name="inputIDusuario" type="hidden" class="form-control"
+                            id="inputModifIDusuario<?php echo ($fila['id_usuario']); ?>" value="<?php echo ($fila['id_usuario']); ?>">
+                        <input name="page" type="hidden" class="form-control"
+                            id="pageModif<?php echo ($fila['id_usuario']); ?>" value="<?php echo ($current_page); ?>">  
+                        <button type="submit" name="actionType" value="modificarUsuario"
+                            class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Baja -->
+    <div class="modal fade" id="modalbaja<?php echo ($fila['id_usuario']); ?>" tabindex="-1" role="dialog"
+        aria-labelledby="modalDeleteLabel<?php echo ($fila['id_usuario']); ?>" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDeleteLabel<?php echo ($fila['id_usuario']); ?>">Baja de
+                        Usuario <?php echo ($fila['id_usuario']); ?></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Está a punto de eliminar el usuario <?php echo ($fila['nombre_usuario']); ?></p>
+                    <p>¿Esta seguro de querer hacerlo?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <form action="abmUsuarios.php" method="post">
+                        <input name="inputIDusuario" type="hidden" class="form-control"
+                            id="inputIDusuario<?php echo ($fila['id_usuario']); ?>" value="<?php echo ($fila['id_usuario']); ?>">
+                        <input name="page" type="hidden" class="form-control"
+                            id="page<?php echo ($fila['id_usuario']); ?>" value="<?php echo ($current_page); ?>">  
+                        <button type="submit" name="actionType" value="eliminarUsuario"
+                            class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    }?>
+
         </div>
         <ul class="pagination">
         <?php

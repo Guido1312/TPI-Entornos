@@ -34,14 +34,14 @@ include("head.html");
             ?>
     
                     <div class="row">
-                        <h2>Bienvenido <?php echo $nombrePersona  ; ?></h2>
+                        <h2>Bienvenido <?php echo $nombrePersona; ?></h2>
                     </div>
 
                     <div class="row card-deck">
                         <div class="card">
                             <img src="images/iconList.png" class="card-img-top" alt="Inscribirse a consultas">
                             <div class="card-body content-center">
-                            <h5 class="card-title">Inscribirse de consultas</h5> 
+                            <h5 class="card-title">Inscribirse a consultas</h5> 
                             <a href="inscribir.php" class="stretched-link"></a>
                             </div>
                         </div>

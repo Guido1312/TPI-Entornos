@@ -143,9 +143,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+            $current_page = (int) $_POST['page'];
+        } 
+        else {
             $current_page = 1;
         }
         
@@ -161,12 +165,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             <table class="table">
                 <thead style="background-color: #077b83; color: #ffff ;">
                 <tr>
-                    <td><b>Especialidad</b></td>
-                    <td><b>Materia</b></td>
-                    <td><b>Fecha</b></td>
-                    <td><b>Hora</b></td>
-                    <td></td>
-                    <td></td>
+                    <th><b>Especialidad</b></th>
+                    <th><b>Materia</b></th>
+                    <th><b>Fecha</b></th>
+                    <th><b>Hora</b></th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 </thead>
         <?php
@@ -196,26 +200,26 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                         ?>
                             <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal<?php echo ($fila['id_consulta']); ?>"> Bloquear </button></td>
                             
-                            <!-- Modal Baja -->
+                        <!-- Modal Bloqueo -->
                         <div class="modal fade" id="modal<?php echo ($fila['id_consulta']); ?>" tabindex="-1" role="dialog"
                             aria-labelledby="modalbloqueo<?php echo ($fila['id_consulta']); ?>" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <form action="consultasProfesor.php" method="post">  
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_consulta']); ?>">Ingrese 
+                                            <h5 class="modal-title" id="modalbloqueo<?php echo ($fila['id_consulta']); ?>">Ingrese 
                                             motivo de bloqueo:</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>  
                                         <div class="modal-body">
-                                            <input name="motivo" type="text" class="form-control" id="motivo">
+                                            <input name="motivo" type="text" class="form-control" id="motivo<?php echo ($fila['id_consulta']); ?>">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                             <input name="id_consulta" type="hidden" class="form-control"
-                                                id="id_consulta" value="<?php echo ($fila['id_consulta']); ?>">
+                                                id="id_consulta<?php echo ($fila['id_consulta']); ?>" value="<?php echo ($fila['id_consulta']); ?>">
                                             <button type="submit" name="actionType" value="bloquear"
                                                 class="btn btn-danger">Bloquear</button>
                                         </div>

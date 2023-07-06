@@ -104,9 +104,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+            $current_page = (int) $_POST['page'];
+        } 
+        else {
             $current_page = 1;
         }
         
@@ -119,17 +123,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <div class="table-responsive">
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
-            <tr>
-                    <th><b>ID de especialidad</b></td>
-                    <th><b>Nombre</b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
+                <tr>
+                    <th><b>ID de especialidad</b></th>
+                    <th><b>Nombre</b></th>
+                    <th><b></b></th>
+                    <th>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
                             <path d="m.5 3 .04.87a1.99 1.99 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2zm5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19c-.24 0-.47.042-.683.12L1.5 2.98a1 1 0 0 1 1-.98h3.672z"/>
                             <path d="M13.5 10a.5.5 0 0 1 .5.5V12h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V13h-1.5a.5.5 0 0 1 0-1H13v-1.5a.5.5 0 0 1 .5-.5z"/>
                         </svg>
                         </a>
+                    </th>    
                 </tr>
             </thead>
             <tbody>
@@ -159,103 +164,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </svg>
                     </a>
                 </td>
-
-
-                <!-- Modal Alta -->
-                <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleAlabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_especialidad']); ?>">Alta de especialidad</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmEspecialidades.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre de Especialidad</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre" required/>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">  
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="actionType" value="altaEspecialidad" class="btn btn-success">Crear especialidad</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Modal Modificacion -->
-                <div class="modal fade" id="modalModif<?php echo ($fila['id_especialidad']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel<?php echo ($fila['id_especialidad']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_especialidad']); ?>">Modificar
-                                    Especialdiad <?php echo ($fila['id_especialidad']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmEspecialidades.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre de Especialidad</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                            value="<?php echo ($fila['descripcion'])?> " required/>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDespecialidad" type="hidden" class="form-control"
-                                    id="inputIDespecialidad" value="<?php echo ($fila['id_especialidad']); ?>">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">      
-                                <button type="submit" name="actionType" value="modificarEspecialidad"
-                                    class="btn btn-primary">Guardar cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_especialidad']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_especialidad']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_especialidad']); ?>">Baja de
-                                    Especialidad <?php echo ($fila['id_especialidad']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_especialidad']); ?>">Está a punto de eliminar
-                                    esta especialidad <?php echo ($fila['id_especialidad']); ?></p>
-                                <p>¿Esta seguro de querer hacerlo?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmEspecialidades.php" method="post">
-                                    <input name="inputIDespecialidad" type="hidden" class="form-control"
-                                        id="inputIDespecialidad" value="<?php echo ($fila['id_especialidad']); ?>">
-                                    <input name="page" type="hidden" class="form-control"
-                                        id="page" value="<?php echo ($current_page); ?>">      
-                                    <button type="submit" name="actionType" value="eliminarEspecialidad"
-                                        class="btn btn-danger">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                  
             </tr>
             
@@ -270,6 +178,109 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
+
+        <!-- Modal Alta -->
+        <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
+            aria-labelledby="modalAltaLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="abmEspecialidades.php" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAltaLabel">Alta de especialidad</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group col-md-6">
+                                <label for="inputNombre">Nombre de Especialidad</label>
+                                <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input name="page" type="hidden" class="form-control"
+                                id="page" value="<?php echo ($current_page); ?>">  
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" name="actionType" value="altaEspecialidad" class="btn btn-success">Crear especialidad</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        foreach ($data_page as $fila)
+        {?>
+
+        <!-- Modal Modificacion -->
+        <div class="modal fade" id="modalModif<?php echo ($fila['id_especialidad']); ?>" tabindex="-1" role="dialog"
+            aria-labelledby="modalModifLabel<?php echo ($fila['id_especialidad']); ?>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="abmEspecialidades.php" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalModifLabel<?php echo ($fila['id_especialidad']); ?>">Modificar
+                                Especialidad <?php echo ($fila['id_especialidad']); ?></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group col-md-6">
+                                <label for="inputNombre">Nombre de Especialidad</label>
+                                <input name="inputNombre" type="text" class="form-control" id="inputModifNombre<?php echo ($fila['id_especialidad']); ?>"
+                                    value="<?php echo ($fila['descripcion'])?> " required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input name="inputIDespecialidad" type="hidden" class="form-control"
+                                id="inputIDModifespecialidad<?php echo ($fila['id_especialidad']); ?>" value="<?php echo ($fila['id_especialidad']); ?>">
+                            <input name="page" type="hidden" class="form-control"
+                                id="pageModif<?php echo ($fila['id_especialidad']); ?>" value="<?php echo ($current_page); ?>">      
+                            <button type="submit" name="actionType" value="modificarEspecialidad"
+                                class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Baja -->
+        <div class="modal fade" id="modalbaja<?php echo ($fila['id_especialidad']); ?>" tabindex="-1" role="dialog"
+            aria-labelledby="modalDeleteLabel<?php echo ($fila['id_especialidad']); ?>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDeleteLabel<?php echo ($fila['id_especialidad']); ?>">Baja de
+                            Especialidad <?php echo ($fila['id_especialidad']); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="modalLabel<?php echo ($fila['id_especialidad']); ?>">Está a punto de eliminar
+                            esta especialidad <?php echo ($fila['id_especialidad']); ?></p>
+                        <p>¿Esta seguro de querer hacerlo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form action="abmEspecialidades.php" method="post">
+                            <input name="inputIDespecialidad" type="hidden" class="form-control"
+                                id="inputIDespecialidad<?php echo ($fila['id_especialidad']); ?>" value="<?php echo ($fila['id_especialidad']); ?>">
+                            <input name="page" type="hidden" class="form-control"
+                                id="page<?php echo ($fila['id_especialidad']); ?>" value="<?php echo ($current_page); ?>">      
+                            <button type="submit" name="actionType" value="eliminarEspecialidad"
+                                class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        }?>
+
         </div>
         <ul class="pagination">
         <?php
