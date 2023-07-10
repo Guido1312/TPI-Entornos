@@ -257,3 +257,11 @@ a.article:hover {
     color: red;
     font-weight: bold;
 }
+
+.ayuda:hover{   
+    color: #7386D5 !important;
+    background: #fff !important;
+}
+.ayuda{   
+    padding: 10px;
+}
