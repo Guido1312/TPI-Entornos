@@ -252,3 +252,8 @@ a.article:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
+.data-required {
+    color: red;
+    font-weight: bold;
+}

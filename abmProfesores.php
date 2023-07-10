@@ -170,7 +170,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <?php
             }
             ?>
-            </select>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
          <!-- Paginacion -->
@@ -178,9 +177,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+            $current_page = (int) $_POST['page'];
+        } 
+        else {
             $current_page = 1;
         }
         
@@ -195,21 +198,22 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                    <th><b>ID Profesor</b></td>
-                    <th><b>Nombre y apellido</b></td>
-                    <th><b>DNI</b></td>
-                    <th><b>Email</b></td>
-                    <th><b>Nombre de usuario</b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
-                    <th><b></b></td>
+                    <th><b>ID Profesor</b></th>
+                    <th><b>Nombre y apellido</b></th>
+                    <th><b>DNI</b></th>
+                    <th><b>Email</b></th>
+                    <th><b>Nombre de usuario</b></th>
+                    <th><b></b></th>
+                    <th><b></b></th>
+                    <th><b></b></th>
+                    <th>
                         <a title="Agregar" class="nav-item" href="#modalAlta" data-toggle="modal" data-target="#modalAlta" style="float:right;">
                             <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
                                 <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                                 <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
                             </svg>
                         </a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -222,6 +226,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 <td><?php echo ($fila['dni']); ?></td>
                 <td><?php echo ($fila['mail']); ?></td>
                 <td><?php echo ($fila['nombre_usuario']); ?></td>
+                <td>
+                    <form action="abmConsultas.php" method="post">
+                        <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
+                        <button type="submit" class="btn btn-info"> Ver consultas </button>
+                    </form>
+                </td>
+                <td>
+                    <form action="abmMateriasProfesor.php" method="post">
+                        <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
+                        <button type="submit" class="btn btn-info"> Ver materias </button>
+                    </form>
+                </td>
                 <td>
                     <a title="Editar" class="nav-item" href="#modalModif<?php echo ($fila['id_profesor']);?>" data-toggle="modal"
                         data-target="#modalModif<?php echo ($fila['id_profesor']); ?>" style="float:right;">
@@ -242,171 +258,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </svg>
                     </a>
                 </td>
-                <td>
-                    <form action="abmConsultas.php" method="post">
-                        <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
-                        <button type="submit" class="btn btn-info"> Ver consultas </button>
-                    </form>
-                </td>
-                <td>
-                    <form action="abmMateriasProfesor.php" method="post">
-                        <input type="hidden" name="id_profesor" value="<?php echo ($fila['id_profesor']) ?>">
-                        <button type="submit" class="btn btn-info"> Ver materias </button>
-                    </form>
-                </td>
-
-
-                <!-- Modal Alta -->
-                <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleAlabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Alta de Profesor</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmProfesores.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre y apellido</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputMail">Mail</label>
-                                        <input name="inputMail" type="email" class="form-control" id="inputMail" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="selectUser">Usuario</label>
-                                        <select name="selectUser" id="selectUser">
-                                        <option value="">Sin asignar</option>
-                                            <?php 
-                                    foreach($users as $user)
-                                    {   
-                                        ?>
-                                            <option value=<?php echo ($user['id_usuario'])?>>
-                                                <?php echo ($user['nombre_usuario'])?></option>
-                                            <?php
-                                    }
-                                    ?>
-                                        </select>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">  
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="actionType" value="altaProfesor" class="btn btn-success">Crear profesor</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- Modal Modificacion -->
-                <div class="modal fade" id="modalModif<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Modificar
-                                    Profesor <?php echo ($fila['id_profesor']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="abmProfesores.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre y apellido</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                            value="<?php echo ($fila['nombre_apellido'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputMail">Mail</label>
-                                        <input name="inputMail" type="email" class="form-control" id="inputMail"
-                                            value="<?php echo ($fila['mail'])?> " required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="selectUser">Usuario</label>
-                                        <select name="selectUser" id="selectUser">
-                                        <?php 
-                                        if ($fila['nombre_usuario']==$user['nombre_usuario']) {?>
-                                            <option value="" selected>Sin asignar</option>
-                                        <?php }
-                                        else{?>
-                                        <option value="">Sin asignar</option>
-                                        <?php }
-                                    foreach($users as $user)
-                                    {   
-                                        ?>
-                                        <option value=<?php echo ($user['id_usuario'])?>>
-                                            <?php echo ($user['nombre_usuario'])?></option>
-                                        <?php
-                                    }
-                                    foreach($usersAsignados as $userAsignado) 
-                                    {
-                                        if ($fila['id_profesor']==$userAsignado['id_profesor']) {
-                                    ?>
-                                        <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
-                                            <?php echo ($userAsignado['nombre_usuario'])?></option>
-                                        <?php
-                                        }
-                                    }
-                                    ?>
-                                        </select>
-                                    </div>
-
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDprofesor" type="hidden" class="form-control"
-                                    id="inputIDprofesor" value="<?php echo ($fila['id_profesor']); ?>">
-                                <input name="page" type="hidden" class="form-control"
-                                    id="page" value="<?php echo ($current_page); ?>">      
-                                <button type="submit" name="actionType" value="modificarProfesor"
-                                    class="btn btn-primary">Guardar cambios</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Modal Baja -->
-                <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel<?php echo ($fila['id_profesor']); ?>">Baja de
-                                    Profesor <?php echo ($fila['id_profesor']); ?></h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p id="modalLabel<?php echo ($fila['id_profesor']); ?>">Está a punto de eliminar
-                                    el profesor <?php echo ($fila['id_profesor']); ?></p>
-                                <p>¿Esta seguro de querer hacerlo?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <form action="abmProfesores.php" method="post">
-                                    <input name="inputIDprofesor" type="hidden" class="form-control"
-                                        id="inputIDprofesor" value="<?php echo ($fila['id_profesor']); ?>">
-                                    <input name="page" type="hidden" class="form-control"
-                                        id="page" value="<?php echo ($current_page); ?>">  
-                                    <button type="submit" name="actionType" value="eliminarProfesor"
-                                        class="btn btn-danger">Eliminar</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                </tr>
+            </tr>
             
             <?php
         }?>
@@ -420,6 +272,157 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_close($link);
     ?>
         </table>
+
+        <!-- Modal Alta -->
+        <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog"
+            aria-labelledby="modalAltaLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="abmProfesores.php" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAltaLabel">Alta de Profesor</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group col-md-6">
+                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputMail">Mail</label>
+                                    <input name="inputMail" type="email" class="form-control" id="inputMail" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="selectUser">Usuario</label>
+                                    <select name="selectUser" id="selectUser">
+                                    <option value="">Sin asignar</option>
+                                        <?php 
+                                foreach($users as $user)
+                                {   
+                                    ?>
+                                        <option value=<?php echo ($user['id_usuario'])?>>
+                                            <?php echo ($user['nombre_usuario'])?></option>
+                                        <?php
+                                }
+                                ?>
+                                    </select>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <input name="page" type="hidden" class="form-control"
+                                id="page" value="<?php echo ($current_page); ?>">  
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <button type="submit" name="actionType" value="altaProfesor" class="btn btn-success">Crear profesor</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        foreach ($data_page as $fila)
+        {?>
+        <!-- Modal Modificacion -->
+        <div class="modal fade" id="modalModif<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
+            aria-labelledby="modalModifLabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="abmProfesores.php" method="post">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalModifLabel<?php echo ($fila['id_profesor']); ?>">Modificar
+                                Profesor: <?php echo ($fila['nombre_apellido']); ?></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="form-group col-md-6">
+                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_profesor']); ?>"
+                                        value="<?php echo ($fila['nombre_apellido'])?> " required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputMail">Mail</label>
+                                    <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['id_profesor']); ?>"
+                                        value="<?php echo ($fila['mail'])?> " required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="selectUser">Usuario</label>
+                                    <select name="selectUser" id="selectUser<?php echo ($fila['id_profesor']); ?>">
+                                    <option value="">Sin asignar</option>
+                                    <?php
+                                        foreach($users as $user)
+                                        {   
+                                            ?>
+                                            <option value=<?php echo ($user['id_usuario'])?>>
+                                                <?php echo ($user['nombre_usuario'])?></option>
+                                            <?php
+                                        }
+                                        foreach($usersAsignados as $userAsignado) 
+                                        {
+                                            if ($fila['id_profesor']==$userAsignado['id_profesor']) {
+                                        ?>
+                                            <option value=<?php echo ($userAsignado['id_usuario'])?> selected>
+                                                <?php echo ($userAsignado['nombre_usuario'])?></option>
+                                            <?php
+                                            }
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                            <input name="inputIDprofesor" type="hidden" class="form-control"
+                                id="inputModifIDprofesor<?php echo ($fila['id_profesor']); ?>" value="<?php echo ($fila['id_profesor']); ?>">
+                            <input name="page" type="hidden" class="form-control"
+                                id="pageModif<?php echo ($fila['id_profesor']); ?>" value="<?php echo ($current_page); ?>">      
+                            <button type="submit" name="actionType" value="modificarProfesor"
+                                class="btn btn-primary">Guardar cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Baja -->
+        <div class="modal fade" id="modalbaja<?php echo ($fila['id_profesor']); ?>" tabindex="-1" role="dialog"
+            aria-labelledby="modalDeleteLabel<?php echo ($fila['id_profesor']); ?>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDeleteLabel<?php echo ($fila['id_profesor']); ?>">Baja de
+                            Profesor <?php echo ($fila['id_profesor']); ?></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Está a punto de eliminar el profesor: <?php echo ($fila['nombre_apellido']); ?></p>
+                        <p>¿Esta seguro de querer hacerlo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form action="abmProfesores.php" method="post">
+                            <input name="inputIDprofesor" type="hidden" class="form-control"
+                                id="inputDeleteIDprofesor<?php echo ($fila['id_profesor']); ?>" value="<?php echo ($fila['id_profesor']); ?>">
+                            <input name="page" type="hidden" class="form-control"
+                                id="pageDelete<?php echo ($fila['id_profesor']); ?>" value="<?php echo ($current_page); ?>">  
+                            <button type="submit" name="actionType" value="eliminarProfesor"
+                                class="btn btn-danger">Eliminar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php
+        }
+        ?>
+
         </div>
         <ul class="pagination">
         <?php

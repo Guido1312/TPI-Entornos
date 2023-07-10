@@ -51,11 +51,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
                 <tr>
-                    <td><b>Fecha</b></td>
-                    <td><b>Hora</b></td>
-                    <td><b>Materia</b></td>
-                    <td><b>Profesor</b></td>
-                    <td></td>
+                    <th><b>Fecha</b></th>
+                    <th><b>Hora</b></th>
+                    <th><b>Materia</b></th>
+                    <th><b>Profesor</b></th>
+                    <th></th>
                 </tr>
             </thead>
             <?php

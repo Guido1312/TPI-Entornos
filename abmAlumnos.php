@@ -25,6 +25,12 @@ function validarDatos($vLegajo,$vNombre,$vMail,&$vMensaje) {
     $vMensaje = "Solo se deben usar numeros en el legajo";
     return false;
  }
+ else if($vLegajo > 999999999)
+    {
+       $vTipoMensaje = "danger";
+       $vMensaje = "El legajo debe tener 9 dígitos o menos ";
+       return false;
+    }
  else
  {
     return true;
@@ -189,12 +195,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
         } 
-        else if (isset($_POST['page']) && is_numeric($_POST['page'])) {
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
             $current_page = (int) $_POST['page'];
-        }    
+        } 
         else {
             $current_page = 1;
         }
@@ -287,7 +293,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <label for="inputNombre">Nombre y apellido <span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['legajo']); ?>"
                                         value="<?php echo ($fila['nombre_apellido'])?> " required>
                                 </div>
@@ -412,7 +418,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="modal-body">
                                 <div class="form-group col-md-6">
                                         <label for="inputLegajo">Legajo</label>
-                                        <input name="inputLegajo" type="text" class="form-control" id="inputLegajo" required>
+                                        <input name="inputLegajo" type="number" class="form-control" id="inputLegajo" required>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido</label>

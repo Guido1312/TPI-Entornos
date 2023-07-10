@@ -119,10 +119,10 @@ elseif(isset($_POST['ingresar'])){
               <h1 class="text-success text-center card-title" id="labelForm" style="font-size: 20px">Digita tus credenciales</h1>
               <div class="form-grup">
                   <div class="input-group">
-                    <input type="text" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
+                    <input type="text" style="text-transform:lowercase;" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
                   </div>
                   <div class="input-group py-2">
-                    <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="Contraseña" class="form-control" required>
+                    <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="contraseña" class="form-control" required>
                   </div>
                   <div class="input-group">
                     <button type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-info btn-block"> Ingresar </button>

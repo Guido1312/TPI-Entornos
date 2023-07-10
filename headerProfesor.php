@@ -18,7 +18,7 @@
                         <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Perfil</a>
                         <ul class="collapse list-unstyled" id="pageSubmenu">
                             <li>
-                                <a href="proximamente.php">Preferencias</a>
+                                <a href="proximamente.html">Preferencias</a>
                             </li>
                             <li>
                                 <a href="perfil.php">Perfil</a>
@@ -75,7 +75,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">
                             <a class="dropdown-item" href="perfil.php">Perfil</a>
-                            <a class="dropdown-item" href="proximamente.php">Preferencias</a>
+                            <a class="dropdown-item" href="proximamente.html">Preferencias</a>
                             <form action="login.php" method="post">
                                 <input type="hidden" name="idconsulta" value="logout">
                                 <button type="submit" class="dropdown-item" name="actionType" value="logout">

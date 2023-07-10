@@ -93,7 +93,7 @@ else{
             </div>
         </div>
         <div class="row" style="display: flex; justify-content: center;">
-                <button type="button" class="btn btn-info" href="#modalModif" data-toggle="modal" data-target="#modalModif" style="float:right;"> Modificar contraseña </button>
+                <a class="btn btn-info" href="#modalModif" data-toggle="modal" data-target="#modalModif" style="float:right;"> Modificar contraseña </a>
         </div>  
         <div class="row">
             <br>
@@ -103,7 +103,7 @@ else{
                 <br>
             </div>
             <div class="col-12 col-md-5">
-                <h4>Datos del usuario</h5>
+                <h4>Datos del usuario</h4>
                 <p style="color: #252525">
                 Nombre: <?php echo $nombre; ?> <br>
                 Legajo: <?php echo $legajo; ?> <br>
@@ -141,43 +141,43 @@ else{
 
     <!-- Modal Modificacion -->
     <div class="modal fade" id="modalModif" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleMlabel" aria-hidden="true">
+                    aria-labelledby="modalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLabel">Modificar
-                                    Contraseña</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="perfil.php" method="post">
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre de usuario</label>
-                                        <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                            value="<?php echo ($usuario)?> " readonly>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputActualPass">Ingrese contraseña actual</label>
-                                        <input name="inputActualPass" type="password" class="form-control" id="inputActualPass" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="inputNewPass">Ingrese contraseña nueva</label>
-                                        <input name="inputNewPass" type="password" class="form-control" id="inputNewPass" required/>
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label for="repeatNewPass">Repita su nueva contraseña</label>
-                                        <input name="repeatNewPass" type="password" class="form-control" id="repeatNewPass" required/>
-                                    </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input name="inputIDusuario" type="text" class="form-control" style="display:none"
-                                    id="inputIDusuario" value="<?php echo ($vIdUsuario); ?>">
-                                <button type="submit" name="actionType" value="modificarPass" class="btn btn-primary">Guardar cambios</button>
-                                </form>
-                            </div>
+                            <form action="perfil.php" method="post">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel">Modificar
+                                        Contraseña</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                        <div class="form-group col-md-6">
+                                            <label for="inputNombre">Nombre de usuario</label>
+                                            <input name="inputNombre" type="text" class="form-control" id="inputNombre"
+                                                value="<?php echo ($usuario)?> " readonly>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputActualPass">Ingrese contraseña actual <span class="data-required">*</span></label>
+                                            <input name="inputActualPass" type="password" class="form-control" id="inputActualPass" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputNewPass">Ingrese contraseña nueva <span class="data-required">*</span></label>
+                                            <input name="inputNewPass" type="password" class="form-control" id="inputNewPass" required>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="repeatNewPass">Repita su nueva contraseña <span class="data-required">*</span></label>
+                                            <input name="repeatNewPass" type="password" class="form-control" id="repeatNewPass" required>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                    <input name="inputIDusuario" type="text" class="form-control" style="display:none"
+                                        id="inputIDusuario" value="<?php echo ($vIdUsuario); ?>">
+                                    <button type="submit" name="actionType" value="modificarPass" class="btn btn-primary">Guardar cambios</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

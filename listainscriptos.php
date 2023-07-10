@@ -39,15 +39,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                <th><b>Legajo</b></td>
-                <th><b>Nombre y apellido</b></td>
-                <th><b>Email</b></td>
-                <a title="Imprimir" class="nav-item" href="javascript:imprSelec('myPrintArea')" style="float:right;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
-                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
-                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
-                    </svg>
-                </a>                
+                <th><b>Legajo</b></th>
+                <th><b>Nombre y apellido</b></th>
+                <th><b>Email</b></th>
+                <th>
+                    <a title="Imprimir" class="nav-item" href="javascript:imprSelec('myPrintArea')" style="float:right;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+                                <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                        </svg>
+                    </a>  
+                </th>              
             </tr>
             </thead>
     <?php
@@ -57,6 +59,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 <td><?php echo ($fila['legajo']); ?></td>
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
                 <td><?php echo ($fila['mail']); ?></td>
+                <td></td>
             </tr>
     <?php
     }

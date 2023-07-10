@@ -271,9 +271,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
 
-        if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
-        } else {
+        } 
+        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+            $current_page = (int) $_POST['page'];
+        } 
+        else {
             $current_page = 1;
         }
         
@@ -288,11 +292,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         <table class="table">
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
-                <td><b>Materia</b></td>
-                <td><b>Profesor</b></td>
-                <td><b>Fecha</b></td>
-                <td><b>Hora</b></td>
-                <td></td>
+                <th><b>Materia</b></th>
+                <th><b>Profesor</b></th>
+                <th><b>Fecha</b></th>
+                <th><b>Hora</b></th>
+                <th></th>
             </tr>
         </thead>
         
