@@ -8,7 +8,7 @@ include("head.html");
 ?>  
     <style>
         .card:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     }
     .card{
     transition: transform .5s;
@@ -76,19 +76,19 @@ include("head.html");
             $nombrePersona = $fila['nombre_apellido']; 
             }
             ?>
-                    <div class="row">
+                    <div class="row container content-center">
                         <h2>Bienvenido <?php echo $nombrePersona; ?></h2>
                     </div>
 
                     <div class="row card-deck" style="margin: 0px 120px 0px 120px;">
-                        <div class="card">
+                        <div class="card" style="max-width: 500px;">
                             <img src="images/adminConsultas.png" class="card-img-top" alt="Administrar consultas">
                             <div class="card-body content-center">
                             <h5 class="card-title">Administrar consultas</h5> 
                             <a href="consultasProfesor.php" class="stretched-link"></a>
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card" style="max-width: 500px;">
                             <img src="images/iconCalendar.png" class="card-img-top" alt="Calendario academico">
                             <div class="card-body content-center">
                             <h5 class="card-title">Calendario académico</h5> 
