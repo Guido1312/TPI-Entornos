@@ -46,20 +46,12 @@ else{
 <br>
 <br>
 
-    <div class="container">
-        <div class="row">
-            <br>
-        </div>
-        <div class="row">
-            <div class="col-12" style="text-align: center">
-                <h2>Preguntas frecuentes</h2>
-            </div>
-        </div>
-        <div class="row">
-            <br>
+    <div class="container content-center">
+        <div class="row" style="text-align: center">
+            <h2>Preguntas frecuentes</h2>
         </div>
         
-        <div id="accordion">
+        <div class="container"  id="accordion">
             <?php
             foreach ($data_page as $fila)
             {?>
@@ -83,22 +75,26 @@ else{
             }
             ?>
         </div>
-    </div>
-
-        <ul class="pagination">
+        
+        
+    <ul class="row pagination">
         <?php
-// Liberar conjunto de resultados
-mysqli_free_result($vDatos);
-// Cerrar la conexion
-mysqli_close($link);
-for ($page = 1; $page <= $total_pages; $page++) {?>
-    <li class="page-item
-    <?php
-    if ($page == $current_page) {
-        echo 'active';
-    }?>"><a class="page-link" href="<?php echo('ayuda.php?page='.$page)?>"><?php echo($page)?></a></li>
-<?php }
-?>
+        // Liberar conjunto de resultados
+        mysqli_free_result($vDatos);
+        // Cerrar la conexion
+        mysqli_close($link);
+        for ($page = 1; $page <= $total_pages; $page++) {?>
+        <li class="page-item
+        <?php
+        if ($page == $current_page) {
+            echo 'active';
+        }?>"><a class="page-link" href="<?php echo('ayuda.php?page='.$page)?>"><?php echo($page)?></a></li>
+        <?php }
+        ?>
+    </ul>
+
+    </div>
+    <p>&nbsp;</p>
 <?php
 include("footer.html");
 }

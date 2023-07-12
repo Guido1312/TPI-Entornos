@@ -10,7 +10,7 @@ include("head.html");
 
 <body>
   <?php
-error_reporting(0); //evita que se muestren los warning
+ //evita que se muestren los warning
 include("conexion.inc");
 if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
   session_destroy();
@@ -108,7 +108,7 @@ elseif(isset($_POST['ingresar'])){
 }
 ?>
 
-  <div class="container py-4">
+  <div class="container py-4" style="margin-top: 10%">
     <div class="row justify-content-center h-100 py-4">
         <div class="card col-sm-6 col-md-6 col-lg-6 shadow-lg p-3 mb-5 bg-white rounded">
             <div class="card-header content-center">
