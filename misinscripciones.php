@@ -36,7 +36,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                                         inner join consultas c on i.id_consulta = c.id_consulta
                                         inner join profesores p on p.id_profesor = c.id_profesor
                                         inner join materias m on m.id_materia = c.id_materia
-                                        where i.id_alumno = '$vIDalumno' and i.estado_inscripcion != 4";
+                                        where i.id_alumno = '$vIDalumno' and i.estado_inscripcion != 4 
+                                        and c.id_estado_consulta = 1
+                                        and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR)";
     $vResultado = mysqli_query($link, $vSql);
 
     if (mysqli_num_rows($vResultado)==0)

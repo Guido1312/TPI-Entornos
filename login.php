@@ -10,7 +10,7 @@ include("head.html");
 
 <body>
   <?php
- //evita que se muestren los warning
+error_reporting(0); //evita que se muestren los warning
 include("conexion.inc");
 if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
   session_destroy();
@@ -31,32 +31,6 @@ elseif (!empty($_POST ['actionType']) && $_POST ['actionType']=="recuperacion") 
         $nombreUsuario = $fila['nombre_usuario']; 
         $password = $fila['password']; 
         }
-
-        $destinatario = $vEmail;
-        $asunto = "Contraseña sistema de consultas UTN";
-        $cuerpo = "
-        <html>
-        <head>
-        <title>UTN - Consultas</title>
-        </head>
-        <body>
-        <p>Sus credenciales de acceso al sistema son:</p>
-        <p>Usuario: ".$nombreUsuario." </p> 
-        <p>Contraseña: ".$password." </p>
-        </body>
-        </html>";
-        $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
-        $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $cabeceras .= 'From: me@you.com' . "\r\n";
-
-        if(mail($destinatario,$asunto,$cuerpo,$cabeceras)){
-            $vTipoMensaje = "success"; 
-            $vMensaje = "Se ha enviado la contraseña";
-          }
-          else {
-            $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
-        };
         
 }
 //Login toma datos de la BD
