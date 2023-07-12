@@ -31,7 +31,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
 
     $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                         inner join consultas c on i.id_consulta = c.id_consulta
-                                        where c.id_profesor = '$vIDprofesor' and i.id_consulta = '$vIDconsulta'";
+                                        where c.id_profesor = '$vIDprofesor' and i.id_consulta = '$vIDconsulta' and i.estado_inscripcion in (1,2)";
     $vResultado = mysqli_query($link, $vSql);
     ?>
         

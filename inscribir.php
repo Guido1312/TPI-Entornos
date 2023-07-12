@@ -61,63 +61,72 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="inscribirse") {
         $vIDconsulta = $_POST["inputIDconsulta"];
         $vSqlCount = "SELECT COUNT(*) as cantidad FROM inscripciones WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
+        $vSqlValidate = "SELECT COUNT(*) as consulta FROM consultas WHERE id_consulta = '$vIDconsulta' and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR)";
         $resultCount = mysqli_query($link, $vSqlCount);
         $data=mysqli_fetch_assoc($resultCount);
-        if ($data['cantidad'] == 0){
-            $vSql = "INSERT INTO inscripciones (fecha_inscripcion, estado_inscripcion, id_consulta, id_alumno) 
-                    Values (sysdate(), 1, $vIDconsulta, $vIDalumno)";
+        $resultValidate = mysqli_query($link, $vSqlValidate);
+        $dataValidate=mysqli_fetch_assoc($resultValidate);
+        if ($dataValidate['consulta'] == 1){
+            if ($data['cantidad'] == 0){
+                $vSql = "INSERT INTO inscripciones (fecha_inscripcion, estado_inscripcion, id_consulta, id_alumno) 
+                        Values (sysdate(), 1, $vIDconsulta, $vIDalumno)";
             }
             else{
                 $vSql = "UPDATE inscripciones SET estado_inscripcion = 1 WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
             }
-        if(mysqli_query($link, $vSql)) {
-            //se envia mail de notificacion de inscripcion al profesor
-            $vSqlmail = "SELECT a.legajo, a.nombre_apellido, m.nombre_materia, c.fecha_consulta, c.hora_consulta, p.mail  FROM inscripciones i 
-                            INNER JOIN consultas c on i.id_consulta = c.id_consulta
-                            INNER JOIN alumnos a on i.id_alumno = a.legajo
-                            INNER JOIN profesores p on p.id_profesor = c.id_profesor
-                            INNER JOIN materias m on c.id_materia = m.id_materia
-                            WHERE i.id_consulta = $vIDconsulta AND i.id_alumno = $vIDalumno";
-            $vResultadoMail = mysqli_query($link, $vSqlmail);
-            
-            while ($fila = mysqli_fetch_array($vResultadoMail))
-                    {
-                        $legajoAlumno = $fila['legajo'];
-                        $nombreAlumno = $fila['nombre_apellido'];
-                        $Emateria = $fila['nombre_materia'];
-                        $Efecha = $fila['fecha_consulta'];
-                        $Ehora = $fila['hora_consulta'];
-                        $EmailProfesor = $fila['mail'];
-                    }
-
-            $destinatario = $EmailProfesor;
-            $asunto = "Nueva inscripción a consultas - UTN";
-            $cuerpo = "
-            <html>
-            <head>
-            <title>UTN - Consultas</title>
-            </head>
-            <body>
-            <p>Un nuevo alumno se ha inscrito a consulta</p>
-            <p>Legajo: ".$legajoAlumno." </p> 
-            <p>Alumno: ".$nombreAlumno." </p> 
-            <p>Materia: ".$Emateria." </p>
-            <p>Fecha: ".$Efecha." </p>
-            <p>Hora: ".$Ehora." </p>
-            </body>
-            </html>";
-            $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
-            $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-            $cabeceras .= 'From: me@you.com' . "\r\n";
-            mail($destinatario,$asunto,$cuerpo,$cabeceras);
-            //se envia mail de notificacion de inscripcion al profesor
-
-            $vTipoMensaje = "success";
-            $vMensaje = "Se ha inscripto exitosamente";
+            if(mysqli_query($link, $vSql)) {
+                //se envia mail de notificacion de inscripcion al profesor
+                $vSqlmail = "SELECT a.legajo, a.nombre_apellido, m.nombre_materia, c.fecha_consulta, c.hora_consulta, p.mail  FROM inscripciones i 
+                                INNER JOIN consultas c on i.id_consulta = c.id_consulta
+                                INNER JOIN alumnos a on i.id_alumno = a.legajo
+                                INNER JOIN profesores p on p.id_profesor = c.id_profesor
+                                INNER JOIN materias m on c.id_materia = m.id_materia
+                                WHERE i.id_consulta = $vIDconsulta AND i.id_alumno = $vIDalumno AND c.fecha_consulta ";
+                $vResultadoMail = mysqli_query($link, $vSqlmail);
+                
+                while ($fila = mysqli_fetch_array($vResultadoMail))
+                        {
+                            $legajoAlumno = $fila['legajo'];
+                            $nombreAlumno = $fila['nombre_apellido'];
+                            $Emateria = $fila['nombre_materia'];
+                            $Efecha = $fila['fecha_consulta'];
+                            $Ehora = $fila['hora_consulta'];
+                            $EmailProfesor = $fila['mail'];
+                        }
+    
+                $destinatario = $EmailProfesor;
+                $asunto = "Nueva inscripción a consultas - UTN";
+                $cuerpo = "
+                <html>
+                <head>
+                <title>UTN - Consultas</title>
+                </head>
+                <body>
+                <p>Un nuevo alumno se ha inscrito a consulta</p>
+                <p>Legajo: ".$legajoAlumno." </p> 
+                <p>Alumno: ".$nombreAlumno." </p> 
+                <p>Materia: ".$Emateria." </p>
+                <p>Fecha: ".$Efecha." </p>
+                <p>Hora: ".$Ehora." </p>
+                </body>
+                </html>";
+                $cabeceras  = 'MIME-Version: 1.0' . "\r\n";
+                $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+                $cabeceras .= 'From: me@you.com' . "\r\n";
+                mail($destinatario,$asunto,$cuerpo,$cabeceras);
+                //se envia mail de notificacion de inscripcion al profesor
+    
+                $vTipoMensaje = "success";
+                $vMensaje = "Se ha inscripto exitosamente";
+            }
+            else{
+                $vTipoMensaje = "danger";
+                $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            }
         }
         else{
             $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            $vMensaje = "Consulta no válida.";
         }
     }
     include("headerAlumno.php");
@@ -135,7 +144,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         $vFechaHasta = $_POST ['to'];
     }
     else {
-        $vFechaHasta = date_add(new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires')),date_interval_create_from_date_string('30 days'));
+        $vFechaHasta = date_add(new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires')),date_interval_create_from_date_string('60 days'));
         $vFechaHasta = $vFechaHasta->format('Y-m-d');
     }
 
@@ -146,11 +155,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'
                 and not exists ( SELECT * FROM inscripciones i where i.id_consulta = c.id_consulta 
                                         and i.id_alumno = '$vIDalumno'
-                                        and i.estado_inscripcion != 4)";
-
-    if (!empty($_POST ['from'])) {
-        $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
-    }
+                                        and i.estado_inscripcion != 4) 
+                                        and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR) 
+                                        and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
 
     if (!empty($_POST ['materia']) && $_POST ['materia']!="0") {
         $vMateriaFiltro = $_POST ['materia'];

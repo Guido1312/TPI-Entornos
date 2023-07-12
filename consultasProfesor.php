@@ -51,37 +51,59 @@ function getDate( element ) {
 if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
     header("location:index.php");
 }
-elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
+else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     include("conexion.inc");
     $vIDprofesor = $_SESSION['id_profesor'];
     date_default_timezone_set("America/Argentina/Buenos_Aires");
     $vHoraLimiteBloqueo = strtotime('+ 2 hour');
 
-    if (!empty($_POST ['actionType']) && ($_POST ['actionType'] == 'bloquear'))
+    if (!empty($_POST ['actionType']))
     {
-        if (empty($_POST ['id_consulta']))
-        {
-            $vMensaje = 'Invalid request.';
-        }
-        elseif (empty($_POST ['motivo']) || ($_POST ['motivo'] == ''))
-        {
-            $vMensaje = 'Debe ingresar un motivo de bloqueo.';
-        }
-        else
-        {
-            $vIdConsulta = $_POST['id_consulta'];
-            $vMotivoBloqueo = $_POST['motivo'];
-            $vSql = "UPDATE consultas SET motivo_cancelacion = '$vMotivoBloqueo', id_estado_consulta = 3
-            where id_consulta = $vIdConsulta";
-            echo ($vSql);
-
-            if(mysqli_query($link, $vSql)) {
-                $vTipoMensaje = 'success';
-                $vMensaje = 'Consulta bloqueada.';
+        if($_POST ['actionType'] == 'bloquear'){
+            if (empty($_POST ['id_consulta']))
+            {
+                $vMensaje = 'Invalid request.';
             }
-            else {
-                $vTipoMensaje = 'success';
-                $vMensaje = 'Error al bloquear la consulta.';
+            else if (empty($_POST ['motivo']) || ($_POST ['motivo'] == ''))
+            {
+                $vMensaje = 'Debe ingresar un motivo de bloqueo.';
+            }
+            else
+            {
+                $vIdConsulta = $_POST['id_consulta'];
+                $vMotivoBloqueo = $_POST['motivo'];
+                $vSql = "UPDATE consultas SET motivo_cancelacion = '$vMotivoBloqueo', id_estado_consulta = 3
+                where id_consulta = $vIdConsulta";
+
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = 'success';
+                    $vMensaje = 'Consulta bloqueada.';
+                }
+                else {
+                    $vTipoMensaje = 'danger';
+                    $vMensaje = 'Error al bloquear la consulta.';
+                }
+            }
+        }
+        if($_POST ['actionType'] == 'consultaRealizada'){
+            if (empty($_POST ['id_consulta']))
+            {
+                $vMensaje = 'Invalid request.';
+            }
+            else
+            {
+                $vIdConsulta = $_POST['id_consulta'];
+                $vSql = "UPDATE consultas SET id_estado_consulta = 2
+                where id_consulta = $vIdConsulta";
+
+                if(mysqli_query($link, $vSql)) {
+                    $vTipoMensaje = 'success';
+                    $vMensaje = 'Consulta marcada como realizada.';
+                }
+                else {
+                    $vTipoMensaje = 'danger';
+                    $vMensaje = 'Error al marcar como realizada la consulta.';
+                }
             }
         }
     }
@@ -159,7 +181,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         
         ?>
 
-
         </div>
         <div class="table-responsive">
             <table class="table">
@@ -199,7 +220,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                         else if (strtotime($fila['fecha_consulta'])>$vHoraLimiteBloqueo or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteBloqueo))) {
                         ?>
                             <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal<?php echo ($fila['id_consulta']); ?>"> Bloquear </button></td>
-                            
+                        
                         <!-- Modal Bloqueo -->
                         <div class="modal fade" id="modal<?php echo ($fila['id_consulta']); ?>" tabindex="-1" role="dialog"
                             aria-labelledby="modalbloqueo<?php echo ($fila['id_consulta']); ?>" aria-hidden="true">
@@ -229,11 +250,19 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                         </div>
                         <?php
                         }
-                        else {
-                            ?>
-                            <td><button type="button" class="btn btn-danger" disabled
-                            title="El bloqueo ya no está disponible para esta consulta."> Bloquear </button></td>
-                        <?php
+                        else {    
+                            if($fila['id_estado_consulta'] == 2) {?>
+                            <td><button type="button" class="btn btn-info" disabled
+                            title="La consulta ya fue realizada."> Realizada </button></td>
+                            <?php
+                            }
+                            if($fila['id_estado_consulta'] == 1) {?>
+                                <form action="consultasProfesor.php" method="POST">
+                                    <input type="hidden" name="id_consulta" id="id_realizar<?php echo ($fila['id_consulta']); ?>" value="<?php echo ($fila['id_consulta']); ?>">
+                                    <td><button type="submit" class="btn btn-info" name="actionType" value="consultaRealizada"> Marcar como realizada </button></td>
+                                </form>
+                                <?php
+                                }
                         }
                         ?>
 
