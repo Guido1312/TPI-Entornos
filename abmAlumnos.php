@@ -298,7 +298,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         value="<?php echo ($fila['nombre_apellido'])?> " required>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="inputMail">Mail</label>
+                                    <label for="inputMail">Mail <span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['legajo']); ?>"
                                         value="<?php echo ($fila['mail'])?> " required>
                                 </div>
@@ -417,15 +417,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
                             <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                        <label for="inputLegajo">Legajo</label>
+                                        <label for="inputLegajo">Legajo <span class="data-required">*</span></label>
                                         <input name="inputLegajo" type="number" class="form-control" id="inputLegajo" required>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="inputNombre">Nombre y apellido</label>
+                                        <label for="inputNombre">Nombre y apellido <span class="data-required">*</span></label>
                                         <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                                     </div>
                                     <div class="form-group col-md-6">
-                                        <label for="inputMail">Mail</label>
+                                        <label for="inputMail">Mail <span class="data-required">*</span></label>
                                         <input name="inputMail" type="email" class="form-control" id="inputMail" required>
                                     </div>
                                     <div class="form-group col-md-6">
