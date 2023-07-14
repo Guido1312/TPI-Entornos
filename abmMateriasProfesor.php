@@ -172,7 +172,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </div>
                     <div class="modal-body">
                             <div class="form-group">
-                            <label for="selectMateria">Materia</label>
+                            <label for="selectMateria">Materia<span class="data-required">*</span></label>
                                 <select class="select-materias" name="selectMateria" id="selectMateria" required>
                                     <?php 
                             foreach($materias as $materia)

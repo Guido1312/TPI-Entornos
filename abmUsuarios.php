@@ -246,15 +246,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </div>
                     <div class="modal-body">
                             <div class="form-group col-md-6">
-                                <label for="inputDni">DNI</label>
+                                <label for="inputDni">DNI<span class="data-required">*</span></label>
                                 <input name="inputDni" type="number" class="form-control" id="inputDni" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputNombre">Nombre de Usuario</label>
+                                <label for="inputNombre">Nombre de Usuario<span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputPassword">Contraseña</label>
+                                <label for="inputPassword">Contraseña<span class="data-required">*</span></label>
                                 <input name="inputPassword" type="text" class="form-control" id="inputPassword" required>
                             </div>
                             <div class="form-group col-md-6">
@@ -309,17 +309,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </div>
                     <div class="modal-body">
                             <div class="form-group col-md-6">
-                                <label for="inputDni">DNI</label>
+                                <label for="inputDni">DNI<span class="data-required">*</span></label>
                                 <input name="inputDni" type="number" class="form-control" id="inputDni<?php echo ($fila['id_usuario']); ?>"
                                     value="<?php echo ($fila['dni'])?>" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputNombre">Nombre de Usuario</label>
+                                <label for="inputNombre">Nombre de Usuario<span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_usuario']); ?>"
                                     value="<?php echo ($fila['nombre_usuario'])?> " required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputPassword">Contraseña</label>
+                                <label for="inputPassword">Contraseña<span class="data-required">*</span></label>
                                 <input name="inputPassword" type="text" class="form-control" id="inputPassword<?php echo ($fila['id_usuario']); ?>"
                                     value="<?php echo ($fila['password'])?> " required>
                             </div>

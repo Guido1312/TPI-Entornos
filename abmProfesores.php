@@ -287,11 +287,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <label for="inputNombre">Nombre y apellido<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="inputMail">Mail</label>
+                                    <label for="inputMail">Mail<span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail" required>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -339,12 +339,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                    <label for="inputNombre">Nombre y apellido</label>
+                                    <label for="inputNombre">Nombre y apellido<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_profesor']); ?>"
                                         value="<?php echo ($fila['nombre_apellido'])?> " required>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="inputMail">Mail</label>
+                                    <label for="inputMail">Mail<span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['id_profesor']); ?>"
                                         value="<?php echo ($fila['mail'])?> " required>
                                 </div>

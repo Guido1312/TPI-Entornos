@@ -193,7 +193,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                             <div class="form-group col-md-6">
-                                <label for="inputNombre">Nombre de Especialidad</label>
+                                <label for="inputNombre">Nombre de Especialidad <span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                             </div>
                         </div>
@@ -227,7 +227,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                             <div class="form-group col-md-6">
-                                <label for="inputNombre">Nombre de Especialidad</label>
+                                <label for="inputNombre">Nombre de Especialidad <span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputModifNombre<?php echo ($fila['id_especialidad']); ?>"
                                     value="<?php echo ($fila['descripcion'])?> " required>
                             </div>

@@ -196,7 +196,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                    <label for="inputNombre">Nombre de Materia</label>
+                                    <label for="inputNombre">Nombre de Materia <span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -252,7 +252,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </div>
                         <div class="modal-body">
                                 <div class="form-group col-md-6">
-                                    <label for="inputNombre">Nombre de Materia</label>
+                                    <label for="inputNombre">Nombre de Materia<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_materia']); ?>"
                                         value="<?php echo ($fila['nombre_materia'])?> " required>
                                 </div>

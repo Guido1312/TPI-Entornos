@@ -191,7 +191,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                     </div>
                     <div class="modal-body">
                             <div class="form-group col-12">
-                            <label for="selectMateria">Materia</label>
+                            <label for="selectMateria">Materia <span class="data-required">*</span></label>
                                 <select class="select-materias" name="selectMateria" id="selectMateria" required>
                                     <?php 
                             foreach($materias as $materia)
@@ -206,7 +206,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
 
                             <div class="form-group col-4">
-                            <label for="selectDia">Día</label>
+                            <label for="selectDia">Día <span class="data-required">*</span></label>
                                 <select name="selectDia" id="selectDia" required>
                                     <?php 
                             foreach($dias as $dia)
@@ -221,7 +221,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             </div>
 
                             <div class="form-group col-4">
-                                <label for="inputHora">Hora</label>
+                                <label for="inputHora">Hora <span class="data-required">*</span></label>
                                 <input name="inputHora" type="time" class="form-control" id="inputHora" required/>
                             </div>
                     </div>
