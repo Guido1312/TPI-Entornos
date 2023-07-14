@@ -18,21 +18,7 @@ if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
 elseif (isset($_SESSION['usuario'])){
   header("location:index.php");
 }
-// Se envia la contraseña a recuperar
-elseif (!empty($_POST ['actionType']) && $_POST ['actionType']=="recuperacion") {
-    $vEmail = $_POST["inputEmail"];
-    $vSql = "SELECT * FROM usuarios u LEFT JOIN alumnos a on a.id_usuario = u.id_usuario and u.rol = 1
-                                    LEFT JOIN profesores p on p.id_usuario = u.id_usuario and u.rol = 2
-                                    WHERE a.mail = '$vEmail' or p.mail = '$vEmail'";
 
-        $vUsuario = mysqli_query($link, $vSql);
-        while ($fila = mysqli_fetch_array($vUsuario))
-        {
-        $nombreUsuario = $fila['nombre_usuario']; 
-        $password = $fila['password']; 
-        }
-        
-}
 //Login toma datos de la BD
 elseif(isset($_POST['ingresar'])){
     $Lusuario = $_POST["inputUser"];
@@ -107,38 +93,7 @@ elseif(isset($_POST['ingresar'])){
         </div>
     </div>
 
-    <div class="text-center">
-        <a href="#modalRecuperacion" data-toggle="modal" data-target="#modalRecuperacion">
-          Olvidaste tu contraseña?
-        </a>
-    </div>
-  </div>
+
   <?php include("mensaje.php"); ?>
 
-  <!-- Modal Recuperacion -->
-  <div class="modal fade" id="modalRecuperacion" tabindex="-1" role="dialog" aria-labelledby="labellRecuperacion"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-      <form action="login.php" method="post">
-        <div class="modal-header">
-          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Ingrese su correo electronico</h1>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group col-md-6">
-              <label for="inputEmail">Correo</label>
-              <input name="inputEmail" type="text" class="form-control" id="inputEmail" required>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-          <button type="submit" name="actionType" value="recuperacion" class="btn btn-success">Enviar</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
 </body>
