@@ -54,6 +54,8 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     error_reporting(0); //evita que se muestren los warning
     include("conexion.inc");
+    include("headerAlumno.php");
+    try {
     $vIDalumno = $_SESSION['id_alumno'];
 
     $vIDespecialidad = $_SESSION['especialidad'];
@@ -89,7 +91,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             $vMensaje = "Consulta no válida.";
         }
     }
-    include("headerAlumno.php");
     
 
     if (!empty($_POST ['from'])) {
@@ -301,6 +302,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             echo 'active';
         }?>"><a class="page-link" href="<?php echo('inscribir.php?page='.$page)?>"><?php echo($page)?></a></li>
     <?php }
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
     ?>
     </ul>
             

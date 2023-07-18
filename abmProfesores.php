@@ -7,7 +7,7 @@ function validarDatos($vNombre,$vMail,&$vMensaje) {
      $vMensaje = "No se han rellenado todos los campos";
      return false;
     }
-    else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombre))
+    else if(!preg_match('/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/', $vNombre))
     {
      $vTipoMensaje = "danger";
      $vMensaje = "Solo se deben usar letras en el nombre";
@@ -43,6 +43,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
+    try {
 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaProfesor") {
@@ -121,11 +122,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 }
             }
         }
+    }   
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos. Tenga en cuenta que no se puede borrar un profesor con materias/consultas asignadas.";
     }
-
 
     include("headerAdmin.php");
 
+    try {
     if (!empty($_POST ['contiene'])) {
         $vContiene = $_POST ['contiene'];
     }
@@ -152,6 +157,31 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $vSql .= " WHERE p.nombre_apellido LIKE '%$vContiene%' OR p.id_profesor LIKE '%$vContiene%'";
     }
     $vResultado = mysqli_query($link, $vSql);
+    $results_per_page = 5;
+    $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+    $total_pages = ceil(count($data) / $results_per_page);
+
+    if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
+        $current_page = (int) $_GET['page'];
+    } 
+    else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+        $current_page = (int) $_POST['page'];
+    } 
+    else {
+        $current_page = 1;
+    }
+    
+    $offset = ($current_page - 1) * $results_per_page;
+    
+    $data_page = array_slice($data, $offset, $results_per_page);
+
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $numrows = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos.";
+    }
     ?>
 
     <div class="container">
@@ -171,27 +201,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             }
             ?>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
+            <div name="ayudaFiltro" title="Filtre por id o nombre del profesor">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </div>
         </form>
-         <!-- Paginacion -->
-        <?php $results_per_page = 5;
-        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
-        $total_pages = ceil(count($data) / $results_per_page);
-
-        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
-            $current_page = (int) $_GET['page'];
-        } 
-        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
-            $current_page = (int) $_POST['page'];
-        } 
-        else {
-            $current_page = 1;
-        }
-        
-        $offset = ($current_page - 1) * $results_per_page;
-        
-        $data_page = array_slice($data, $offset, $results_per_page);
-        
-        ?>
         
         </div>
         <div class="table-responsive">
@@ -265,11 +281,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         </tbody>
     
         <?php
-    // Liberar conjunto de resultados
-    mysqli_free_result($vResultado);
-    mysqli_free_result($vUsers);
-    // Cerrar la conexion
-    mysqli_close($link);
+        if (isset($vResultado)) {
+            // Liberar conjunto de resultados
+            mysqli_free_result($vResultado);
+            mysqli_free_result($vUsers);
+            // Cerrar la conexion
+            mysqli_close($link);
+        }
     ?>
         </table>
 
@@ -341,12 +359,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                 <div class="form-group col-md-6">
                                     <label for="inputNombre">Nombre y apellido<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_profesor']); ?>"
-                                        value="<?php echo ($fila['nombre_apellido'])?> " required>
+                                        value="<?php echo ($fila['nombre_apellido'])?>" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputMail">Mail<span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['id_profesor']); ?>"
-                                        value="<?php echo ($fila['mail'])?> " required>
+                                        value="<?php echo ($fila['mail'])?>" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="selectUser">Usuario</label>

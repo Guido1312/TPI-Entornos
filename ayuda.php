@@ -13,7 +13,7 @@
 
 if (isset($_SESSION['usuario']) & ($_SESSION['rol']==1 || $_SESSION['rol']==2)){
 include("conexion.inc");
-
+try {
 $vRol = $_SESSION['rol'];
 $vSql = "SELECT * FROM preguntas_frecuentes p where p.id_rol_usuario = '$vRol' ";
 $vDatos = mysqli_query($link, $vSql);
@@ -35,6 +35,13 @@ else {
 $offset = ($current_page - 1) * $results_per_page;
 
 $data_page = array_slice($data, $offset, $results_per_page);
+} catch (mysqli_sql_exception $e) {
+    $total_pages = 0;
+    $numrows = 0;
+    $data_page = [];
+    $vTipoMensaje = "danger";
+    $vMensaje = "Problemas de conexión a la base de datos.";
+}
 
 if ($_SESSION['rol']==1){
     include("headerAlumno.php");
@@ -79,10 +86,12 @@ else{
         
     <ul class="row pagination">
         <?php
-        // Liberar conjunto de resultados
-        mysqli_free_result($vDatos);
-        // Cerrar la conexion
-        mysqli_close($link);
+        if (isset($vDatos)) {
+            // Liberar conjunto de resultados
+            mysqli_free_result($vDatos);
+            // Cerrar la conexion
+            mysqli_close($link);
+        }
         for ($page = 1; $page <= $total_pages; $page++) {?>
         <li class="page-item
         <?php

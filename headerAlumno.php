@@ -79,8 +79,15 @@
                             <img src="images/iconLogoUTN.png" alt="" style="max-inline-size: 15%;">
                         </a>
                     </div>
-
-                    <?php include("notificaciones.php"); ?>
+                    <?php
+                    try {
+                     include("notificaciones.php"); 
+                    } catch (mysqli_sql_exception $e) {
+                        $vTipoMensaje = "danger";
+                        $vMensaje = "Problemas de conexión a la base de datos";
+                    }
+                    ?>
+                    
 
                     <div class="nav-item dropdown">
                         <a class="nav-item nav-link w-100 dropdown-toggle mr-md-2" href="#" title="Perfil" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -128,6 +135,7 @@
             <div class="container-fluid">
                     <div>
                         <?php
+                        try {
                         $vRol = $_SESSION['rol'];
 
                         $vUrlActual = $_SERVER['REQUEST_URI'];
@@ -154,6 +162,10 @@
                                 <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
                                 <?php
                             }
+                        }
+                        } catch (mysqli_sql_exception $e) {
+                            $vTipoMensaje = "danger";
+                            $vMensaje = "Problemas de conexión a la base de datos";
                         }
                         ?>
                     </div>

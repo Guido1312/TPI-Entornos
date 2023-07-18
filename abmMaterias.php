@@ -16,6 +16,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
 
+    try {
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaMateria") {
         $vNombre = $_POST["inputNombre"];
@@ -61,7 +62,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         }
     }
 
-
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos. Tenga en cuenta que no pueden borrarse materias con consultas o alumnos vinculados.";
+    }
 
 
     include("headerAdmin.php");
@@ -69,6 +73,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     if (!empty($_POST ['contiene'])) {
         $vContiene = $_POST ['contiene'];
     }
+    try {
     $vSqlEspecialidad = "SELECT * FROM especialidades";
     $vEspecialidades = mysqli_query($link, $vSqlEspecialidad);
     $especialidades = mysqli_fetch_all($vEspecialidades,MYSQLI_ASSOC);
@@ -79,6 +84,29 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $vSql .= " WHERE m.nombre_materia LIKE '%$vContiene%'";
     }
     $vResultado = mysqli_query($link, $vSql);
+    $results_per_page = 10;
+    $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+    $total_pages = ceil(count($data) / $results_per_page);
+
+    if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
+        $current_page = (int) $_GET['page'];
+    } 
+    else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+        $current_page = (int) $_POST['page'];
+    } 
+    else {
+        $current_page = 1;
+    }
+    
+    $offset = ($current_page - 1) * $results_per_page;
+    
+    $data_page = array_slice($data, $offset, $results_per_page);
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error de conexión de la base de datos.";
+    }
 
     ?>
 
@@ -101,26 +129,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             ?>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
-         <!-- Paginacion -->
-         <?php $results_per_page = 10;
-        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
-        $total_pages = ceil(count($data) / $results_per_page);
-
-        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
-            $current_page = (int) $_GET['page'];
-        } 
-        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
-            $current_page = (int) $_POST['page'];
-        } 
-        else {
-            $current_page = 1;
-        }
-        
-        $offset = ($current_page - 1) * $results_per_page;
-        
-        $data_page = array_slice($data, $offset, $results_per_page);
-        
-        ?>
         
         </div>
         <div class="table-responsive">
@@ -174,11 +182,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         </tbody>
     
         <?php
+    if (isset($vResultado)) {
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
     mysqli_free_result($vEspecialidades);
     // Cerrar la conexion
     mysqli_close($link);
+    }
     ?>
         </table>
 
@@ -254,7 +264,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                 <div class="form-group col-md-6">
                                     <label for="inputNombre">Nombre de Materia<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_materia']); ?>"
-                                        value="<?php echo ($fila['nombre_materia'])?> " required>
+                                        value="<?php echo ($fila['nombre_materia'])?>" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                 <label for="selectEspecialidad">Especialidad correspondiente</label>

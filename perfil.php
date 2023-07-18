@@ -156,7 +156,7 @@ else{
                                         <div class="form-group col-md-6">
                                             <label for="inputNombre">Nombre de usuario</label>
                                             <input name="inputNombre" type="text" class="form-control" id="inputNombre"
-                                                value="<?php echo ($usuario)?> " readonly>
+                                                value="<?php echo ($usuario)?>" readonly>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="inputActualPass">Ingrese contraseña actual <span class="data-required">*</span></label>

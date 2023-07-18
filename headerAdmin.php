@@ -131,6 +131,7 @@
                                 and m.idmapa_sitio=msp.idmapa_sitio
                                 and msp.idmapa_sitio_anterior=ma.idmapa_sitio
                                 order by orden desc";
+                        try {        
                         $vResultado = mysqli_query($link, $vSql);
                         while ($fila = mysqli_fetch_array($vResultado))
                         {
@@ -144,6 +145,10 @@
                                 <a href="<?php echo ($fila['path']) ?>" ><?php echo (' > '.$fila['descripcion']) ?> </a>
                                 <?php
                             }
+                        }
+                        } catch (mysqli_sql_exception $e) {
+                            $vTipoMensaje = "danger";
+                            $vMensaje = "Problemas de conexión a la base de datos";
                         }
                         ?>
                     </div>

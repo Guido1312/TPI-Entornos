@@ -7,7 +7,7 @@ function validarDatos($vNombre,&$vMensaje) {
      $vMensaje = "No se han rellenado todos los campos";
      return false;
     }
-    else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombre))
+    else if(!preg_match('/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/', $vNombre))
     {
      $vTipoMensaje = "danger";
      $vMensaje = "Solo se deben usar letras en el nombre";
@@ -38,6 +38,8 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
 
+    try {
+    
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaEspecialidad") {
         $vNombre = trim($_POST["inputNombre"]);
@@ -85,25 +87,22 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         }
     }
 
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos. Tenga en cuenta que no pueden borrarse especialidades con materias cargadas.";
+    }
 
 
 
     include("headerAdmin.php");
     
 
-    $vSql = "SELECT * FROM especialidades";
-    $vResultado = mysqli_query($link, $vSql);
-
-    ?>
-
-
-    <h1>Gestión de especialidades</h1>
-
-     <!-- Paginacion -->
-     <?php $results_per_page = 3;
+    try {
+        $vSql = "SELECT * FROM especialidades";
+        $vResultado = mysqli_query($link, $vSql);
+        $results_per_page = 3;
         $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
         $total_pages = ceil(count($data) / $results_per_page);
-
         if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
             $current_page = (int) $_GET['page'];
         } 
@@ -117,8 +116,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $offset = ($current_page - 1) * $results_per_page;
         
         $data_page = array_slice($data, $offset, $results_per_page);
-        
-        ?>
+
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error recuperando las especialidades de la base de datos.";
+    }
+
+    ?>
+
+
+    <h1>Gestión de especialidades</h1>
         
         <div class="table-responsive">
         <table class="table">
@@ -172,10 +181,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         </tbody>
     
         <?php
+    if (isset($vResultado)) {
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
     // Cerrar la conexion
     mysqli_close($link);
+    }
     ?>
         </table>
 
@@ -229,7 +240,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="form-group col-md-6">
                                 <label for="inputNombre">Nombre de Especialidad <span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputModifNombre<?php echo ($fila['id_especialidad']); ?>"
-                                    value="<?php echo ($fila['descripcion'])?> " required>
+                                    value="<?php echo ($fila['descripcion'])?>" required>
                             </div>
                         </div>
                         <div class="modal-footer">

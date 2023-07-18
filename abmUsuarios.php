@@ -51,6 +51,8 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=3){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
 
+    try {
+
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaUsuario") {
         $vDNI = trim($_POST["inputDni"]);
@@ -103,13 +105,17 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             }
         }
     }
-
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos. Tenga en cuenta que no se puede borrar un usuario vinculado a un alumno o profesor.";
+    }
 
     include("headerAdmin.php");
 
     if (!empty($_POST ['contiene'])) {
         $vContiene = $_POST ['contiene'];
     }
+    try {
     $vSqlRol = "SELECT * FROM roles_usuario";
     $vRoles = mysqli_query($link, $vSqlRol);
     $roles = mysqli_fetch_all($vRoles,MYSQLI_ASSOC);
@@ -122,6 +128,30 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $vSql .= " WHERE u.nombre_usuario LIKE '%$vContiene%'";
     }
     $vResultado = mysqli_query($link, $vSql);
+    $results_per_page = 5;
+    $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+    $total_pages = ceil(count($data) / $results_per_page);
+
+    if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
+        $current_page = (int) $_GET['page'];
+    } 
+    else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+        $current_page = (int) $_POST['page'];
+    } 
+    else {
+        $current_page = 1;
+    }
+    
+    $offset = ($current_page - 1) * $results_per_page;
+    
+    $data_page = array_slice($data, $offset, $results_per_page);
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $numrows = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos.";
+    }
     ?>
 
     <div class="container">
@@ -142,27 +172,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             ?>
             <button type="submit" name="actionType" value="filtrar" class="btn btn-primary btn-sm">Filtrar</button>
         </form>
-        <!-- Paginacion -->
-        <?php $results_per_page = 5;
-        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
-        $total_pages = ceil(count($data) / $results_per_page);
-
-        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
-            $current_page = (int) $_GET['page'];
-        } 
-        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
-            $current_page = (int) $_POST['page'];
-        } 
-        else {
-            $current_page = 1;
-        }
-        
-        $offset = ($current_page - 1) * $results_per_page;
-        
-        $data_page = array_slice($data, $offset, $results_per_page);
-        
-        ?>
-        
 
         </div>
         <div class="table-responsive">
@@ -224,11 +233,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         </tbody>
     
         <?php
-    // Liberar conjunto de resultados
-    mysqli_free_result($vResultado);
-    mysqli_free_result($vRoles);
-    // Cerrar la conexion
-    mysqli_close($link);
+        if (isset($vResultado)) {
+            // Liberar conjunto de resultados
+            mysqli_free_result($vResultado);
+            mysqli_free_result($vRoles);
+            // Cerrar la conexion
+            mysqli_close($link);
+        }
     ?>
         </table>
 
@@ -316,12 +327,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                             <div class="form-group col-md-6">
                                 <label for="inputNombre">Nombre de Usuario<span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_usuario']); ?>"
-                                    value="<?php echo ($fila['nombre_usuario'])?> " required>
+                                    value="<?php echo ($fila['nombre_usuario'])?>" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="inputPassword">Contraseña<span class="data-required">*</span></label>
                                 <input name="inputPassword" type="text" class="form-control" id="inputPassword<?php echo ($fila['id_usuario']); ?>"
-                                    value="<?php echo ($fila['password'])?> " required>
+                                    value="<?php echo ($fila['password'])?>" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="selectRole">Rol</label>

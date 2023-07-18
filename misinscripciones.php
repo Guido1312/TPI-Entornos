@@ -14,8 +14,10 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
+    include("headerAlumno.php");
     $vIDalumno = $_SESSION['usuario'];
 
+    try {
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="cancelar") {
         $vIDconsulta = $_POST["inputIDconsulta"];
         $vSql = "UPDATE inscripciones SET estado_inscripcion = 4 WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
@@ -28,9 +30,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             $vMensaje = "Ha ocurrido un error, intente nuevamente";
         }
     }
-
-    include("headerAlumno.php");
-    
 
     $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                         inner join consultas c on i.id_consulta = c.id_consulta
@@ -84,6 +83,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     mysqli_free_result($vResultado);
     // Cerrar la conexion
     mysqli_close($link);
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
     ?>
 
         </table>

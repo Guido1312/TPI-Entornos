@@ -19,7 +19,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         header("location:abmProfesores.php");
     }
     include("conexion.inc");
+    include("headerAdmin.php");
     $vIdProfesor = $_POST['id_profesor'];
+    try {
 
     $vSqlProfesor = "SELECT * FROM profesores where id_profesor = $vIdProfesor";
     $vProfesor = mysqli_query($link, $vSqlProfesor);
@@ -60,9 +62,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             $vMensaje = "Ha ocurrido un error, intente nuevamente";
         }
     }
-
-
-    include("headerAdmin.php");
+    
 
     $vSqlMaterias = "SELECT m.*, e.descripcion FROM materias m
                      inner join especialidades e on m.id_especialidad = e.id_especialidad;";
@@ -74,6 +74,16 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             inner join materias_profesor mp on m.id_materia = mp.id_materia
             and mp.id_profesor = $vIdProfesor";
     $vResultado = mysqli_query($link, $vSql);
+    $data_page = mysqli_fetch_all($vResultado,MYSQLI_ASSOC);
+    $numrows = mysqli_num_rows($vResultado);
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $numrows = 0;
+        $nombreProfesor = '';
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos.";
+    }
 
     ?>
 
@@ -99,7 +109,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             </thead>
 
             <?php
-    $data_page = mysqli_fetch_all($vResultado,MYSQLI_ASSOC);
+    if ($numrows==0)
+    {
+        ?>
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                Aún no se registraron materias para este profesor
+            </td>
+        </tr>
+        <?php
+    }
+    else
+    { 
     foreach ($data_page as $fila)
     {?>
             <tr>
@@ -117,6 +138,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 </td>
             </tr>
             <?php
+    }
     }
     ?>
         </table>
@@ -151,11 +173,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     <?php
     }
-    // Liberar conjunto de resultados
-    mysqli_free_result($vResultado);
-    mysqli_free_result($vMaterias);
-    // Cerrar la conexion
-    mysqli_close($link);
+    if (isset($vResultado)) {
+        // Liberar conjunto de resultados
+        mysqli_free_result($vResultado);
+        mysqli_free_result($vMaterias);
+        // Cerrar la conexion
+        mysqli_close($link);
+    }
     ?>
 
     <!-- Modal Alta -->

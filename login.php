@@ -10,7 +10,6 @@ include("head.html");
 
 <body>
   <?php
-error_reporting(0); //evita que se muestren los warning
 include("conexion.inc");
 if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
   session_destroy();
@@ -23,6 +22,8 @@ elseif (isset($_SESSION['usuario'])){
 elseif(isset($_POST['ingresar'])){
     $Lusuario = $_POST["inputUser"];
     $Lpass = $_POST["inputPass"];
+    if (isset($link)) {
+    try {
     $vSql = "SELECT u.*, ea.id_alumno, ea.id_especialidad, p.id_profesor FROM usuarios u 
             LEFT JOIN alumnos a ON a.id_usuario = u.id_usuario
             LEFT JOIN especialidades_alumnos ea ON ea.id_alumno = a.legajo
@@ -44,6 +45,11 @@ elseif(isset($_POST['ingresar'])){
       if (isset($fila['id_profesor'])){
         $idProfesor = $fila['id_profesor'];
       }
+    }
+    } catch (mysqli_sql_exception $e) {
+      $vTipoMensaje = "danger";
+      $vMensaje = "Problemas de conexión a la base de datos";
+    }
     }
 
     if(isset($Lusuario) && isset($Lpass))

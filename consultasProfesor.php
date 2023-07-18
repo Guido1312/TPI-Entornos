@@ -53,10 +53,11 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
 }
 else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     include("conexion.inc");
+    include("headerProfesor.php");
     $vIDprofesor = $_SESSION['id_profesor'];
     date_default_timezone_set("America/Argentina/Buenos_Aires");
     $vHoraLimiteBloqueo = strtotime('+ 2 hour');
-
+    try {
     if (!empty($_POST ['actionType']))
     {
         if($_POST ['actionType'] == 'bloquear'){
@@ -108,8 +109,6 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         }
     }
 
-    include("headerProfesor.php");
-
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
     }
@@ -126,7 +125,31 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
     }
                                     
-        $vResultado = mysqli_query($link, $vSql);
+    $vResultado = mysqli_query($link, $vSql);
+    $results_per_page = 15;
+    $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
+    $total_pages = ceil(count($data) / $results_per_page);
+
+    if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
+        $current_page = (int) $_GET['page'];
+    } 
+    else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
+        $current_page = (int) $_POST['page'];
+    } 
+    else {
+        $current_page = 1;
+    }
+    
+    $offset = ($current_page - 1) * $results_per_page;
+    
+    $data_page = array_slice($data, $offset, $results_per_page);
+
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }    
         ?>
         <h1>Administración de consultas</h1>
         <div class="container">
@@ -159,27 +182,6 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 ?>
                 <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
             </form>
-
-            <!-- Paginacion -->
-         <?php $results_per_page = 15;
-        $data = mysqli_fetch_all($vResultado, MYSQLI_ASSOC);
-        $total_pages = ceil(count($data) / $results_per_page);
-
-        if (isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] <= $total_pages) {
-            $current_page = (int) $_GET['page'];
-        } 
-        else if (isset($_POST['page']) && is_numeric($_POST['page']) && $_POST['page'] <= $total_pages) {
-            $current_page = (int) $_POST['page'];
-        } 
-        else {
-            $current_page = 1;
-        }
-        
-        $offset = ($current_page - 1) * $results_per_page;
-        
-        $data_page = array_slice($data, $offset, $results_per_page);
-        
-        ?>
 
         </div>
         <div class="table-responsive">
@@ -269,10 +271,12 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                     </tr>
         <?php
         }
-        // Liberar conjunto de resultados
-        mysqli_free_result($vResultado);
-        // Cerrar la conexion
-        mysqli_close($link);
+        if (isset($vResultado)) {
+            // Liberar conjunto de resultados
+            mysqli_free_result($vResultado);
+            // Cerrar la conexion
+            mysqli_close($link);
+        }
         ?>
 
             </table>

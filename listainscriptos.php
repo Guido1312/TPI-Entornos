@@ -26,6 +26,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     include("conexion.inc");
     include("headerProfesor.php");
+    try {
     $vIDprofesor = $_SESSION['id_profesor'];
     $vIDconsulta = $_POST['idconsulta'];
 
@@ -67,6 +68,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     mysqli_free_result($vResultado);
     // Cerrar la conexion
     mysqli_close($link);
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
     ?>
         </table>
     </div>

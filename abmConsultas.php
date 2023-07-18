@@ -22,6 +22,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     include("conexion.inc");
     $vIdProfesor = $_POST['id_profesor'];
 
+    try {
     $vSqlProfesor = "SELECT * FROM profesores where id_profesor = $vIdProfesor";
     $vProfesor = mysqli_query($link, $vSqlProfesor);
     while ($fila = mysqli_fetch_array($vProfesor))
@@ -33,7 +34,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         header("location:abmProfesores.php");
     }
 
- 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaConsulta") {
         $vMateria = $_POST["selectMateria"];
@@ -63,10 +63,16 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             $vMensaje = "Ha ocurrido un error, intente nuevamente";
         }
     }
+    } catch (mysqli_sql_exception $e) {
+        $nombreProfesor = '';
+        $vTipoMensaje = "danger";
+        $vMensaje = "Error al ejecutar la operación en la base de datos.";
+    }
 
 
     include("headerAdmin.php");
-    
+
+    try {
     $vSqlDias = "SELECT * FROM dias_consulta";
     $vDias = mysqli_query($link, $vSqlDias);
     $dias = mysqli_fetch_all($vDias,MYSQLI_ASSOC);
@@ -84,6 +90,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             inner join dias_consulta dc on dc.id_dia_consulta = pc.id_dia_consulta
             where pc.id_profesor = $vIdProfesor";
     $vResultado = mysqli_query($link, $vSql);
+    $data_page = mysqli_fetch_all($vResultado,MYSQLI_ASSOC);
+    $numrows = mysqli_num_rows($vResultado);
+    } catch (mysqli_sql_exception $e) {
+        $total_pages = 0;
+        $numrows = 0;
+        $data_page = [];
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos.";
+    }
 
     ?>
 
@@ -110,7 +125,19 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             </thead>
 
     <?php
-    $data_page = mysqli_fetch_all($vResultado,MYSQLI_ASSOC);
+    
+    if ($numrows==0)
+    {
+        ?>
+        <tr>
+            <td colspan="4" style="text-align: center;">
+                Aún no se registraron consultas para este profesor
+            </td>
+        </tr>
+        <?php
+    }
+    else
+    { 
     foreach ($data_page as $fila)
     {?>
             <tr>
@@ -129,6 +156,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 </td>
             </tr>
             <?php
+    }
     }
     ?>
         </table>
@@ -169,12 +197,14 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         </div>
     <?php
     }
+    if (isset($vResultado)) {
     // Liberar conjunto de resultados
     mysqli_free_result($vResultado);
     mysqli_free_result($vMaterias);
     mysqli_free_result($vDias);
     // Cerrar la conexion
     mysqli_close($link);
+    }
     ?>
 
     <!-- Modal Alta -->

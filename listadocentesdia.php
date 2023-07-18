@@ -40,6 +40,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     }
 
 
+    try {
     $vSql = "SELECT * FROM consultas c inner join profesores p on c.id_profesor = p.id_profesor
                                         inner join materias m on c.id_materia = m.id_materia
                                         where c.fecha_consulta = '$vFechaSeleccionada';";
@@ -89,6 +90,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     mysqli_free_result($vResultado);
     // Cerrar la conexion
     mysqli_close($link);
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
     ?>
         </table>
     </div>
