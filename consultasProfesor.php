@@ -53,7 +53,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=2){
 }
 else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     include("conexion.inc");
-    include("headerProfesor.php");
+    
     $vIDprofesor = $_SESSION['id_profesor'];
     date_default_timezone_set("America/Argentina/Buenos_Aires");
     $vHoraLimiteBloqueo = strtotime('+ 2 hour');
@@ -108,7 +108,12 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             }
         }
     }
-
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    } 
+    include("headerProfesor.php");
+    try {
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
     }

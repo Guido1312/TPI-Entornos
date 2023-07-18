@@ -32,7 +32,6 @@ $vSqlDatos = "SELECT * FROM alumnos a inner join especialidades_alumnos ea on a.
       $mail= $fila['mail'];
       $especialidad= $fila['descripcion'];
       mysqli_data_seek($vDatos, 0);
-      include("headerAlumno.php");
 }
 else{
     $vSqlDatos = "SELECT * FROM profesores p inner join usuarios u on u.id_usuario = p.id_usuario
@@ -46,7 +45,6 @@ else{
       $legajo = $fila['id_profesor'];
       $dni= $fila['dni'];
       $mail= $fila['mail'];
-      include("headerProfesor.php");
 }
 
 
@@ -79,6 +77,14 @@ else{
             }
         }
     }
+
+    if ($_SESSION['rol']==1){
+              include("headerAlumno.php");
+        }
+        else{
+              include("headerProfesor.php");
+        }
+        
 ?>
 <br>
 <br>

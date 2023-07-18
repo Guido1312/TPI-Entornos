@@ -14,7 +14,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
-    include("headerAlumno.php");
+    
     $vIDalumno = $_SESSION['usuario'];
 
     try {
@@ -30,7 +30,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             $vMensaje = "Ha ocurrido un error, intente nuevamente";
         }
     }
-
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
+    include("headerAlumno.php");
+    try {
     $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                         inner join consultas c on i.id_consulta = c.id_consulta
                                         inner join profesores p on p.id_profesor = c.id_profesor

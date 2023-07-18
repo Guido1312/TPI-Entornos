@@ -54,7 +54,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     error_reporting(0); //evita que se muestren los warning
     include("conexion.inc");
-    include("headerAlumno.php");
+    
     try {
     $vIDalumno = $_SESSION['id_alumno'];
 
@@ -91,8 +91,14 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             $vMensaje = "Consulta no válida.";
         }
     }
-    
+    } catch (mysqli_sql_exception $e) {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Problemas de conexión a la base de datos";
+    }
 
+    include("headerAlumno.php");
+    
+    try{
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
     }

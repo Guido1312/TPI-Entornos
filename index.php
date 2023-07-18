@@ -88,11 +88,11 @@ include("head.html");
                             <a href="consultasProfesor.php" class="stretched-link"></a>
                             </div>
                         </div>
-                        <div class="card" style="max-width: 500px;">
+                        <div class="card">
                             <img src="images/iconCalendar.png" class="card-img-top" alt="Calendario academico">
                             <div class="card-body content-center">
                             <h5 class="card-title">Calendario académico</h5> 
-                            <a href="https://es.wikipedia.org/wiki/Desierto" class="stretched-link"></a>
+                            <a class="stretched-link" href="#modalCalendario" data-toggle="modal" data-target="#modalCalendario" > </a>
                             </div>
                         </div>
                     </div>
