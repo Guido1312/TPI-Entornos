@@ -1,10 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `consultasutn` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `consultasutn`;
 -- MySQL dump 10.13  Distrib 8.0.29, for Win64 (x86_64)
 --
--- Host: localhost    Database: consultasutn
+-- Host: tvcpw8tpu4jvgnnq.cbetxkdyhwsb.us-east-1.rds.amazonaws.com    Database: c1lglv9dmosspu2q
 -- ------------------------------------------------------
--- Server version	8.0.29
+-- Server version	8.0.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -16,6 +14,14 @@ USE `consultasutn`;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
+
+--
+-- GTID state at the beginning of the backup 
+--
+
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '';
 
 --
 -- Table structure for table `alumnos`
@@ -80,10 +86,10 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `ciclos_lectivos_AFTER_INSERT` AFTER INSERT ON `ciclos_lectivos` FOR EACH ROW BEGIN
-  CALL `consultasutn`.`agregar_vacaciones`(new.fecha_inicio_vacaciones, new.fecha_fin_vacaciones);
+/*!50003 CREATE*/ /*!50017 DEFINER=`omzwmyajx1pnuzc1`@`%`*/ /*!50003 TRIGGER `ciclos_lectivos_AFTER_INSERT` AFTER INSERT ON `ciclos_lectivos` FOR EACH ROW BEGIN
+	CALL `consultasutn`.`agregar_vacaciones`(new.fecha_inicio_vacaciones, new.fecha_fin_vacaciones);
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -114,9 +120,9 @@ CREATE TABLE `consultas` (
   KEY `fk_consultas_profesor_consulta_idx` (`id_profesor_consulta`),
   CONSTRAINT `fk_consultas_estado_consulta` FOREIGN KEY (`id_estado_consulta`) REFERENCES `estados_consulta` (`id_estado_consulta`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_consultas_materias` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_consultas_profesor_consulta` FOREIGN KEY (`id_profesor_consulta`) REFERENCES `profesor_consulta` (`id_profesor_consulta`) ON DELETE SET NULL,
+  CONSTRAINT `fk_consultas_profesor_consulta` FOREIGN KEY (`id_profesor_consulta`) REFERENCES `profesor_consulta` (`id_profesor_consulta`) ON DELETE CASCADE,
   CONSTRAINT `fk_consultas_profesores` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=404 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=485 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,7 +131,7 @@ CREATE TABLE `consultas` (
 
 LOCK TABLES `consultas` WRITE;
 /*!40000 ALTER TABLE `consultas` DISABLE KEYS */;
-INSERT INTO `consultas` VALUES (214,'20:00:00','2023-06-02',1,NULL,1,21,NULL),(215,'20:00:00','2023-06-09',1,NULL,1,21,NULL),(216,'20:00:00','2023-06-16',1,NULL,1,21,NULL),(217,'20:00:00','2023-06-23',1,NULL,1,21,NULL),(218,'20:00:00','2023-06-30',1,NULL,1,21,NULL),(219,'20:00:00','2023-07-07',1,NULL,1,21,NULL),(220,'20:00:00','2023-07-14',1,NULL,1,21,NULL),(221,'20:00:00','2023-07-21',1,NULL,1,21,NULL),(222,'20:00:00','2023-07-28',1,NULL,1,21,NULL),(223,'20:00:00','2023-08-04',1,NULL,1,21,NULL),(224,'20:00:00','2023-08-11',1,NULL,1,21,NULL),(225,'20:00:00','2023-08-18',1,NULL,1,21,NULL),(226,'20:00:00','2023-08-25',1,NULL,1,21,NULL),(227,'20:00:00','2023-09-01',1,NULL,1,21,NULL),(228,'20:00:00','2023-09-08',1,NULL,1,21,NULL),(229,'20:00:00','2023-09-15',1,NULL,1,21,NULL),(230,'20:00:00','2023-09-22',1,NULL,1,21,NULL),(231,'20:00:00','2023-09-29',1,NULL,1,21,NULL),(232,'20:00:00','2023-10-06',1,NULL,1,21,NULL),(233,'20:00:00','2023-10-20',1,NULL,1,21,NULL),(234,'20:00:00','2023-10-27',1,NULL,1,21,NULL),(235,'20:00:00','2023-11-03',1,NULL,1,21,NULL),(236,'20:00:00','2023-11-10',1,NULL,1,21,NULL),(237,'20:00:00','2023-11-17',1,NULL,1,21,NULL),(238,'20:00:00','2023-11-24',1,NULL,1,21,NULL),(239,'20:00:00','2023-12-01',1,NULL,1,21,NULL),(240,'20:00:00','2023-12-15',1,NULL,1,21,NULL),(241,'20:00:00','2024-02-09',1,NULL,1,21,NULL),(242,'20:00:00','2024-02-16',1,NULL,1,21,NULL),(243,'20:00:00','2024-02-23',1,NULL,1,21,NULL),(244,'20:00:00','2024-03-01',1,NULL,1,21,NULL),(245,'20:00:00','2024-03-08',1,NULL,1,21,NULL),(246,'22:33:00','2023-05-29',1,NULL,1,21,NULL),(247,'22:33:00','2023-06-05',1,NULL,1,21,NULL),(248,'22:33:00','2023-06-12',1,NULL,1,21,NULL),(249,'22:33:00','2023-06-26',1,NULL,1,21,NULL),(250,'22:33:00','2023-07-03',1,NULL,1,21,NULL),(251,'22:33:00','2023-07-10',1,NULL,1,21,NULL),(252,'22:33:00','2023-07-17',1,NULL,1,21,NULL),(253,'22:33:00','2023-07-24',1,NULL,1,21,NULL),(254,'22:33:00','2023-07-31',1,NULL,1,21,NULL),(255,'22:33:00','2023-08-07',1,NULL,1,21,NULL),(256,'22:33:00','2023-08-14',1,NULL,1,21,NULL),(257,'22:33:00','2023-08-28',1,NULL,1,21,NULL),(258,'22:33:00','2023-09-04',1,NULL,1,21,NULL),(259,'22:33:00','2023-09-11',1,NULL,1,21,NULL),(260,'22:33:00','2023-09-18',1,NULL,1,21,NULL),(261,'22:33:00','2023-09-25',1,NULL,1,21,NULL),(262,'22:33:00','2023-10-02',1,NULL,1,21,NULL),(263,'22:33:00','2023-10-09',1,NULL,1,21,NULL),(264,'22:33:00','2023-10-23',1,NULL,1,21,NULL),(265,'22:33:00','2023-10-30',1,NULL,1,21,NULL),(266,'22:33:00','2023-11-06',1,NULL,1,21,NULL),(267,'22:33:00','2023-11-13',1,NULL,1,21,NULL),(268,'22:33:00','2023-11-27',1,NULL,1,21,NULL),(269,'22:33:00','2023-12-04',1,NULL,1,21,NULL),(270,'22:33:00','2023-12-11',1,NULL,1,21,NULL),(271,'22:33:00','2023-12-18',1,NULL,1,21,NULL),(272,'22:33:00','2024-02-12',1,NULL,1,21,NULL),(273,'22:33:00','2024-02-19',1,NULL,1,21,NULL),(274,'22:33:00','2024-02-26',1,NULL,1,21,NULL),(275,'22:33:00','2024-03-04',1,NULL,1,21,NULL),(276,'22:33:00','2024-03-11',1,NULL,1,21,NULL),(277,'17:35:00','2023-05-24',1,NULL,1,23,NULL),(278,'17:35:00','2023-05-31',1,NULL,1,23,NULL),(279,'17:35:00','2023-06-07',1,NULL,1,23,NULL),(280,'17:35:00','2023-06-14',1,NULL,1,23,NULL),(281,'17:35:00','2023-06-21',1,NULL,1,23,NULL),(282,'17:35:00','2023-06-28',1,NULL,1,23,NULL),(283,'17:35:00','2023-07-05',1,NULL,1,23,NULL),(284,'17:35:00','2023-07-12',1,NULL,1,23,NULL),(285,'17:35:00','2023-07-19',1,NULL,1,23,NULL),(286,'17:35:00','2023-07-26',1,NULL,1,23,NULL),(287,'17:35:00','2023-08-02',1,NULL,1,23,NULL),(288,'17:35:00','2023-08-09',1,NULL,1,23,NULL),(289,'17:35:00','2023-08-16',1,NULL,1,23,NULL),(290,'17:35:00','2023-08-23',1,NULL,1,23,NULL),(291,'17:35:00','2023-08-30',1,NULL,1,23,NULL),(292,'17:35:00','2023-09-06',1,NULL,1,23,NULL),(293,'17:35:00','2023-09-13',1,NULL,1,23,NULL),(294,'17:35:00','2023-09-20',1,NULL,1,23,NULL),(295,'17:35:00','2023-09-27',1,NULL,1,23,NULL),(296,'17:35:00','2023-10-04',1,NULL,1,23,NULL),(297,'17:35:00','2023-10-11',1,NULL,1,23,NULL),(298,'17:35:00','2023-10-18',1,NULL,1,23,NULL),(299,'17:35:00','2023-10-25',1,NULL,1,23,NULL),(300,'17:35:00','2023-11-01',1,NULL,1,23,NULL),(301,'17:35:00','2023-11-08',1,NULL,1,23,NULL),(302,'17:35:00','2023-11-15',1,NULL,1,23,NULL),(303,'17:35:00','2023-11-22',1,NULL,1,23,NULL),(304,'17:35:00','2023-11-29',1,NULL,1,23,NULL),(305,'17:35:00','2023-12-06',1,NULL,1,23,NULL),(306,'17:35:00','2023-12-13',1,NULL,1,23,NULL),(307,'17:35:00','2024-02-07',1,NULL,1,23,NULL),(308,'17:35:00','2024-02-14',1,NULL,1,23,NULL),(309,'17:35:00','2024-02-21',1,NULL,1,23,NULL),(310,'17:35:00','2024-02-28',1,NULL,1,23,NULL),(311,'17:35:00','2024-03-06',1,NULL,1,23,NULL),(312,'17:35:00','2024-03-13',1,NULL,1,23,NULL),(313,'19:20:00','2023-05-24',1,NULL,1,22,NULL),(314,'19:20:00','2023-05-31',1,NULL,1,22,NULL),(315,'19:20:00','2023-06-07',1,NULL,1,22,NULL),(316,'19:20:00','2023-06-14',1,NULL,1,22,NULL),(317,'19:20:00','2023-06-21',1,NULL,1,22,NULL),(318,'19:20:00','2023-06-28',1,NULL,1,22,NULL),(319,'19:20:00','2023-07-05',1,NULL,1,22,NULL),(320,'19:20:00','2023-07-12',1,NULL,1,22,NULL),(321,'19:20:00','2023-07-19',1,NULL,1,22,NULL),(322,'19:20:00','2023-07-26',1,NULL,1,22,NULL),(323,'19:20:00','2023-08-02',1,NULL,1,22,NULL),(324,'19:20:00','2023-08-09',1,NULL,1,22,NULL),(325,'19:20:00','2023-08-16',1,NULL,1,22,NULL),(326,'19:20:00','2023-08-23',1,NULL,1,22,NULL),(327,'19:20:00','2023-08-30',1,NULL,1,22,NULL),(328,'19:20:00','2023-09-06',1,NULL,1,22,NULL),(329,'19:20:00','2023-09-13',1,NULL,1,22,NULL),(330,'19:20:00','2023-09-20',1,NULL,1,22,NULL),(331,'19:20:00','2023-09-27',1,NULL,1,22,NULL),(332,'19:20:00','2023-10-04',1,NULL,1,22,NULL),(333,'19:20:00','2023-10-11',1,NULL,1,22,NULL),(334,'19:20:00','2023-10-18',1,NULL,1,22,NULL),(335,'19:20:00','2023-10-25',1,NULL,1,22,NULL),(336,'19:20:00','2023-11-01',1,NULL,1,22,NULL),(337,'19:20:00','2023-11-08',1,NULL,1,22,NULL),(338,'19:20:00','2023-11-15',1,NULL,1,22,NULL),(339,'19:20:00','2023-11-22',1,NULL,1,22,NULL),(340,'19:20:00','2023-11-29',1,NULL,1,22,NULL),(341,'19:20:00','2023-12-06',1,NULL,1,22,NULL),(342,'19:20:00','2023-12-13',1,NULL,1,22,NULL),(343,'19:20:00','2024-02-07',1,NULL,1,22,NULL),(344,'19:20:00','2024-02-14',1,NULL,1,22,NULL),(345,'19:20:00','2024-02-21',1,NULL,1,22,NULL),(346,'19:20:00','2024-02-28',1,NULL,1,22,NULL),(347,'19:20:00','2024-03-06',1,NULL,1,22,NULL),(348,'19:20:00','2024-03-13',1,NULL,1,22,NULL),(349,'20:00:00','2023-06-12',1,NULL,1,1,43),(350,'20:00:00','2023-06-26',3,'Pint',1,1,43),(351,'20:00:00','2023-07-03',1,NULL,1,1,43),(352,'20:00:00','2023-07-10',1,NULL,1,1,43),(353,'20:00:00','2023-07-17',1,NULL,1,1,43),(354,'20:00:00','2023-07-24',1,NULL,1,1,43),(355,'20:00:00','2023-07-31',1,NULL,1,1,43),(356,'20:00:00','2023-08-07',1,NULL,1,1,43),(357,'20:00:00','2023-08-14',1,NULL,1,1,43),(358,'20:00:00','2023-08-28',1,NULL,1,1,43),(359,'20:00:00','2023-09-04',1,NULL,1,1,43),(360,'20:00:00','2023-09-11',1,NULL,1,1,43),(361,'20:00:00','2023-09-18',1,NULL,1,1,43),(362,'20:00:00','2023-09-25',1,NULL,1,1,43),(363,'20:00:00','2023-10-02',1,NULL,1,1,43),(364,'20:00:00','2023-10-09',1,NULL,1,1,43),(365,'20:00:00','2023-10-23',1,NULL,1,1,43),(366,'20:00:00','2023-10-30',1,NULL,1,1,43),(367,'20:00:00','2023-11-06',1,NULL,1,1,43),(368,'20:00:00','2023-11-13',1,NULL,1,1,43),(369,'20:00:00','2023-11-27',1,NULL,1,1,43),(370,'20:00:00','2023-12-04',1,NULL,1,1,43),(371,'20:00:00','2023-12-11',1,NULL,1,1,43),(372,'20:00:00','2023-12-18',1,NULL,1,1,43),(373,'20:00:00','2024-02-12',1,NULL,1,1,43),(374,'20:00:00','2024-02-19',1,NULL,1,1,43),(375,'20:00:00','2024-02-26',1,NULL,1,1,43),(376,'20:00:00','2024-03-04',1,NULL,1,1,43),(377,'20:00:00','2024-03-11',1,NULL,1,1,43);
+INSERT INTO `consultas` VALUES (214,'20:00:00','2023-06-02',1,NULL,1,21,NULL),(215,'20:00:00','2023-06-09',1,NULL,1,21,NULL),(216,'20:00:00','2023-06-16',1,NULL,1,21,NULL),(217,'20:00:00','2023-06-23',1,NULL,1,21,NULL),(218,'20:00:00','2023-06-30',1,NULL,1,21,NULL),(219,'20:00:00','2023-07-07',1,NULL,1,21,NULL),(220,'20:00:00','2023-07-14',1,NULL,1,21,NULL),(221,'20:00:00','2023-07-21',1,NULL,1,21,NULL),(222,'20:00:00','2023-07-28',1,NULL,1,21,NULL),(223,'20:00:00','2023-08-04',1,NULL,1,21,NULL),(224,'20:00:00','2023-08-11',1,NULL,1,21,NULL),(225,'20:00:00','2023-08-18',1,NULL,1,21,NULL),(226,'20:00:00','2023-08-25',1,NULL,1,21,NULL),(227,'20:00:00','2023-09-01',1,NULL,1,21,NULL),(228,'20:00:00','2023-09-08',1,NULL,1,21,NULL),(229,'20:00:00','2023-09-15',1,NULL,1,21,NULL),(230,'20:00:00','2023-09-22',1,NULL,1,21,NULL),(231,'20:00:00','2023-09-29',1,NULL,1,21,NULL),(232,'20:00:00','2023-10-06',1,NULL,1,21,NULL),(233,'20:00:00','2023-10-20',1,NULL,1,21,NULL),(234,'20:00:00','2023-10-27',1,NULL,1,21,NULL),(235,'20:00:00','2023-11-03',1,NULL,1,21,NULL),(236,'20:00:00','2023-11-10',1,NULL,1,21,NULL),(237,'20:00:00','2023-11-17',1,NULL,1,21,NULL),(238,'20:00:00','2023-11-24',1,NULL,1,21,NULL),(239,'20:00:00','2023-12-01',1,NULL,1,21,NULL),(240,'20:00:00','2023-12-15',1,NULL,1,21,NULL),(241,'20:00:00','2024-02-09',1,NULL,1,21,NULL),(242,'20:00:00','2024-02-16',1,NULL,1,21,NULL),(243,'20:00:00','2024-02-23',1,NULL,1,21,NULL),(244,'20:00:00','2024-03-01',1,NULL,1,21,NULL),(245,'20:00:00','2024-03-08',1,NULL,1,21,NULL),(246,'22:33:00','2023-05-29',1,NULL,1,21,NULL),(247,'22:33:00','2023-06-05',1,NULL,1,21,NULL),(248,'22:33:00','2023-06-12',1,NULL,1,21,NULL),(249,'22:33:00','2023-06-26',1,NULL,1,21,NULL),(250,'22:33:00','2023-07-03',1,NULL,1,21,NULL),(251,'22:33:00','2023-07-10',1,NULL,1,21,NULL),(252,'22:33:00','2023-07-17',1,NULL,1,21,NULL),(253,'22:33:00','2023-07-24',1,NULL,1,21,NULL),(254,'22:33:00','2023-07-31',1,NULL,1,21,NULL),(255,'22:33:00','2023-08-07',1,NULL,1,21,NULL),(256,'22:33:00','2023-08-14',1,NULL,1,21,NULL),(257,'22:33:00','2023-08-28',1,NULL,1,21,NULL),(258,'22:33:00','2023-09-04',1,NULL,1,21,NULL),(259,'22:33:00','2023-09-11',1,NULL,1,21,NULL),(260,'22:33:00','2023-09-18',1,NULL,1,21,NULL),(261,'22:33:00','2023-09-25',1,NULL,1,21,NULL),(262,'22:33:00','2023-10-02',1,NULL,1,21,NULL),(263,'22:33:00','2023-10-09',1,NULL,1,21,NULL),(264,'22:33:00','2023-10-23',1,NULL,1,21,NULL),(265,'22:33:00','2023-10-30',1,NULL,1,21,NULL),(266,'22:33:00','2023-11-06',1,NULL,1,21,NULL),(267,'22:33:00','2023-11-13',1,NULL,1,21,NULL),(268,'22:33:00','2023-11-27',1,NULL,1,21,NULL),(269,'22:33:00','2023-12-04',1,NULL,1,21,NULL),(270,'22:33:00','2023-12-11',1,NULL,1,21,NULL),(271,'22:33:00','2023-12-18',1,NULL,1,21,NULL),(272,'22:33:00','2024-02-12',1,NULL,1,21,NULL),(273,'22:33:00','2024-02-19',1,NULL,1,21,NULL),(274,'22:33:00','2024-02-26',1,NULL,1,21,NULL),(275,'22:33:00','2024-03-04',1,NULL,1,21,NULL),(276,'22:33:00','2024-03-11',1,NULL,1,21,NULL),(277,'17:35:00','2023-05-24',1,NULL,1,23,NULL),(278,'17:35:00','2023-05-31',1,NULL,1,23,NULL),(279,'17:35:00','2023-06-07',1,NULL,1,23,NULL),(280,'17:35:00','2023-06-14',1,NULL,1,23,NULL),(281,'17:35:00','2023-06-21',1,NULL,1,23,NULL),(282,'17:35:00','2023-06-28',1,NULL,1,23,NULL),(283,'17:35:00','2023-07-05',1,NULL,1,23,NULL),(284,'17:35:00','2023-07-12',1,NULL,1,23,NULL),(285,'17:35:00','2023-07-19',1,NULL,1,23,NULL),(286,'17:35:00','2023-07-26',1,NULL,1,23,NULL),(287,'17:35:00','2023-08-02',1,NULL,1,23,NULL),(288,'17:35:00','2023-08-09',1,NULL,1,23,NULL),(289,'17:35:00','2023-08-16',1,NULL,1,23,NULL),(290,'17:35:00','2023-08-23',1,NULL,1,23,NULL),(291,'17:35:00','2023-08-30',1,NULL,1,23,NULL),(292,'17:35:00','2023-09-06',1,NULL,1,23,NULL),(293,'17:35:00','2023-09-13',1,NULL,1,23,NULL),(294,'17:35:00','2023-09-20',1,NULL,1,23,NULL),(295,'17:35:00','2023-09-27',1,NULL,1,23,NULL),(296,'17:35:00','2023-10-04',1,NULL,1,23,NULL),(297,'17:35:00','2023-10-11',1,NULL,1,23,NULL),(298,'17:35:00','2023-10-18',1,NULL,1,23,NULL),(299,'17:35:00','2023-10-25',1,NULL,1,23,NULL),(300,'17:35:00','2023-11-01',1,NULL,1,23,NULL),(301,'17:35:00','2023-11-08',1,NULL,1,23,NULL),(302,'17:35:00','2023-11-15',1,NULL,1,23,NULL),(303,'17:35:00','2023-11-22',1,NULL,1,23,NULL),(304,'17:35:00','2023-11-29',1,NULL,1,23,NULL),(305,'17:35:00','2023-12-06',1,NULL,1,23,NULL),(306,'17:35:00','2023-12-13',1,NULL,1,23,NULL),(307,'17:35:00','2024-02-07',1,NULL,1,23,NULL),(308,'17:35:00','2024-02-14',1,NULL,1,23,NULL),(309,'17:35:00','2024-02-21',1,NULL,1,23,NULL),(310,'17:35:00','2024-02-28',1,NULL,1,23,NULL),(311,'17:35:00','2024-03-06',1,NULL,1,23,NULL),(312,'17:35:00','2024-03-13',1,NULL,1,23,NULL),(313,'19:20:00','2023-05-24',1,NULL,1,22,NULL),(314,'19:20:00','2023-05-31',1,NULL,1,22,NULL),(315,'19:20:00','2023-06-07',1,NULL,1,22,NULL),(316,'19:20:00','2023-06-14',1,NULL,1,22,NULL),(317,'19:20:00','2023-06-21',1,NULL,1,22,NULL),(318,'19:20:00','2023-06-28',1,NULL,1,22,NULL),(319,'19:20:00','2023-07-05',1,NULL,1,22,NULL),(320,'19:20:00','2023-07-12',1,NULL,1,22,NULL),(321,'19:20:00','2023-07-19',1,NULL,1,22,NULL),(322,'19:20:00','2023-07-26',1,NULL,1,22,NULL),(323,'19:20:00','2023-08-02',1,NULL,1,22,NULL),(324,'19:20:00','2023-08-09',1,NULL,1,22,NULL),(325,'19:20:00','2023-08-16',1,NULL,1,22,NULL),(326,'19:20:00','2023-08-23',1,NULL,1,22,NULL),(327,'19:20:00','2023-08-30',1,NULL,1,22,NULL),(328,'19:20:00','2023-09-06',1,NULL,1,22,NULL),(329,'19:20:00','2023-09-13',1,NULL,1,22,NULL),(330,'19:20:00','2023-09-20',1,NULL,1,22,NULL),(331,'19:20:00','2023-09-27',1,NULL,1,22,NULL),(332,'19:20:00','2023-10-04',1,NULL,1,22,NULL),(333,'19:20:00','2023-10-11',1,NULL,1,22,NULL),(334,'19:20:00','2023-10-18',1,NULL,1,22,NULL),(335,'19:20:00','2023-10-25',1,NULL,1,22,NULL),(336,'19:20:00','2023-11-01',1,NULL,1,22,NULL),(337,'19:20:00','2023-11-08',1,NULL,1,22,NULL),(338,'19:20:00','2023-11-15',1,NULL,1,22,NULL),(339,'19:20:00','2023-11-22',1,NULL,1,22,NULL),(340,'19:20:00','2023-11-29',1,NULL,1,22,NULL),(341,'19:20:00','2023-12-06',1,NULL,1,22,NULL),(342,'19:20:00','2023-12-13',1,NULL,1,22,NULL),(343,'19:20:00','2024-02-07',1,NULL,1,22,NULL),(344,'19:20:00','2024-02-14',1,NULL,1,22,NULL),(345,'19:20:00','2024-02-21',1,NULL,1,22,NULL),(346,'19:20:00','2024-02-28',1,NULL,1,22,NULL),(347,'19:20:00','2024-03-06',1,NULL,1,22,NULL),(348,'19:20:00','2024-03-13',1,NULL,1,22,NULL),(349,'20:00:00','2023-06-12',2,NULL,1,1,43),(350,'20:00:00','2023-06-26',3,'Pint',1,1,43),(351,'20:00:00','2023-07-03',1,NULL,1,1,43),(352,'20:00:00','2023-07-10',1,NULL,1,1,43),(353,'20:00:00','2023-07-08',2,'',1,1,43),(354,'20:00:00','2023-07-24',1,NULL,1,1,43),(355,'20:00:00','2023-07-31',3,'me agarro fiebre',1,1,43),(356,'20:00:00','2023-08-07',1,NULL,1,1,43),(357,'20:00:00','2023-08-14',1,NULL,1,1,43),(358,'20:00:00','2023-08-28',1,NULL,1,1,43),(359,'20:00:00','2023-09-04',1,NULL,1,1,43),(360,'20:00:00','2023-09-11',1,NULL,1,1,43),(361,'20:00:00','2023-09-18',1,NULL,1,1,43),(362,'20:00:00','2023-09-25',1,NULL,1,1,43),(363,'20:00:00','2023-10-02',1,NULL,1,1,43),(364,'20:00:00','2023-10-09',1,NULL,1,1,43),(365,'20:00:00','2023-10-23',1,NULL,1,1,43),(366,'20:00:00','2023-10-30',1,NULL,1,1,43),(367,'20:00:00','2023-11-06',1,NULL,1,1,43),(368,'20:00:00','2023-11-13',1,NULL,1,1,43),(369,'20:00:00','2023-11-27',1,NULL,1,1,43),(370,'20:00:00','2023-12-04',1,NULL,1,1,43),(371,'20:00:00','2023-12-11',1,NULL,1,1,43),(372,'20:00:00','2023-12-18',1,NULL,1,1,43),(373,'20:00:00','2024-02-12',1,NULL,1,1,43),(374,'20:00:00','2024-02-19',1,NULL,1,1,43),(375,'20:00:00','2024-02-26',1,NULL,1,1,43),(376,'20:00:00','2024-03-04',1,NULL,1,1,43),(377,'20:00:00','2024-03-11',1,NULL,1,1,43),(378,'21:30:00','2023-07-20',1,NULL,1,2,44),(379,'21:30:00','2023-07-27',1,NULL,1,2,44),(380,'21:30:00','2023-08-03',1,NULL,1,2,44),(381,'21:30:00','2023-08-10',1,NULL,1,2,44),(382,'21:30:00','2023-08-17',1,NULL,1,2,44),(383,'21:30:00','2023-08-24',1,NULL,1,2,44),(384,'21:30:00','2023-08-31',1,NULL,1,2,44),(385,'21:30:00','2023-09-07',1,NULL,1,2,44),(386,'21:30:00','2023-09-14',1,NULL,1,2,44),(387,'21:30:00','2023-09-28',1,NULL,1,2,44),(388,'21:30:00','2023-10-05',1,NULL,1,2,44),(389,'21:30:00','2023-10-12',1,NULL,1,2,44),(390,'21:30:00','2023-10-19',1,NULL,1,2,44),(391,'21:30:00','2023-10-26',1,NULL,1,2,44),(392,'21:30:00','2023-11-02',1,NULL,1,2,44),(393,'21:30:00','2023-11-09',1,NULL,1,2,44),(394,'21:30:00','2023-11-16',1,NULL,1,2,44),(395,'21:30:00','2023-11-23',1,NULL,1,2,44),(396,'21:30:00','2023-11-30',1,NULL,1,2,44),(397,'21:30:00','2023-12-07',1,NULL,1,2,44),(398,'21:30:00','2023-12-14',1,NULL,1,2,44),(399,'21:30:00','2024-02-08',1,NULL,1,2,44),(400,'21:30:00','2024-02-15',1,NULL,1,2,44),(401,'21:30:00','2024-02-22',1,NULL,1,2,44),(402,'21:30:00','2024-02-29',1,NULL,1,2,44),(403,'21:30:00','2024-03-07',1,NULL,1,2,44),(404,'21:30:00','2024-03-14',1,NULL,1,2,44);
 /*!40000 ALTER TABLE `consultas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -135,9 +141,9 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `consultas_AFTER_UPDATE` AFTER UPDATE ON `consultas` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`omzwmyajx1pnuzc1`@`%`*/ /*!50003 TRIGGER `consultas_AFTER_UPDATE` AFTER UPDATE ON `consultas` FOR EACH ROW BEGIN
 	DECLARE v_id_usuario INT;
     DECLARE v_texto VARCHAR(200);
     DECLARE contador INT DEFAULT 0;
@@ -161,6 +167,10 @@ DELIMITER ;;
 			values (v_id_usuario, 'Consulta bloqueada', v_texto, 0, current_date());
             
 		END LOOP;
+    END IF;
+    
+    IF new.id_estado_consulta = 2 THEN 
+		update inscripciones set estado_inscripcion = 2 where id_consulta = new.id_consulta;
     END IF;
 END */;;
 DELIMITER ;
@@ -259,7 +269,7 @@ CREATE TABLE `especialidades_alumnos` (
   KEY `fk_especialidades_alumnos_especialidades_idx` (`id_especialidad`),
   CONSTRAINT `fk_especialidades_alumnos_alumnos` FOREIGN KEY (`id_alumno`) REFERENCES `alumnos` (`legajo`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_especialidades_alumnos_especialidades` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id_especialidad`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -268,7 +278,7 @@ CREATE TABLE `especialidades_alumnos` (
 
 LOCK TABLES `especialidades_alumnos` WRITE;
 /*!40000 ALTER TABLE `especialidades_alumnos` DISABLE KEYS */;
-INSERT INTO `especialidades_alumnos` VALUES (3,1,2),(4,1,3),(5,2,4),(6,2,5),(7,3,6),(26,3,7),(39,1,1),(40,2,1);
+INSERT INTO `especialidades_alumnos` VALUES (3,1,2),(4,1,3),(5,2,4),(6,2,5),(7,3,6),(22,3,7),(23,3,1);
 /*!40000 ALTER TABLE `especialidades_alumnos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +302,7 @@ CREATE TABLE `estados_consulta` (
 
 LOCK TABLES `estados_consulta` WRITE;
 /*!40000 ALTER TABLE `estados_consulta` DISABLE KEYS */;
-INSERT INTO `estados_consulta` VALUES (1,'Pendiente'),(2,'Confirmada'),(3,'Bloqueada'),(4,'Cancelada');
+INSERT INTO `estados_consulta` VALUES (1,'Pendiente'),(2,'Realizada'),(3,'Bloqueada'),(4,'Cancelada');
 /*!40000 ALTER TABLE `estados_consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -338,7 +348,7 @@ CREATE TABLE `inscripciones` (
   KEY `fk_inscripciones_alumno_idx` (`id_alumno`),
   CONSTRAINT `fk_inscripciones_alumno` FOREIGN KEY (`id_alumno`) REFERENCES `alumnos` (`legajo`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `fk_inscripciones_consultas` FOREIGN KEY (`id_consulta`) REFERENCES `consultas` (`id_consulta`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,7 +357,7 @@ CREATE TABLE `inscripciones` (
 
 LOCK TABLES `inscripciones` WRITE;
 /*!40000 ALTER TABLE `inscripciones` DISABLE KEYS */;
-INSERT INTO `inscripciones` VALUES (4,'2023-06-08',1,349,2);
+INSERT INTO `inscripciones` VALUES (4,'2023-06-08',2,349,2),(5,'2023-07-12',2,353,2),(6,'2023-07-18',4,354,2),(7,'2023-07-18',1,355,2);
 /*!40000 ALTER TABLE `inscripciones` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -357,9 +367,9 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `inscripciones_AFTER_INSERT` AFTER INSERT ON `inscripciones` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`omzwmyajx1pnuzc1`@`%`*/ /*!50003 TRIGGER `inscripciones_AFTER_INSERT` AFTER INSERT ON `inscripciones` FOR EACH ROW BEGIN
 	DECLARE v_id_usuario INT;
     DECLARE v_texto VARCHAR(200);
     DECLARE v_materia VARCHAR(45);
@@ -380,7 +390,43 @@ DELIMITER ;;
 
 	insert into notificaciones(id_usuario, titulo,texto,leida,fecha)
 	values (v_id_usuario, 'Nueva inscripción', v_texto, 0, current_date());
-        
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`omzwmyajx1pnuzc1`@`%`*/ /*!50003 TRIGGER `inscripciones_AFTER_UPDATE` AFTER UPDATE ON `inscripciones` FOR EACH ROW BEGIN
+	DECLARE v_id_usuario INT;
+    DECLARE v_texto VARCHAR(200);
+    DECLARE v_materia VARCHAR(45);
+    DECLARE v_fecha DATE;
+	IF new.estado_inscripcion = 4 THEN                        
+		select id_usuario, nombre_materia, fecha_consulta
+		into v_id_usuario, v_materia, v_fecha
+		from consultas c
+		inner join profesores p on c.id_profesor = p.id_profesor
+		inner join materias m on m.id_materia = c.id_materia
+		where c.id_consulta = new.id_consulta;                     
+
+		SELECT concat(nombre_apellido,' ha cancelado su inscripción a la consulta de ', v_materia,
+		' del día ',DATE_FORMAT(v_fecha, '%d %m %Y'),'.')
+		INTO v_texto
+		FROM alumnos a
+		WHERE a.legajo = new.id_alumno;
+
+		insert into notificaciones(id_usuario, titulo,texto,leida,fecha)
+		values (v_id_usuario, 'Inscripción cancelada', v_texto, 0, current_date());
+    END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -412,7 +458,7 @@ CREATE TABLE `mapa_sitio` (
 
 LOCK TABLES `mapa_sitio` WRITE;
 /*!40000 ALTER TABLE `mapa_sitio` DISABLE KEYS */;
-INSERT INTO `mapa_sitio` VALUES (1,3,'Alumnos','abmAlumnos.php'),(2,3,'Profesores','abmProfesores.php'),(3,3,'Especialidades','abmEspecialidades.php'),(4,3,'Materias','abmMaterias.php'),(5,3,'Usuarios','abmUsuarios.php'),(6,3,'Consultas','abmConsultas.php'),(7,3,'Planilla Consultas','listadocentesdia.php'),(8,2,'Administrar Consultas','consultasProfesor.php'),(9,2,'Ver Inscriptos','listaInscriptos.php'),(10,2,'Perfil','perfil.php'),(11,1,'Perfil','perfil.php'),(12,1,'Inscripción a consultas','inscribir.php'),(13,1,'Mis Inscripciones','misinscripciones.php'),(14,1,'Materias de profesor','abmmateriasprofesor.php');
+INSERT INTO `mapa_sitio` VALUES (1,3,'Alumnos','abmAlumnos.php'),(2,3,'Profesores','abmProfesores.php'),(3,3,'Especialidades','abmEspecialidades.php'),(4,3,'Materias','abmMaterias.php'),(5,3,'Usuarios','abmUsuarios.php'),(6,3,'Consultas','abmConsultas.php'),(7,3,'Planilla Consultas','listadocentesdia.php'),(8,2,'Administrar Consultas','consultasProfesor.php'),(9,2,'Ver Inscriptos','listaInscriptos.php'),(10,2,'Perfil','perfil.php'),(11,1,'Perfil','perfil.php'),(12,1,'Inscripción a consultas','inscribir.php'),(13,1,'Mis Inscripciones','misinscripciones.php'),(14,3,'Materias','abmMateriasProfesor.php');
 /*!40000 ALTER TABLE `mapa_sitio` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -441,7 +487,7 @@ CREATE TABLE `mapa_sitio_previos` (
 
 LOCK TABLES `mapa_sitio_previos` WRITE;
 /*!40000 ALTER TABLE `mapa_sitio_previos` DISABLE KEYS */;
-INSERT INTO `mapa_sitio_previos` VALUES (2,14,1),(6,2,1),(9,8,1),(14,2,1);
+INSERT INTO `mapa_sitio_previos` VALUES (6,2,1),(9,8,1),(14,2,1);
 /*!40000 ALTER TABLE `mapa_sitio_previos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -459,7 +505,7 @@ CREATE TABLE `materias` (
   PRIMARY KEY (`id_materia`),
   KEY `fk_materias_especialidad_idx` (`id_especialidad`),
   CONSTRAINT `fk_materias_especialidad` FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id_especialidad`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -516,7 +562,7 @@ CREATE TABLE `notificaciones` (
   PRIMARY KEY (`id_notificacion`),
   KEY `fk_notificaciones_usuarios_idx` (`id_usuario`),
   CONSTRAINT `fk_notificaciones_usuarios` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id_usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -525,7 +571,7 @@ CREATE TABLE `notificaciones` (
 
 LOCK TABLES `notificaciones` WRITE;
 /*!40000 ALTER TABLE `notificaciones` DISABLE KEYS */;
-INSERT INTO `notificaciones` VALUES (1,2,'Prueba','Texto de prueba para una notificación',0,'2023-05-23'),(2,7,'Nueva inscripción','Guido Lorenzotti se ha inscripto a la consulta de Analisis de Sistemas del día 12 06 2023.',1,'2023-06-08');
+INSERT INTO `notificaciones` VALUES (1,2,'Prueba','Texto de prueba para una notificación',1,'2023-05-23'),(2,7,'Nueva inscripción','Guido Lorenzotti se ha inscripto a la consulta de Analisis de Sistemas del día 12 06 2023.',1,'2023-06-08'),(3,7,'Nueva inscripción','Guido Lorenzotti se ha inscripto a la consulta de Analisis de Sistemas del día 17 07 2023.',1,'2023-07-12'),(4,2,'Consulta bloqueada','Jorge Iwanow ha cancelado la consulta del día 2023-07-17 por: prueba de bloqueo 1',1,'2023-07-12'),(5,7,'Nueva inscripción','Guido Lorenzotti se ha inscripto a la consulta de Analisis de Sistemas del día 24 07 2023.',0,'2023-07-18'),(6,7,'Nueva inscripción','Guido Lorenzotti se ha inscripto a la consulta de Analisis de Sistemas del día 31 07 2023.',1,'2023-07-18'),(7,2,'Consulta bloqueada','Jorge Iwanow ha cancelado la consulta del día 2023-07-31 por: me agarro fiebre',1,'2023-07-18'),(8,7,'Inscripción cancelada','Guido Lorenzotti ha cancelado su inscripción a la consulta de Analisis de Sistemas del día 24 07 2023.',1,'2023-07-18');
 /*!40000 ALTER TABLE `notificaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -577,7 +623,7 @@ CREATE TABLE `profesor_consulta` (
   CONSTRAINT `fk_profesor_consulta_dia` FOREIGN KEY (`id_dia_consulta`) REFERENCES `dias_consulta` (`id_dia_consulta`) ON UPDATE CASCADE,
   CONSTRAINT `fk_profesor_consulta_materia` FOREIGN KEY (`id_materia`) REFERENCES `materias` (`id_materia`) ON UPDATE CASCADE,
   CONSTRAINT `fk_profesor_consulta_profesor` FOREIGN KEY (`id_profesor`) REFERENCES `profesores` (`id_profesor`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -586,7 +632,7 @@ CREATE TABLE `profesor_consulta` (
 
 LOCK TABLES `profesor_consulta` WRITE;
 /*!40000 ALTER TABLE `profesor_consulta` DISABLE KEYS */;
-INSERT INTO `profesor_consulta` VALUES (21,2,2,'15:00:00',24),(22,2,4,'17:00:00',1),(23,3,3,'19:00:00',12),(24,3,2,'15:30:00',15),(25,3,5,'18:00:00',18),(26,4,1,'18:30:00',6),(27,4,3,'15:00:00',21),(28,5,2,'14:30:00',22),(29,5,4,'16:00:00',23),(30,6,5,'13:00:00',4),(31,6,3,'16:00:00',11),(32,6,5,'17:30:00',19),(33,7,1,'13:00:00',5),(34,7,1,'14:30:00',13),(35,7,3,'19:00:00',14),(36,7,4,'13:00:00',20),(37,8,2,'17:00:00',8),(38,8,3,'13:00:00',10),(39,9,2,'16:30:00',17),(40,9,3,'20:00:00',25),(41,10,2,'20:30:00',9),(42,10,4,'20:00:00',9),(43,1,1,'20:00:00',1);
+INSERT INTO `profesor_consulta` VALUES (21,2,2,'15:00:00',24),(22,2,4,'17:00:00',1),(23,3,3,'19:00:00',12),(24,3,2,'15:30:00',15),(25,3,5,'18:00:00',18),(26,4,1,'18:30:00',6),(27,4,3,'15:00:00',21),(28,5,2,'14:30:00',22),(29,5,4,'16:00:00',23),(30,6,5,'13:00:00',4),(31,6,3,'16:00:00',11),(32,6,5,'17:30:00',19),(33,7,1,'13:00:00',5),(34,7,1,'14:30:00',13),(35,7,3,'19:00:00',14),(36,7,4,'13:00:00',20),(37,8,2,'17:00:00',8),(38,8,3,'13:00:00',10),(39,9,2,'16:30:00',17),(40,9,3,'20:00:00',25),(41,10,2,'20:30:00',9),(42,10,4,'20:00:00',9),(43,1,1,'20:00:00',1),(44,1,4,'21:30:00',2);
 /*!40000 ALTER TABLE `profesor_consulta` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -596,9 +642,9 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `profesor_consulta_AFTER_INSERT` AFTER INSERT ON `profesor_consulta` FOR EACH ROW BEGIN
+/*!50003 CREATE*/ /*!50017 DEFINER=`omzwmyajx1pnuzc1`@`%`*/ /*!50003 TRIGGER `profesor_consulta_AFTER_INSERT` AFTER INSERT ON `profesor_consulta` FOR EACH ROW BEGIN
 	CALL InsertarRegistros(
     NEW.id_profesor_consulta,
 	NEW.id_profesor,
@@ -606,25 +652,6 @@ DELIMITER ;;
     NEW.id_dia_consulta,
     NEW.hora
 	);
-END */;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `profesor_consulta_BEFORE_DELETE` BEFORE DELETE ON `profesor_consulta` FOR EACH ROW BEGIN
-	delete from consultasutn.consultas
-    where id_profesor_consulta = old.id_profesor_consulta
-    and id_estado_consulta = 1;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -710,16 +737,12 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,3,40111222,'admin','admin'),(2,1,41656727,'guidolorenzotti','guido1312'),(3,1,41662762,'lautarojuancano','mesa123'),(4,1,32847777,'francozengarini','letritas123'),(5,1,27632243,'ignacioncurone','compu111 '),(6,2,22736000,'mariavillamonte','montana288'),(7,2,36750093,'jorgeiwanow','jorge2023'),(10,1,34546978,'jorgelinarogel','nuevo01'),(11,1,22222222,'valentinaobiedo','segundo01'),(12,1,12333212,'nataliafernandez','prueba'),(13,2,22455454,'alvarohergenreder','alvaro2023'),(14,2,21434589,'josetoscano','jose2023'),(15,2,18887654,'anamarinsaldi','ana2023'),(16,2,32695438,'juanpedraza','juan2023'),(17,2,31457996,'micaelamontaldi','micaela2023'),(18,2,22590304,'hernanpaez','hernan2023'),(19,2,19984483,'ivancerrudo','ivan2023'),(20,2,39226642,'claudiarodriguez','claudia2023');
+INSERT INTO `usuarios` VALUES (1,3,40111222,'admin','admin'),(2,1,41656727,'guidolorenzotti','guido2023'),(3,1,41662762,'lautarojuancano','mesa123'),(4,1,32847777,'francozengarini','letritas123'),(5,1,27632243,'ignacioncurone','compu111 '),(6,2,22736000,'mariavillamonte','montana288'),(7,2,36750093,'jorgeiwanow','jorge2023'),(10,1,34546978,'jorgelinarogel','nuevo01'),(11,1,22222222,'valentinaobiedo','segundo01'),(12,1,12333212,'nataliafernandez','prueba'),(13,2,22455454,'alvarohergenreder','alvaro2023'),(14,2,21434589,'josetoscano','jose2023'),(15,2,18887654,'anamarinsaldi','ana2023'),(16,2,32695438,'juanpedraza','juan2023'),(17,2,31457996,'micaelamontaldi','micaela2023'),(18,2,22590304,'hernanpaez','hernan2023'),(19,2,19984483,'ivancerrudo','ivan2023'),(20,2,39226642,'claudiarodriguez','claudia2023');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'consultasutn'
---
-
---
--- Dumping routines for database 'consultasutn'
+-- Dumping routines for database 'c1lglv9dmosspu2q'
 --
 /*!50003 DROP PROCEDURE IF EXISTS `agregar_vacaciones` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -729,9 +752,9 @@ UNLOCK TABLES;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `agregar_vacaciones`(IN fecha_inicio DATE, IN fecha_fin DATE)
+CREATE DEFINER=`omzwmyajx1pnuzc1`@`%` PROCEDURE `agregar_vacaciones`(IN fecha_inicio DATE, IN fecha_fin DATE)
 BEGIN
     DECLARE v_fecha_actual DATE;    
     SET v_fecha_actual = fecha_inicio;
@@ -756,9 +779,9 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `InsertarRegistros`(
+CREATE DEFINER=`omzwmyajx1pnuzc1`@`%` PROCEDURE `InsertarRegistros`(
 	IN p_id_profesor_consulta INT,
     IN p_id_profesor INT,
     IN p_id_materia INT,
@@ -814,9 +837,9 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
+CREATE DEFINER=`omzwmyajx1pnuzc1`@`%` PROCEDURE `insertar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
 BEGIN
 	if p_id_usuario != '' THEN
 		INSERT INTO alumnos (legajo, nombre_apellido, mail, id_usuario)
@@ -841,9 +864,9 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 SET sql_mode              = 'NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `modificar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
+CREATE DEFINER=`omzwmyajx1pnuzc1`@`%` PROCEDURE `modificar_alumno`(IN p_legajo INT, IN p_nombre_apellido VARCHAR(45), IN p_mail VARCHAR(45), IN p_id_usuario VARCHAR(45), IN p_especialidades VARCHAR(255))
 BEGIN
 	if p_id_usuario != '' THEN
 		UPDATE alumnos SET legajo = p_legajo, nombre_apellido = p_nombre_apellido, mail = p_mail, id_usuario = p_id_usuario
@@ -862,6 +885,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -872,4 +896,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-07-10 20:09:17
+-- Dump completed on 2023-07-17 22:29:10
