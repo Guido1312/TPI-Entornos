@@ -52,7 +52,6 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
     header("location:index.php");
 }
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
-    error_reporting(0); //evita que se muestren los warning
     include("conexion.inc");
     
     try {
@@ -283,10 +282,22 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                     <td><?php echo ($fila['fecha_consulta']); ?></td>
                     <td><?php echo ($fila['hora_consulta']); ?></td>
                     <td> 
+                    <?php
+                    if($fila['id_estado_consulta'] != 3) {
+                    ?>
                         <form action="inscribir.php" method="post">
                             <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta<?php echo ($fila['id_consulta']); ?>" value="<?php echo ($fila['id_consulta']); ?>">
                             <button type="submit" name="actionType" value="inscribirse" class="btn btn-info"> Inscribirse </button>
                         </form>
+                    <?php
+                    }
+                    else{
+                    ?>
+                        <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta<?php echo ($fila['id_consulta']); ?>" value="<?php echo ($fila['id_consulta']); ?>">
+                        <button type="submit" name="actionTypeNone" class="btn btn-danger" disabled title="<?php echo ($fila['motivo_cancelacion']); ?>"> Bloqueada </button>
+                    <?php
+                    }
+                    ?>
                     </td>
                 </tr>
     <?php

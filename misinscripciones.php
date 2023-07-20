@@ -16,7 +16,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
     
     $vIDalumno = $_SESSION['usuario'];
-
+    date_default_timezone_set("America/Argentina/Buenos_Aires");
+    $vHoraLimiteCancelacion = strtotime('+ 24 hour');
     try {
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="cancelar") {
         $vIDconsulta = $_POST["inputIDconsulta"];
@@ -27,7 +28,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         }
         else{
             $vTipoMensaje = "danger";
-            $vMensaje = "Ha ocurrido un error, intente nuevamente";
+            $vMensaje = "Ha ocurrido un error al cancelar, intente nuevamente";
         }
     }
     } catch (mysqli_sql_exception $e) {
@@ -75,10 +76,21 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 <td><?php echo ($fila['nombre_materia']); ?></td>
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
                 <td> 
-                    <form action="misinscripciones.php" method="post">
+                    <?php 
+                    if (strtotime($fila['fecha_consulta'])>$vHoraLimiteCancelacion or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteCancelacion))) {
+                    ?>
+                        <form action="misinscripciones.php" method="post">
+                            <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
+                            <button type="submit" name="actionType" value="cancelar" class="btn btn-danger"> Cancelar inscripcion </button>
+                        </form>
+                    <?php
+                    }
+                    else{ ?>
                         <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
-                        <button type="submit" name="actionType" value="cancelar" class="btn btn-danger"> Cancelar inscripcion </button>
-                    </form>
+                        <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Solo puede cancelar una inscripcion 24hs antes de la consulta." disabled> Cancelar inscripcion </button>
+                    <?php
+                    }
+                    ?>
                 </td>
             </tr>
             <?php

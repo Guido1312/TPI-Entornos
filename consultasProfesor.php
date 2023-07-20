@@ -1,4 +1,32 @@
-<?php session_start(); ?>
+<?php session_start(); 
+// Función para obtener el número del día de la semana (0 para domingo, 1 para lunes, etc.)
+function obtenerNumeroDiaSemana($fecha) {
+    $fecha_obj = DateTimeImmutable::createFromFormat('Y-m-d', $fecha);
+    return (int) $fecha_obj->format('w');
+}
+
+// Función para obtener la fecha correspondiente al día seleccionado en la misma semana y el viernes
+function obtenerFechasSemana($fecha, $dia_semana) {
+    $numero_dia_semana = obtenerNumeroDiaSemana($fecha);
+    $numero_dia_seleccionado = array_search($dia_semana, ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado']);
+
+    $diferencia_dias = ($numero_dia_semana <= $numero_dia_seleccionado)
+        ? $numero_dia_seleccionado - $numero_dia_semana
+        : 7 - $numero_dia_semana + $numero_dia_seleccionado;
+
+    $fecha_obj = DateTimeImmutable::createFromFormat('Y-m-d', $fecha);
+    $fecha_correspondiente = $fecha_obj->modify("+$diferencia_dias day");
+
+    // Obtener la fecha del viernes de la misma semana de la fecha proporcionada ($fecha)
+    $diferencia_dias_viernes = 5 - $numero_dia_semana;
+    $viernes_semana = $fecha_obj->modify("+$diferencia_dias_viernes day");
+
+    return [
+        'fecha_correspondiente' => $fecha_correspondiente,
+        'viernes_semana' => $viernes_semana
+    ];
+}?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -61,6 +89,15 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     if (!empty($_POST ['actionType']))
     {
         if($_POST ['actionType'] == 'bloquear'){
+            $fecha = $_POST["fechaConsultaReal"];
+            $dia_semana = $_POST["selectDia"];
+            $horaAlternativa = $_POST["inputHora"];    
+            echo $fecha;
+            // Obtener la fecha correspondiente y el viernes de la misma semana
+            $fechas_semana = obtenerFechasSemana($fecha, $dia_semana);
+            $fecha_correspondiente = $fechas_semana['fecha_correspondiente'];
+            $viernes_semana = $fechas_semana['viernes_semana'];
+
             if (empty($_POST ['id_consulta']))
             {
                 $vMensaje = 'Invalid request.';
@@ -69,13 +106,22 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             {
                 $vMensaje = 'Debe ingresar un motivo de bloqueo.';
             }
+            else if (empty($_POST["selectDia"] || $_POST["inputHora"]))
+            {
+                $vMensaje = 'Debe una fecha y hora para la consulta alternativa';
+            }
+            else if ($fecha_correspondiente < DateTime::createFromFormat('Y-m-d', $fecha) || $fecha_correspondiente > $viernes_semana)
+            {
+                $fecha_correspondiente = null;
+                $vMensaje = 'La fecha no puede ser menor que la fecha real de la consulta, ni mayor al viernes de esa semana';
+            }
             else
             {
                 $vIdConsulta = $_POST['id_consulta'];
                 $vMotivoBloqueo = $_POST['motivo'];
                 $vSql = "UPDATE consultas SET motivo_cancelacion = '$vMotivoBloqueo', id_estado_consulta = 3
                 where id_consulta = $vIdConsulta";
-
+                //aca crear alta de consulta alternativa con fecha_correspondiente
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = 'success';
                     $vMensaje = 'Consulta bloqueada.';
@@ -243,6 +289,20 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                                         </div>  
                                         <div class="modal-body">
                                             <input name="motivo" type="text" class="form-control" id="motivo<?php echo ($fila['id_consulta']); ?>">
+                                            <input name="fechaConsultaReal" type="hidden" id="fechaConsultaReal<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['fecha_consulta']); ?>">
+                                            <p>Ingrese consulta alternativa</p>
+                                            <label for="selectDia">Día <span class="data-required">*</span></label>
+                                            <select name="selectDia" id="selectDia<?php echo ($fila['id_consulta']); ?>" required>
+                                                <option value="lunes">Lunes</option>
+                                                <option value="martes">Martes</option>
+                                                <option value="miercoles">Miércoles</option>
+                                                <option value="jueves">Jueves</option>
+                                                <option value="viernes">Viernes</option>
+                                                <option value="sabado">Sábado</option>
+                                                <option value="domingo">Domingo</option>
+                                            </select>
+                                            <label for="inputHora">Hora <span class="data-required">*</span></label>
+                                            <input name="inputHora" type="time" class="form-control" id="inputHora<?php echo ($fila['id_consulta']); ?>" required/>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
