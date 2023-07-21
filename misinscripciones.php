@@ -15,7 +15,7 @@ if (isset($_SESSION['usuario']) & $_SESSION['rol']!=1){
 elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     include("conexion.inc");
     
-    $vIDalumno = $_SESSION['usuario'];
+    $vIDalumno = $_SESSION['id_alumno'];
     date_default_timezone_set("America/Argentina/Buenos_Aires");
     $vHoraLimiteCancelacion = strtotime('+ 24 hour');
     try {
@@ -39,11 +39,13 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     try {
     $vSql = "SELECT * FROM inscripciones i inner join alumnos a on i.id_alumno = a.legajo
                                         inner join consultas c on i.id_consulta = c.id_consulta
+                                        inner join estados_consulta e on c.id_estado_consulta = e.id_estado_consulta
                                         inner join profesores p on p.id_profesor = c.id_profesor
                                         inner join materias m on m.id_materia = c.id_materia
                                         where i.id_alumno = '$vIDalumno' and i.estado_inscripcion != 4 
-                                        and c.id_estado_consulta = 1
-                                        and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR)";
+                                        and c.id_estado_consulta in (1,3)
+                                        and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR)
+                                        ";
     $vResultado = mysqli_query($link, $vSql);
 
     if (mysqli_num_rows($vResultado)==0)
@@ -62,6 +64,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                     <th><b>Hora</b></th>
                     <th><b>Materia</b></th>
                     <th><b>Profesor</b></th>
+                    <th><b>Estado</b></th>
                     <th></th>
                 </tr>
             </thead>
@@ -75,6 +78,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                 <td><?php echo ($fila['hora_consulta']); ?></td>
                 <td><?php echo ($fila['nombre_materia']); ?></td>
                 <td><?php echo ($fila['nombre_apellido']); ?></td>
+                <td><?php echo ($fila['nombre_estado']);
+                      if ($fila['id_estado_consulta'] == 3) {
+                        echo (' - Motivo: '.$fila['motivo_cancelacion']);
+                      }
+                    ?></td>
                 <td> 
                     <?php 
                     if (strtotime($fila['fecha_consulta'])>$vHoraLimiteCancelacion or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteCancelacion))) {
@@ -85,8 +93,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                         </form>
                     <?php
                     }
+                    elseif ($fila['id_estado_consulta'] == 3){
+                        ?>
+                        <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Consulta bloqueada." disabled> Cancelar inscripcion </button>
+                        <?php
+                    }
                     else{ ?>
-                        <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
                         <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Solo puede cancelar una inscripcion 24hs antes de la consulta." disabled> Cancelar inscripcion </button>
                     <?php
                     }

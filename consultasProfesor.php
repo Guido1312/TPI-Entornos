@@ -94,7 +94,6 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             $fecha = $_POST["fechaConsultaReal"];
             $dia_semana = $_POST["selectDia"];
             $horaAlternativa = $_POST["inputHora"];    
-            echo $fecha;
             // Obtener la fecha correspondiente y el viernes de la misma semana
             $fechas_semana = obtenerFechasSemana($fecha, $dia_semana);
             $fecha_correspondiente = $fechas_semana['fecha_correspondiente'];
@@ -131,9 +130,8 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                     $vSqlmail = "SELECT m.nombre_materia, c.fecha_consulta, c.hora_consulta, a.mail  FROM inscripciones i 
                                     INNER JOIN consultas c on i.id_consulta = c.id_consulta
                                     INNER JOIN alumnos a on i.id_alumno = a.legajo
-                                    INNER JOIN profesores p on p.id_profesor = c.id_profesor
                                     INNER JOIN materias m on c.id_materia = m.id_materia
-                                    WHERE i.id_consulta = $vIDconsulta";
+                                    WHERE i.id_consulta = $vIdConsulta ";
                     $vResultadoMail = mysqli_query($link, $vSqlmail);
                     while ($fila = mysqli_fetch_array($vResultadoMail))
                         {
@@ -189,7 +187,7 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     } catch (mysqli_sql_exception $e) {
         $vTipoMensaje = "danger";
         $vMensaje = "Problemas de conexión a la base de datos";
-    } 
+    }
     include("headerProfesor.php");
     try {
     if (!empty($_POST ['from'])) {
@@ -302,7 +300,7 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                             title="Consulta bloqueada."> Bloqueada </button></td>
                         <?php
                         }
-                        else if (strtotime($fila['fecha_consulta'])>$vHoraLimiteBloqueo or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteBloqueo))) {
+                        else if (strtotime($fila['fecha_consulta'].' '.$fila['hora_consulta'])>$vHoraLimiteBloqueo ) {
                         ?>
                             <td><button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modal<?php echo ($fila['id_consulta']); ?>"> Bloquear </button></td>
                         
