@@ -91,13 +91,17 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     if (!empty($_POST ['actionType']))
     {
         if($_POST ['actionType'] == 'bloquear'){
-            $fecha = $_POST["fechaConsultaReal"];
-            $dia_semana = $_POST["selectDia"];
-            $horaAlternativa = $_POST["inputHora"];    
-            // Obtener la fecha correspondiente y el viernes de la misma semana
-            $fechas_semana = obtenerFechasSemana($fecha, $dia_semana);
-            $fecha_correspondiente = $fechas_semana['fecha_correspondiente'];
-            $viernes_semana = $fechas_semana['viernes_semana'];
+            if (!empty($_POST["selectDia"] && $_POST["inputHora"]))
+            {
+                $vIdMateria = $_POST["inputMateria"]; //ver si anda
+                $fecha = $_POST["fechaConsultaReal"];
+                $dia_semana = $_POST["selectDia"];
+                $horaAlternativa = $_POST["inputHora"];    
+                // Obtener la fecha correspondiente y el viernes de la misma semana
+                $fechas_semana = obtenerFechasSemana($fecha, $dia_semana);
+                $fecha_correspondiente = $fechas_semana['fecha_correspondiente'];
+                $viernes_semana = $fechas_semana['viernes_semana'];
+            }
 
             if (empty($_POST ['id_consulta']))
             {
@@ -107,10 +111,6 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             {
                 $vMensaje = 'Debe ingresar un motivo de bloqueo.';
             }
-            else if (empty($_POST["selectDia"] || $_POST["inputHora"]))
-            {
-                $vMensaje = 'Debe una fecha y hora para la consulta alternativa';
-            }
             else if ($fecha_correspondiente < DateTime::createFromFormat('Y-m-d', $fecha) || $fecha_correspondiente > $viernes_semana)
             {
                 $fecha_correspondiente = null;
@@ -118,11 +118,24 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             }
             else
             {
+                if (!empty($_POST["selectDia"] && $_POST["inputHora"]))
+                {
+                    $vSql = "INSERT INTO consultas (hora_consulta, fecha_consulta,id_estado_consulta,id_profesor,id_materia)
+                            Values ('$horaAlternativa', '$fecha_correspondiente','1','$vIdProfesor','$vIdMateria')"; //revisar
+                    if(mysqli_query($link, $vSql)) { //esto se corria con una asignacion sino? para no poner este if
+                        $vTipoMensaje = "success";
+                        $vMensaje = "Se ha creado la materia";
+                    }
+                    else{
+                        $vTipoMensaje = "danger";
+                        $vMensaje = "Ha ocurrido un error, intente nuevamente";
+                    }
+                }
+                    
                 $vIdConsulta = $_POST['id_consulta'];
                 $vMotivoBloqueo = $_POST['motivo'];
                 $vSql = "UPDATE consultas SET motivo_cancelacion = '$vMotivoBloqueo', id_estado_consulta = 3
                 where id_consulta = $vIdConsulta";
-                //aca crear alta de consulta alternativa con fecha_correspondiente
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = 'success';
                     $vMensaje = 'Consulta bloqueada.';
@@ -311,28 +324,27 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                                 <div class="modal-content">
                                     <form action="consultasProfesor.php" method="post">  
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modalbloqueo<?php echo ($fila['id_consulta']); ?>">Ingrese 
-                                            motivo de bloqueo:</h5>
+                                            <h5 class="modal-title" id="modalbloqueo<?php echo ($fila['id_consulta']); ?>">Bloqueo de consulta</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>  
                                         <div class="modal-body">
+                                            <p>Ingrese el motivo del bloqueo</p>
                                             <input name="motivo" type="text" class="form-control" id="motivo<?php echo ($fila['id_consulta']); ?>">
                                             <input name="fechaConsultaReal" type="hidden" id="fechaConsultaReal<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['fecha_consulta']); ?>">
                                             <p>Ingrese consulta alternativa</p>
-                                            <label for="selectDia">Día <span class="data-required">*</span></label>
-                                            <select name="selectDia" id="selectDia<?php echo ($fila['id_consulta']); ?>" required>
+                                            <label for="selectDia">Día</label>
+                                            <select name="selectDia" id="selectDia<?php echo ($fila['id_consulta']); ?>">
                                                 <option value="lunes">Lunes</option>
                                                 <option value="martes">Martes</option>
                                                 <option value="miercoles">Miércoles</option>
                                                 <option value="jueves">Jueves</option>
                                                 <option value="viernes">Viernes</option>
-                                                <option value="sabado">Sábado</option>
-                                                <option value="domingo">Domingo</option>
                                             </select>
-                                            <label for="inputHora">Hora <span class="data-required">*</span></label>
-                                            <input name="inputHora" type="time" class="form-control" id="inputHora<?php echo ($fila['id_consulta']); ?>" required/>
+                                            <label for="inputHora">Hora</label>
+                                            <input name="inputHora" type="time" class="form-control" id="inputHora<?php echo ($fila['id_consulta']); ?>">
+                                            <input name="inputMateria" type="hidden" id="inputMateria<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['id_materia']); //necesito pasar este dato de algun modo?>">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

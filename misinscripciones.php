@@ -85,7 +85,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                     ?></td>
                 <td> 
                     <?php 
-                    if (strtotime($fila['fecha_consulta'])>$vHoraLimiteCancelacion or (($fila['fecha_consulta'] == date('Y-m-d')) and (date("G") + strtotime($fila['hora_consulta'])>$vHoraLimiteCancelacion))) {
+                    if (strtotime($fila['fecha_consulta'].' '.$fila['hora_consulta'])>$vHoraLimiteCancelacion) {
                     ?>
                         <form action="misinscripciones.php" method="post">
                             <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
