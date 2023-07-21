@@ -1,4 +1,6 @@
-<?php session_start(); 
+<?php 
+include("sendMail.php");
+session_start(); 
 // Función para obtener el número del día de la semana (0 para domingo, 1 para lunes, etc.)
 function obtenerNumeroDiaSemana($fecha) {
     $fecha_obj = DateTimeImmutable::createFromFormat('Y-m-d', $fecha);
@@ -125,6 +127,36 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = 'success';
                     $vMensaje = 'Consulta bloqueada.';
+                    //se envia mail de notificacion a los alumnos
+                    $vSqlmail = "SELECT m.nombre_materia, c.fecha_consulta, c.hora_consulta, a.mail  FROM inscripciones i 
+                                    INNER JOIN consultas c on i.id_consulta = c.id_consulta
+                                    INNER JOIN alumnos a on i.id_alumno = a.legajo
+                                    INNER JOIN profesores p on p.id_profesor = c.id_profesor
+                                    INNER JOIN materias m on c.id_materia = m.id_materia
+                                    WHERE i.id_consulta = $vIDconsulta";
+                    $vResultadoMail = mysqli_query($link, $vSqlmail);
+                    while ($fila = mysqli_fetch_array($vResultadoMail))
+                        {
+                            $Emateria = $fila['nombre_materia'];
+                            $Efecha = $fila['fecha_consulta'];
+                            $Ehora = $fila['hora_consulta'];
+                            $EmailAlumno = $fila['mail'];
+                            $asunto = "Consulta cancelada";
+                            $cuerpo = "
+                            <html>
+                            <head>
+                            <title>UTN - Consultas</title>
+                            </head>
+                            <body>
+                            <p>La siguiente consulta ha sido cancelada:</p>
+                            <p>Materia: ".$Emateria." </p>
+                            <p>Fecha: ".$Efecha." </p>
+                            <p>Hora: ".$Ehora." </p>";
+                            
+                            $cuerpo = $cuerpo."</body></html>";
+
+                            customMail($EmailAlumno, $asunto, $cuerpo);
+                        }
                 }
                 else {
                     $vTipoMensaje = 'danger';
