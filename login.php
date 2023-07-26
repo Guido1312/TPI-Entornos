@@ -40,7 +40,7 @@ elseif(isset($_POST['ingresar'])){
     $Lpass = $_POST["inputPass"];
     if (isset($link)) {
     try {
-    $vSql = "SELECT u.*, ea.id_alumno, ea.id_especialidad, p.id_profesor FROM usuarios u 
+    $vSql = "SELECT distinct u.*, ea.id_alumno, p.id_profesor FROM usuarios u 
             LEFT JOIN alumnos a ON a.id_usuario = u.id_usuario
             LEFT JOIN especialidades_alumnos ea ON ea.id_alumno = a.legajo
             LEFT JOIN profesores p ON p.id_usuario = u.id_usuario
@@ -55,7 +55,6 @@ elseif(isset($_POST['ingresar'])){
       $idUsuarioOk= $fila['id_usuario'];
       $rolUsuarioOk= $fila['rol'];  
       if (isset($fila['id_alumno'])){
-        $especialidad = $fila['id_especialidad'];
         $idAlumno = $fila['id_alumno'];
       }
       if (isset($fila['id_profesor'])){
@@ -74,7 +73,6 @@ elseif(isset($_POST['ingresar'])){
         $_SESSION['usuario']=$idUsuarioOk;
         $_SESSION['rol']=$rolUsuarioOk;
         if ($rolUsuarioOk == 1) {
-          $_SESSION['especialidad'] = $especialidad;
           $_SESSION['id_alumno'] = $idAlumno;
         }
         elseif ($rolUsuarioOk == 2) {

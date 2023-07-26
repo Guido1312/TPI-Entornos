@@ -59,8 +59,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     try {
     $vIDalumno = $_SESSION['id_alumno'];
 
-    $vIDespecialidad = $_SESSION['especialidad'];
-
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDconsulta"]) && $_POST ['actionType']=="inscribirse") {
         $vIDconsulta = $_POST["inputIDconsulta"];
         $vSqlCount = "SELECT COUNT(*) as cantidad FROM inscripciones WHERE id_consulta = '$vIDconsulta' and id_alumno = '$vIDalumno'";
@@ -156,7 +154,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             inner join especialidades e on m.id_especialidad = e.id_especialidad
             inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
             inner join profesores p on c.id_profesor = p.id_profesor
-            where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'
+            where ea.id_alumno = '$vIDalumno'
                 and not exists ( SELECT * FROM inscripciones i where i.id_consulta = c.id_consulta 
                                         and i.id_alumno = '$vIDalumno'
                                         and i.estado_inscripcion != 4) 
@@ -174,17 +172,15 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         $vSql .= " and c.id_profesor = '$vProfesorFiltro'";
     }
 
-    $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia FROM materias m
+    $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia, e.descripcion FROM materias m
                     inner join especialidades e on m.id_especialidad = e.id_especialidad
                     inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
-                    where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'"; 
+                    where ea.id_alumno = '$vIDalumno'"; 
 
     $vSqlProfesores = "SELECT DISTINCT p.id_profesor, p.nombre_apellido FROM profesores p
                         inner join consultas c on c.id_profesor = p.id_profesor
                         inner join materias m on m.id_materia = c.id_materia
-                        inner join especialidades e on e.id_especialidad = m.id_especialidad
-                        inner join especialidades_alumnos ea on ea.id_especialidad = e.id_especialidad
-                        where ea.id_alumno = '$vIDalumno' and ea.id_especialidad = '$vIDespecialidad'";
+                        inner join especialidades_alumnos ea on ea.id_especialidad = e.id_especialidad";
                                     
     $vResultado = mysqli_query($link, $vSql);
     $vMaterias = mysqli_query($link, $vSqlMaterias);
@@ -236,12 +232,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             {
                 if (!empty($_POST ['materia']) && $_POST ['materia']==$fila['id_materia']) {
                 ?>
-                    <option value=<?php echo ($fila['id_materia'])?> selected> <?php echo ($fila['nombre_materia'])?></option>
+                    <option value=<?php echo ($fila['id_materia'])?> selected> <?php echo ($fila['nombre_materia'].' '.$fila['descripcion'])?></option>
                 <?php        
                 }
                 else {
                 ?>
-                    <option value=<?php echo ($fila['id_materia'])?>> <?php echo ($fila['nombre_materia'])?></option>
+                    <option value=<?php echo ($fila['id_materia'])?>> <?php echo ($fila['nombre_materia'].' '.$fila['descripcion'])?></option>
                 <?php
                 }
             }
@@ -316,7 +312,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     foreach ($data_page as $fila)
     {?>
                 <tr>
-                    <td><?php echo ($fila['nombre_materia']); ?></td>
+                    <td><?php echo ($fila['nombre_materia'].' '.$fila['descripcion']); ?></td>
                     <td><?php echo ($fila['nombre_apellido']); ?></td>
                     <td><?php echo ($fila['fecha_consulta']); ?></td>
                     <td><?php echo ($fila['hora_consulta']); ?></td>
