@@ -172,7 +172,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
         $vSql .= " and c.id_profesor = '$vProfesorFiltro'";
     }
 
-    $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia, e.descripcion FROM materias m
+    $vSqlMaterias = "SELECT m.id_materia, m.nombre_materia FROM materias m
                     inner join especialidades e on m.id_especialidad = e.id_especialidad
                     inner join especialidades_alumnos ea on e.id_especialidad = ea.id_especialidad
                     where ea.id_alumno = '$vIDalumno'"; 
@@ -180,7 +180,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     $vSqlProfesores = "SELECT DISTINCT p.id_profesor, p.nombre_apellido FROM profesores p
                         inner join consultas c on c.id_profesor = p.id_profesor
                         inner join materias m on m.id_materia = c.id_materia
-                        inner join especialidades_alumnos ea on ea.id_especialidad = e.id_especialidad";
+                        inner join especialidades_alumnos ea on ea.id_alumno = '$vIDalumno'";
                                     
     $vResultado = mysqli_query($link, $vSql);
     $vMaterias = mysqli_query($link, $vSqlMaterias);
@@ -232,12 +232,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
             {
                 if (!empty($_POST ['materia']) && $_POST ['materia']==$fila['id_materia']) {
                 ?>
-                    <option value=<?php echo ($fila['id_materia'])?> selected> <?php echo ($fila['nombre_materia'].' '.$fila['descripcion'])?></option>
+                    <option value=<?php echo ($fila['id_materia'])?> selected> <?php echo ($fila['nombre_materia'])?></option>
                 <?php        
                 }
                 else {
                 ?>
-                    <option value=<?php echo ($fila['id_materia'])?>> <?php echo ($fila['nombre_materia'].' '.$fila['descripcion'])?></option>
+                    <option value=<?php echo ($fila['id_materia'])?>> <?php echo ($fila['nombre_materia'])?></option>
                 <?php
                 }
             }
@@ -312,7 +312,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
     foreach ($data_page as $fila)
     {?>
                 <tr>
-                    <td><?php echo ($fila['nombre_materia'].' '.$fila['descripcion']); ?></td>
+                    <td><?php echo ($fila['nombre_materia'].' - '.$fila['descripcion']); ?></td>
                     <td><?php echo ($fila['nombre_apellido']); ?></td>
                     <td><?php echo ($fila['fecha_consulta']); ?></td>
                     <td><?php echo ($fila['hora_consulta']); ?></td>

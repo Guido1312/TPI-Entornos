@@ -150,7 +150,7 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
 
                             if (!empty($_POST["selectDia"]) && !empty($_POST["inputHora"]) && $flag)
                             {
-                                $cuerpo = $cuerpo."<p>Alternativa propuesta:".$_POST["selectDia"]." ".$_POST["inputHora"]." hs.</p>";
+                                $cuerpo = $cuerpo."<p>Alternativa propuesta: ".$_POST["selectDia"]." ".$_POST["inputHora"]." hs.</p>";
                             }
                             $cuerpo = $cuerpo."</body></html>";
 
