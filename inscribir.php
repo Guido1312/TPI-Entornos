@@ -161,7 +161,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                                         and i.id_alumno = '$vIDalumno'
                                         and i.estado_inscripcion != 4) 
                                         and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR) 
-                                        and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
+                                        and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'
+                                        order by c.fecha_consulta, c.hora_consulta";
 
     if (!empty($_POST ['materia']) && $_POST ['materia']!="0") {
         $vMateriaFiltro = $_POST ['materia'];

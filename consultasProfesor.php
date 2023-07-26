@@ -8,25 +8,16 @@ function obtenerNumeroDiaSemana($fecha) {
 }
 
 // Función para obtener la fecha correspondiente al día seleccionado en la misma semana y el viernes
-function obtenerFechasSemana($fecha, $dia_semana) {
+function obtenerFechaCorrespondiente($fecha, $dia_semana) {
     $numero_dia_semana = obtenerNumeroDiaSemana($fecha);
     $numero_dia_seleccionado = array_search($dia_semana, ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado']);
 
-    $diferencia_dias = ($numero_dia_semana <= $numero_dia_seleccionado)
-        ? $numero_dia_seleccionado - $numero_dia_semana
-        : 7 - $numero_dia_semana + $numero_dia_seleccionado;
+    $diferencia_dias = $numero_dia_seleccionado - $numero_dia_semana;        
 
     $fecha_obj = DateTimeImmutable::createFromFormat('Y-m-d', $fecha);
     $fecha_correspondiente = $fecha_obj->modify("+$diferencia_dias day");
 
-    // Obtener la fecha del viernes de la misma semana de la fecha proporcionada ($fecha)
-    $diferencia_dias_viernes = 5 - $numero_dia_semana;
-    $viernes_semana = $fecha_obj->modify("+$diferencia_dias_viernes day");
-
-    return [
-        'fecha_correspondiente' => $fecha_correspondiente,
-        'viernes_semana' => $viernes_semana
-    ];
+    return $fecha_correspondiente;
 }?>
 
 <!DOCTYPE html>
@@ -91,16 +82,14 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     if (!empty($_POST ['actionType']))
     {
         if($_POST ['actionType'] == 'bloquear'){
-            if (!empty($_POST["selectDia"] && $_POST["inputHora"]))
+            if (!empty($_POST["selectDia"]) && !empty($_POST["inputHora"]))
             {
-                $vIdMateria = $_POST["inputMateria"]; //ver si anda
+                $vIdMateria = $_POST["inputMateria"];
                 $fecha = $_POST["fechaConsultaReal"];
                 $dia_semana = $_POST["selectDia"];
                 $horaAlternativa = $_POST["inputHora"];    
                 // Obtener la fecha correspondiente y el viernes de la misma semana
-                $fechas_semana = obtenerFechasSemana($fecha, $dia_semana);
-                $fecha_correspondiente = $fechas_semana['fecha_correspondiente'];
-                $viernes_semana = $fechas_semana['viernes_semana'];
+                $fecha_correspondiente = obtenerFechaCorrespondiente($fecha, $dia_semana);
             }
 
             if (empty($_POST ['id_consulta']))
@@ -111,25 +100,19 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
             {
                 $vMensaje = 'Debe ingresar un motivo de bloqueo.';
             }
-            else if ($fecha_correspondiente < DateTime::createFromFormat('Y-m-d', $fecha) || $fecha_correspondiente > $viernes_semana)
+            else if (strtotime($fecha_correspondiente->format('Y-m-d').' '.$horaAlternativa) < strtotime("now"))
             {
                 $fecha_correspondiente = null;
-                $vMensaje = 'La fecha no puede ser menor que la fecha real de la consulta, ni mayor al viernes de esa semana';
+                $vMensaje = 'La fecha de consulta propuesta debe ser posterior al día y hora actual';
             }
             else
             {
-                if (!empty($_POST["selectDia"] && $_POST["inputHora"]))
+                $fecha_correspondiente = $fecha_correspondiente->format('Y-m-d');
+                if (!empty($_POST["selectDia"]) && !empty($_POST["inputHora"]))
                 {
-                    $vSql = "INSERT INTO consultas (hora_consulta, fecha_consulta,id_estado_consulta,id_profesor,id_materia)
-                            Values ('$horaAlternativa', '$fecha_correspondiente','1','$vIdProfesor','$vIdMateria')"; //revisar
-                    if(mysqli_query($link, $vSql)) { //esto se corria con una asignacion sino? para no poner este if
-                        $vTipoMensaje = "success";
-                        $vMensaje = "Se ha creado la materia";
-                    }
-                    else{
-                        $vTipoMensaje = "danger";
-                        $vMensaje = "Ha ocurrido un error, intente nuevamente";
-                    }
+                    $vAlternativaSql = "INSERT INTO consultas (hora_consulta, fecha_consulta,id_estado_consulta,id_profesor,id_materia)
+                            Values ('$horaAlternativa', '$fecha_correspondiente','1','$vIDprofesor','$vIdMateria')"; 
+                    $flag = mysqli_query($link, $vAlternativaSql);
                 }
                     
                 $vIdConsulta = $_POST['id_consulta'];
@@ -162,8 +145,13 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                             <p>La siguiente consulta ha sido cancelada:</p>
                             <p>Materia: ".$Emateria." </p>
                             <p>Fecha: ".$Efecha." </p>
-                            <p>Hora: ".$Ehora." </p>";
-                            
+                            <p>Hora: ".$Ehora." </p>
+                            <p></p>";
+
+                            if (!empty($_POST["selectDia"]) && !empty($_POST["inputHora"]) && $flag)
+                            {
+                                $cuerpo = $cuerpo."<p>Alternativa propuesta:".$_POST["selectDia"]." ".$_POST["inputHora"]." hs.</p>";
+                            }
                             $cuerpo = $cuerpo."</body></html>";
 
                             customMail($EmailAlumno, $asunto, $cuerpo);
@@ -206,18 +194,25 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
     if (!empty($_POST ['from'])) {
         $vFechaDesde = $_POST ['from'];
     }
+    else {
+        $vFechaDesde = date_add(new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires')),date_interval_create_from_date_string('-7 days'));
+        $vFechaDesde = $vFechaDesde->format('Y-m-d');
+    }
     if (!empty($_POST ['to'])) {
         $vFechaHasta = $_POST ['to'];
     }
+    else {
+        $vFechaHasta = date_add(new DateTime("now", new DateTimeZone('America/Argentina/Buenos_Aires')),date_interval_create_from_date_string('14 days'));
+        $vFechaHasta = $vFechaHasta->format('Y-m-d');
+    }
 
-    $vSql = "SELECT e.descripcion, m.nombre_materia, c.fecha_consulta, c.hora_consulta, c.id_consulta, c.id_estado_consulta
+    $vSql = "SELECT e.descripcion, m.nombre_materia, m.id_materia, c.fecha_consulta, c.hora_consulta, c.id_consulta, c.id_estado_consulta
                 FROM consultas c inner join materias m on c.id_materia = m.id_materia
                 inner join especialidades e on m.id_especialidad = e.id_especialidad
                 inner join profesores p on c.id_profesor = p.id_profesor
-                where c.id_profesor = '$vIDprofesor'";
-    if (!empty($_POST ['from'])) {
-        $vSql .= " and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'";
-    }
+                where c.id_profesor = '$vIDprofesor'
+                and c.fecha_consulta between '$vFechaDesde' and '$vFechaHasta'
+                order by c.fecha_consulta, c.hora_consulta";
                                     
     $vResultado = mysqli_query($link, $vSql);
     $results_per_page = 15;
@@ -249,31 +244,9 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         <div class="container">
             <form Class="content-center" action="consultasProfesor.php" method="POST" name="FiltrarConsultas">
                 <label for="from">Fecha desde:</label>
-                <?php
-                if (empty($_POST ['from'])) {
-                ?>
-                    <input type="text" id="from" name="from">
-                <?php
-                }
-                else {
-                ?>
-                    <input type="text" id="from" name="from" value=<?php echo ($_POST ['from'])?>>
-                <?php
-                }
-                ?>
+                <input type="text" id="from" name="from" value=<?php echo ($vFechaDesde)?>>
                 <label for="to">hasta:</label>
-                <?php
-                if (empty($_POST ['to'])) {
-                ?>
-                    <input type="text" id="to" name="to">
-                <?php
-                }
-                else {
-                ?>
-                    <input type="text" id="to" name="to" value=<?php echo ($_POST ['to'])?>>
-                <?php
-                }
-                ?>
+                <input type="text" id="to" name="to" value=<?php echo ($vFechaHasta)?>>
                 <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
             </form>
 
@@ -303,6 +276,7 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                         <td>
                             <form action="listainscriptos.php" method="post">
                                 <input type="hidden" name="idconsulta" value="<?php echo ($fila['id_consulta']) ?>">
+                                <input type="hidden" name="page" value="<?php echo($current_page)?>">
                                 <button type="submit" class="btn btn-info"> Ver inscriptos </button>
                             </form>
                         </td>
@@ -330,21 +304,28 @@ else if (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
                                             </button>
                                         </div>  
                                         <div class="modal-body">
-                                            <p>Ingrese el motivo del bloqueo</p>
-                                            <input name="motivo" type="text" class="form-control" id="motivo<?php echo ($fila['id_consulta']); ?>">
-                                            <input name="fechaConsultaReal" type="hidden" id="fechaConsultaReal<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['fecha_consulta']); ?>">
-                                            <p>Ingrese consulta alternativa</p>
-                                            <label for="selectDia">Día</label>
-                                            <select name="selectDia" id="selectDia<?php echo ($fila['id_consulta']); ?>">
-                                                <option value="lunes">Lunes</option>
-                                                <option value="martes">Martes</option>
-                                                <option value="miercoles">Miércoles</option>
-                                                <option value="jueves">Jueves</option>
-                                                <option value="viernes">Viernes</option>
-                                            </select>
-                                            <label for="inputHora">Hora</label>
-                                            <input name="inputHora" type="time" class="form-control" id="inputHora<?php echo ($fila['id_consulta']); ?>">
-                                            <input name="inputMateria" type="hidden" id="inputMateria<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['id_materia']); //necesito pasar este dato de algun modo?>">
+                                            <label for="motivo<?php echo ($fila['id_consulta']); ?>">Ingrese el motivo del bloqueo<span class="data-required">*</span></label>
+                                            <input name="motivo" type="text" class="form-control" id="motivo<?php echo ($fila['id_consulta']);?>" required>
+                                            <input name="fechaConsultaReal" type="hidden" id="fechaConsultaReal<?php echo ($fila['id_consulta']);?>" value="<?php echo($fila['fecha_consulta']);?>">
+                                            <p> </p>
+                                            <label for="consultaAlternativa<?php echo ($fila['id_consulta']); ?>">Ingrese consulta alternativa</label>
+                                            <div id="consultaAlternativa<?php echo ($fila['id_consulta']); ?>">
+                                                <div class="form-group col-4">
+                                                    <label for="selectDia">Día</label>
+                                                    <select class="form-control" name="selectDia" id="selectDia<?php echo ($fila['id_consulta']);?>">
+                                                        <option value="lunes">Lunes</option>
+                                                        <option value="martes">Martes</option>
+                                                        <option value="miercoles">Miércoles</option>
+                                                        <option value="jueves">Jueves</option>
+                                                        <option value="viernes">Viernes</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-4">
+                                                    <label for="inputHora">Hora</label>
+                                                    <input name="inputHora" type="time" class="form-control" id="inputHora<?php echo ($fila['id_consulta']);?>">
+                                                </div>
+                                            </div>
+                                            <input name="inputMateria" type="hidden" id="inputMateria<?php echo ($fila['id_consulta']); ?>" value="<?php echo($fila['id_materia']);?>">
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -76,7 +76,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==2){
         </table>
     </div>
         <p>&nbsp;</p>
-    <a href="consultasProfesor.php"><button type="button" class="btn btn-info"> Volver a Consultas </button></a>
+    <a href="consultasProfesor.php?page=<?php echo($_POST['page'])?>"><button type="button" class="btn btn-info"> Volver a Consultas </button></a>
     <?php
     include("footer.html");
 }

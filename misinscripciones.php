@@ -45,6 +45,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                                         where i.id_alumno = '$vIDalumno' and i.estado_inscripcion != 4 
                                         and c.id_estado_consulta in (1,3)
                                         and addtime(fecha_consulta,hora_consulta) >= date_add(utc_timestamp(), INTERVAL -3 HOUR)
+                                        order by c.fecha_consulta, c.hora_consulta
                                         ";
     $vResultado = mysqli_query($link, $vSql);
 
@@ -85,18 +86,18 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==1){
                     ?></td>
                 <td> 
                     <?php 
-                    if (strtotime($fila['fecha_consulta'].' '.$fila['hora_consulta'])>$vHoraLimiteCancelacion) {
+                    if ($fila['id_estado_consulta'] == 3){
+                        ?>
+                        <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Consulta bloqueada." disabled> Cancelar inscripcion </button>
+                        <?php
+                    }
+                    elseif (strtotime($fila['fecha_consulta'].' '.$fila['hora_consulta'])>$vHoraLimiteCancelacion) {
                     ?>
                         <form action="misinscripciones.php" method="post">
                             <input name="inputIDconsulta" type="text" class="form-control" style="display:none" id="inputIDconsulta" value="<?php echo ($fila['id_consulta']); ?>">
                             <button type="submit" name="actionType" value="cancelar" class="btn btn-danger"> Cancelar inscripcion </button>
                         </form>
                     <?php
-                    }
-                    elseif ($fila['id_estado_consulta'] == 3){
-                        ?>
-                        <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Consulta bloqueada." disabled> Cancelar inscripcion </button>
-                        <?php
                     }
                     else{ ?>
                         <button type="submit" name="actionTypeNone" class="btn btn-danger" title="Solo puede cancelar una inscripcion 24hs antes de la consulta." disabled> Cancelar inscripcion </button>
