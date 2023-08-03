@@ -1,7 +1,7 @@
 <?php session_start(); 
 //validacion del lado del servidor
-function validarDatos($vDNI,$vNombre,&$vMensaje) {
-    if(empty($vDNI)|| empty($vNombre))
+function validarDatos($vNombre,&$vMensaje) {
+    if(empty($vNombre))
     {
      $vTipoMensaje = "danger";
      $vMensaje = "No se han rellenado todos los campos";
@@ -12,18 +12,6 @@ function validarDatos($vDNI,$vNombre,&$vMensaje) {
      $vTipoMensaje = "danger";
      $vMensaje = "Solo se deben usar letras en el nombre de usuario";
      return false;
-    }
-    else if(!is_numeric($vDNI))
-    {
-       $vTipoMensaje = "danger";
-       $vMensaje = "Solo se deben usar numeros en el DNI";
-       return false;
-    }
-    else if($vDNI > 999999999)
-    {
-       $vTipoMensaje = "danger";
-       $vMensaje = "El DNI debe tener 9 dígitos o menos";
-       return false;
     }
     else
     {
@@ -55,13 +43,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
 
     // Se guardan los cambios de alta
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaUsuario") {
-        $vDNI = trim($_POST["inputDni"]);
         $vNombre = trim($_POST["inputNombre"]);
         $vPassword= trim($_POST["inputPassword"]);
         $vRol= $_POST["selectRole"];
-        if (validarDatos($vDNI,$vNombre,$vMensaje)){
-            $vSql = "INSERT INTO usuarios (rol, dni, nombre_usuario, password)
-                    Values ($vRol, $vDNI, '$vNombre', '$vPassword')";
+        if (validarDatos($vNombre,$vMensaje)){
+            $vSql = "INSERT INTO usuarios (rol, nombre_usuario, password)
+                    Values ($vRol, '$vNombre', '$vPassword')";
             if(mysqli_query($link, $vSql)) {
                 $vTipoMensaje = "success";
                 $vMensaje = "Se ha creado el usuario";
@@ -88,12 +75,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     // Se guardan los cambios de modificar
     if (!empty($_POST ['actionType']) && !empty($_POST["inputIDusuario"]) && $_POST ['actionType']=="modificarUsuario") {
         $vIDusuario = trim($_POST["inputIDusuario"]);
-        $vDNI = trim($_POST["inputDni"]);
         $vNombre = trim($_POST["inputNombre"]);
         $vPassword= trim($_POST["inputPassword"]);
         $vRol= $_POST["selectRole"];
-        if (validarDatos($vDNI,$vNombre,$vMensaje)){
-            $vSql = "UPDATE usuarios SET dni = '$vDNI', nombre_usuario = '$vNombre', password = '$vPassword', rol = '$vRol'
+        if (validarDatos($vNombre,$vMensaje)){
+            $vSql = "UPDATE usuarios SET nombre_usuario = '$vNombre', password = '$vPassword', rol = '$vRol'
                     WHERE id_usuario = '$vIDusuario'";
             if(mysqli_query($link, $vSql)) {
                 $vTipoMensaje = "success";
@@ -179,10 +165,9 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
             <thead style="background-color: #077b83; color: #ffff ;">
             <tr>
                     <th><b>Rol</b></th>
-                    <th><b>Dni</b></th>
                     <th><b>Usuario</b></th>
                     <th><b>Password</b></th>
-                    <th><b>Legajo</b></th>
+                    <th><b>Legajo/ID</b></th>
                     <th><b>Nombre y apellido</b></th>
                     <th><b></b></th>
                     <th>
@@ -201,7 +186,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     {?>
             <tr>
                 <td><?php echo ($fila['nombre_rol']); ?></td>
-                <td><?php echo ($fila['dni']); ?></td>
                 <td><?php echo ($fila['nombre_usuario']); ?></td>
                 <td><?php echo ($fila['password']); ?></td>
                 <td><?php echo ($fila['id_externo']); ?></td>
@@ -256,10 +240,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </button>
                     </div>
                     <div class="modal-body">
-                            <div class="form-group col-md-6">
-                                <label for="inputDni">DNI<span class="data-required">*</span></label>
-                                <input name="inputDni" type="number" class="form-control" id="inputDni" required>
-                            </div>
                             <div class="form-group col-md-6">
                                 <label for="inputNombre">Nombre de Usuario<span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
@@ -319,11 +299,6 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                         </button>
                     </div>
                     <div class="modal-body">
-                            <div class="form-group col-md-6">
-                                <label for="inputDni">DNI<span class="data-required">*</span></label>
-                                <input name="inputDni" type="number" class="form-control" id="inputDni<?php echo ($fila['id_usuario']); ?>"
-                                    value="<?php echo ($fila['dni'])?>" required>
-                            </div>
                             <div class="form-group col-md-6">
                                 <label for="inputNombre">Nombre de Usuario<span class="data-required">*</span></label>
                                 <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_usuario']); ?>"

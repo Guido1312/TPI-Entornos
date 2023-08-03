@@ -1,11 +1,23 @@
 <?php session_start(); 
 //validacion del lado del servidor
-function validarDatos($vNombre,$vMail,&$vMensaje) {
-    if(empty($vNombre) || empty($vMail))
+function validarDatos($vNombre,$vMail,$vDNI,&$vMensaje) {
+    if(empty($vNombre) || empty($vMail) || empty($vDNI))
     {
      $vTipoMensaje = "danger";
      $vMensaje = "No se han rellenado todos los campos";
      return false;
+    }
+    else if(!is_numeric($vDNI))
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Solo se deben usar numeros en el DNI";
+        return false;
+    }
+    else if($vDNI > 999999999)
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "El DNI debe tener 9 dígitos o menos";
+        return false;
     }
     else if(!preg_match('/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/', $vNombre))
     {
@@ -49,11 +61,12 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     if (!empty($_POST ['actionType']) && $_POST ['actionType']=="altaProfesor") {
         $vNombre = trim($_POST["inputNombre"]);
         $vMail= trim($_POST["inputMail"]);
+        $vDNI = trim($_POST["inputDni"]);
         $vUser= $_POST["selectUser"];
-        if (validarDatos($vNombre,$vMail,$vMensaje)){
+        if (validarDatos($vNombre,$vMail,$vDNI,$vMensaje)){
             if(empty($vUser)){
-                $vSql = "INSERT INTO profesores (nombre_apellido, mail)
-                    Values ('$vNombre', '$vMail')";
+                $vSql = "INSERT INTO profesores (nombre_apellido, mail, dni)
+                    Values ('$vNombre', '$vMail', '$vDNI')";
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = "success";
                     $vMensaje = "Se ha creado el profesor";
@@ -64,8 +77,8 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 }
             }
             else{
-                $vSql = "INSERT INTO profesores (nombre_apellido, mail, id_usuario)
-                Values ('$vNombre', '$vMail', $vUser)";
+                $vSql = "INSERT INTO profesores (nombre_apellido, mail, id_usuario, dni)
+                Values ('$vNombre', '$vMail', $vUser, $vDNI)";
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = "success";
                     $vMensaje = "Se ha creado el profesor";
@@ -95,10 +108,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $vIDprofesor = trim($_POST["inputIDprofesor"]);
         $vNombre = trim($_POST["inputNombre"]);
         $vMail= trim($_POST["inputMail"]);
+        $vDNI = trim($_POST["inputDni"]);
         $vUser= $_POST["selectUser"];
-        if (validarDatos($vNombre,$vMail,$vMensaje)){
+        if (validarDatos($vNombre,$vMail,$vDNI,$vMensaje)){
             if(empty($vUser)){
-                $vSql = "UPDATE profesores SET nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = null
+                $vSql = "UPDATE profesores SET nombre_apellido = '$vNombre', mail = '$vMail', dni = '$vDNI', id_usuario = null
                         WHERE id_profesor = '$vIDprofesor'";
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = "success";
@@ -110,7 +124,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 }
             }
             else{
-                $vSql = "UPDATE profesores SET nombre_apellido = '$vNombre', mail = '$vMail', id_usuario = '$vUser'
+                $vSql = "UPDATE profesores SET nombre_apellido = '$vNombre', mail = '$vMail', dni = '$vDNI', id_usuario = '$vUser'
                         WHERE id_profesor = '$vIDprofesor'";
                 if(mysqli_query($link, $vSql)) {
                     $vTipoMensaje = "success";
@@ -149,7 +163,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     $vUsersAsignados = mysqli_query($link, $vSqlUserAsignados);
     $usersAsignados = mysqli_fetch_all($vUsersAsignados,MYSQLI_ASSOC);
 
-    $vSql = "SELECT p.*, u.nombre_usuario, u.dni
+    $vSql = "SELECT p.*, u.nombre_usuario
                     FROM profesores p left join usuarios u 
                     on p.id_usuario = u.id_usuario";
     
@@ -309,6 +323,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label for="inputDni">DNI<span class="data-required">*</span></label>
+                                    <input name="inputDni" type="number" class="form-control" id="inputDni" required>
+                                </div>
+                                <div class="form-group col-md-6">
                                     <label for="inputMail">Mail<span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail" required>
                                 </div>
@@ -360,6 +378,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     <label for="inputNombre">Nombre y apellido<span class="data-required">*</span></label>
                                     <input name="inputNombre" type="text" class="form-control" id="inputNombre<?php echo ($fila['id_profesor']); ?>"
                                         value="<?php echo ($fila['nombre_apellido'])?>" required>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="inputDni">DNI<span class="data-required">*</span></label>
+                                    <input name="inputDni" type="number" class="form-control" id="inputDni<?php echo ($fila['id_usuario']); ?>"
+                                        value="<?php echo ($fila['dni'])?>" required>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="inputMail">Mail<span class="data-required">*</span></label>

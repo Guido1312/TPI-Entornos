@@ -1,3 +1,44 @@
+<?php 
+function generarCodigoAleatorio($longitud) {
+    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $codigo = '';
+    for ($i = 0; $i < $longitud; $i++) {
+        $codigo .= $caracteres[mt_rand(0, strlen($caracteres) - 1)];
+    }
+    return $codigo;
+}
+//validacion del lado del servidor
+function validarDatos($vNombreUsuario,$vDNI,&$vMensaje) {
+  if(empty($vNombreUsuario) || empty($vDNI))
+     {
+     $vTipoMensaje = "danger";
+     $vMensaje = "No se han rellenado todos los campos";
+     return false;
+     }
+     else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombreUsuario))
+     {
+     $vTipoMensaje = "danger";
+     $vMensaje = "Solo se deben usar letras en el nombre de usuario, sin espacios";
+     return false;
+     }
+     else if(!is_numeric($vDNI))
+     {
+         $vTipoMensaje = "danger";
+         $vMensaje = "Solo se deben usar numeros en el DNI";
+         return false;
+     }
+     else if($vDNI > 999999999)
+     {
+         $vTipoMensaje = "danger";
+         $vMensaje = "El DNI debe tener 9 dígitos o menos";
+         return false;
+     }
+     else
+     {
+         return true;
+     }
+ }
+?>
 <!DOCTYPE html>
 <html lang="es">
 <?php 
@@ -13,6 +54,9 @@ include("head.html");
 <body>
   <?php
 include("conexion.inc");
+if (isset($_GET['mensaje'])){
+  $vMensaje=$_GET['mensaje'];
+}
 if (isset($_POST ['actionType']) && $_POST ['actionType']=="logout"){
   session_destroy();
 }
@@ -86,6 +130,50 @@ elseif(isset($_POST['ingresar'])){
       }
     }
 }
+elseif(isset($_POST['registrar'])){
+  $vEmail = $_POST["inputEmail"];
+  $vNombreUsuario = $_POST['inputUser']; 
+  $vPassword = $_POST['inputPassword']; 
+  $vRol = $_POST['selectRol']; 
+  $vDNI = $_POST['inputDni']; 
+  if (validarDatos($vNombreUsuario,$vDNI,$vMensaje))
+  {
+    if ($vRol == "Alumno")
+    {
+      $vSql = "SELECT * FROM alumnos a WHERE a.mail = '$vEmail' and a.dni='$vDNI'";
+      $vIDRol = 1;
+    }
+    else
+    {
+      $vSql = "SELECT * FROM profesores p WHERE p.mail = '$vEmail' and p.dni='$vDNI'";
+      $vIDRol = 2;
+    }
+    $vResultado = mysqli_query($link, $vSql);
+    if (mysqli_num_rows($vResultado) == 0) {
+      $vTipoMensaje = "danger";
+      $vMensaje = "No se encontro un ".$vRol." para los datos ingresados. Comuniquese con el departamento de alumnos.";
+    }
+    else {
+      // Generar un código aleatorio de 8 caracteres
+      $codigoAleatorio = generarCodigoAleatorio(20);
+      $vSql = "INSERT INTO registro_usuarios(id_rol_usuario,dni,nombre_usuario,password,codigo,validado,fecha) values($vIDRol,$vDNI,'$vNombreUsuario','$vPassword','$codigoAleatorio',
+              0,current_timestamp())";
+     if(mysqli_query($link, $vSql)){
+          customMail($vEmail, 'Registro a gestión de consultas', '<p>Se ha ingresado una solicitud para registrarse al sistema de gestión de consultas.</p>'.
+          '<br><p>Datos de ingreso al sistema de '.
+          'gestión de consultas.</p> <p>Usuario: '.$vNombreUsuario.'.</p> <p>Contraseña: '.$vPassword.'.<p>'.
+          '<p>Para confirmar el registro haz click en el siguiente link: </p>'.getenv('URL_SITIO').'?code='.$codigoAleatorio.
+          '<p>Link válido por 2 horas.</p>');
+          $vTipoMensaje = "success";
+          $vMensaje = "Se envío un mail a su correo para confirmar el registro.";
+      }
+      else{
+          $vTipoMensaje = "danger";
+          $vMensaje = "Ha ocurrido un error al registrarse.";
+      }
+    }
+  }
+}
 ?>
 
   <div class="container py-4" style="margin-top: 10%">
@@ -95,21 +183,24 @@ elseif(isset($_POST['ingresar'])){
               <img class="card-img-top" src="images/iconLogoUTN.png" alt="UTN" style="max-inline-size: 30%;">
             </div>
             <div class="card-body" id="cardLogin">
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
-              <h1 class="text-success text-center card-title" id="labelForm" style="font-size: 20px">Digita tus credenciales</h1>
-              <div class="form-grup">
-                  <div class="input-group">
-                    <input type="text" style="text-transform:lowercase;" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
-                  </div>
-                  <div class="input-group py-2">
-                    <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="contraseña" class="form-control" required>
-                  </div>
-                  <div class="input-group">
-                    <button type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-info btn-block"> Ingresar </button>
-                  </div>
-              </div>
-            </form>
-          </div>
+              <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" id="formIngreso" aria-labelledby="labelForm">
+                <h1 class="text-success text-center card-title" id="labelForm" style="font-size: 20px">Digita tus credenciales</h1>
+                <div class="form-grup">
+                    <div class="input-group">
+                      <input type="text" style="text-transform:lowercase;" name="inputUser" title="Ingresar usuario" placeholder="Usuario" class="form-control" required>
+                    </div>
+                    <div class="input-group py-2">
+                      <input type="password" name="inputPass" title="Ingresar contraseña" placeholder="contraseña" class="form-control" required>
+                    </div>
+                    <div class="input-group">
+                      <button type="submit" name="ingresar" title="Boton ingresar" value="Ingresar" class="btn btn-sm btn-success btn-block"> Ingresar </button>
+                    </div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer content-center">
+              <a name="registrar" title="Boton registrarse" href="#modalRegistro" data-toggle="modal" data-target="#modalRegistro" class="btn btn-sm btn-info btn-block"> Registrarse </a>
+            </div>
         </div>
     </div>
 
@@ -147,4 +238,52 @@ elseif(isset($_POST['ingresar'])){
       </div>
     </div>
   </div>
+
+  <!-- Modal Registro -->
+  <div class="modal fade" id="modalRegistro" tabindex="-1" role="dialog" aria-labelledby="labellRegistro"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <form action="login.php" method="post">
+        <div class="modal-header">
+          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Registro de usuario</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group col-md-6">
+              <label for="selectRol">Rol: </label>
+              <select name="selectRol" id="selectRol" required>
+                <option value="Alumno" selected>Alumno</option>
+                <option value="Profesor">Profesor</option>
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputDni">DNI <span class="data-required">*</span></label>
+              <input name="inputDni" type="text" class="form-control" id="inputDni" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputEmail">Correo <span class="data-required">*</span></label>
+              <input name="inputEmail" type="text" class="form-control" id="inputEmailRegistro" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputUser">Nombre de usuario <span class="data-required">*</span></label>
+              <input name="inputUser" type="text" class="form-control" id="inputUser" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="inputPassword">Contraseña <span class="data-required">*</span></label>
+              <input name="inputPassword" type="password" class="form-control" id="inputPassword" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="submit" name="registrar" class="btn btn-success">Registrar</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
 </body>

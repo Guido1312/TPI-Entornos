@@ -1,41 +1,52 @@
 <?php session_start(); 
 //validacion del lado del servidor
-function validarDatos($vLegajo,$vNombre,$vMail,&$vMensaje) {
- if(empty($vLegajo)|| empty($vNombre) || empty($vMail))
- {
-  $vTipoMensaje = "danger";
-  $vMensaje = "No se han rellenado todos los campos";
-  return false;
- }
- else if(!preg_match('/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/', $vNombre))
- {
-  $vTipoMensaje = "danger";
-  $vMensaje = "Solo se deben usar letras en el nombre";
-  return false;
- }
- else if(!filter_var($vMail,FILTER_VALIDATE_EMAIL))
- {
-    $vTipoMensaje = "danger";
-    $vMensaje = "El email ingresado es invalido";
-    return false;
- }
- else if(!is_numeric($vLegajo))
- {
-    $vTipoMensaje = "danger";
-    $vMensaje = "Solo se deben usar numeros en el legajo";
-    return false;
- }
- else if($vLegajo > 999999999)
+function validarDatos($vLegajo,$vNombre,$vMail,$vDNI,&$vMensaje) {
+ if(empty($vLegajo)|| empty($vNombre) || empty($vMail) || empty($vDNI))
     {
-       $vTipoMensaje = "danger";
-       $vMensaje = "El legajo debe tener 9 dígitos o menos ";
-       return false;
+    $vTipoMensaje = "danger";
+    $vMensaje = "No se han rellenado todos los campos";
+    return false;
     }
- else
- {
-    return true;
- }
-
+    else if(!preg_match('/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/', $vNombre))
+    {
+    $vTipoMensaje = "danger";
+    $vMensaje = "Solo se deben usar letras en el nombre";
+    return false;
+    }
+    else if(!filter_var($vMail,FILTER_VALIDATE_EMAIL))
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "El email ingresado es invalido";
+        return false;
+    }
+    else if(!is_numeric($vLegajo))
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Solo se deben usar numeros en el legajo";
+        return false;
+    }
+    else if($vLegajo > 999999999)
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "El legajo debe tener 9 dígitos o menos ";
+        return false;
+    }
+    else if(!is_numeric($vDNI))
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Solo se deben usar numeros en el DNI";
+        return false;
+    }
+    else if($vDNI > 999999999)
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "El DNI debe tener 9 dígitos o menos";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 ?>
@@ -82,6 +93,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
         $vLegajo = trim($_POST["inputLegajo"]);
         $vNombre = trim($_POST["inputNombre"]);
         $vMail= trim($_POST["inputMail"]);
+        $vDNI = trim($_POST["inputDni"]);
         $vUser= $_POST["selectUser"];
         $vEspecialidades = ';';
         if(!empty($_POST[$vCheckBox])) {
@@ -89,11 +101,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                 $vEspecialidades .= $check.';';
             }
         }
-        if (validarDatos($vLegajo,$vNombre,$vMail,$vMensaje)){
+        if (validarDatos($vLegajo,$vNombre,$vMail,$vDNI,$vMensaje)){
             $link->begin_transaction();
             try {
                 // Llamar al procedimiento almacenado
-                $result = $link->query("CALL $vProcedure($vLegajo,'$vNombre','$vMail','$vUser','$vEspecialidades');");
+                $result = $link->query("CALL $vProcedure($vLegajo,'$vNombre','$vMail','$vDNI','$vUser','$vEspecialidades');");
             
                 // Verificar si ocurrió algún error durante la ejecución
                 if (!$result) {
@@ -168,7 +180,7 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
     $vEspecialidadesAlumnos = mysqli_query($link, $vSqlEspecialidadesAlumnos);
     $especialidadesAlumnos = mysqli_fetch_all($vEspecialidadesAlumnos,MYSQLI_ASSOC);
 
-    $vSql = "SELECT a.*, u.nombre_usuario, u.dni
+    $vSql = "SELECT a.*, u.nombre_usuario
                     FROM alumnos a left join usuarios u 
                     on a.id_usuario = u.id_usuario";
 
@@ -316,6 +328,11 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                         value="<?php echo ($fila['nombre_apellido'])?>" required>
                                 </div>
                                 <div class="form-group col-md-6">
+                                    <label for="inputDni">DNI<span class="data-required">*</span></label>
+                                    <input name="inputDni" type="number" class="form-control" id="inputDni<?php echo ($fila['id_usuario']); ?>"
+                                        value="<?php echo ($fila['dni'])?>" required>
+                                </div>
+                                <div class="form-group col-md-6">
                                     <label for="inputMail">Mail <span class="data-required">*</span></label>
                                     <input name="inputMail" type="email" class="form-control" id="inputMail<?php echo ($fila['legajo']); ?>"
                                         value="<?php echo ($fila['mail'])?>" required>
@@ -441,6 +458,10 @@ elseif (isset($_SESSION['usuario']) & $_SESSION['rol']==3){
                                     <div class="form-group col-md-6">
                                         <label for="inputNombre">Nombre y apellido <span class="data-required">*</span></label>
                                         <input name="inputNombre" type="text" class="form-control" id="inputNombre" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="inputDni">DNI<span class="data-required">*</span></label>
+                                        <input name="inputDni" type="number" class="form-control" id="inputDni" required>
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="inputMail">Mail <span class="data-required">*</span></label>
