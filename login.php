@@ -8,28 +8,28 @@ function generarCodigoAleatorio($longitud) {
     return $codigo;
 }
 //validacion del lado del servidor
-function validarDatos($vNombreUsuario,$vDNI,$vRol,&$vMensaje) {
+function validarDatos($vNombreUsuario,$vDNI,$vRol,$link,&$vMensaje) {
   if(empty($vNombreUsuario) || empty($vDNI))
     {
     $vTipoMensaje = "danger";
     $vMensaje = "No se han rellenado todos los campos";
     return false;
     }
-    $vSql = "SELECT count(*) FROM usuarios u
+    $vSql = "SELECT * FROM usuarios u
               WHERE u.nombre_usuario = '$vNombreUsuario'";
     $vResultado = mysqli_query($link, $vSql);
-    if(mysqli_num_rows($vResultado) == 0)
+    if(mysqli_num_rows($vResultado) > 0)
     {
         $vTipoMensaje = "danger";
         $vMensaje = "Nombre de usuario ya registrado. Por favor seleccione uno distinto.";
         return false;
     }
-    $vSql = "SELECT count(*) FROM usuarios u 
-            INNER JOIN alumnos a on a.id_usuario = u.id_usuario
-            INNER JOIN profesores p on p.id_usuario = u.id_usuario
+    $vSql = "SELECT * FROM usuarios u 
+            LEFT JOIN alumnos a on a.id_usuario = u.id_usuario
+            LEFT JOIN profesores p on p.id_usuario = u.id_usuario
             WHERE ('$vRol'='Profesor' and p.dni = '$vDNI') or ('$vRol'='Alumno' and a.dni = '$vDNI') ";
     $vResultadoDni = mysqli_query($link, $vSql);
-    if(mysqli_num_rows($vResultadoDni) == 0)
+    if(mysqli_num_rows($vResultadoDni) > 0)
     {
         $vTipoMensaje = "danger";
         $vMensaje = "Ya existe un usuario para el DNI seleccionado.";
@@ -53,7 +53,7 @@ function validarDatos($vNombreUsuario,$vDNI,$vRol,&$vMensaje) {
         $vMensaje = "El DNI debe tener 9 dígitos o menos";
         return false;
     }
-    else if($vRol != 'Alumno' || $vRol != 'Profesor')
+    else if($vRol != 'Alumno' && $vRol != 'Profesor')
     {
         $vTipoMensaje = "danger";
         $vMensaje = "El Rol no es válido.";
@@ -162,7 +162,7 @@ elseif(isset($_POST['registrar'])){
   $vPassword = $_POST['inputPassword']; 
   $vRol = $_POST['selectRol']; 
   $vDNI = $_POST['inputDni']; 
-  if (validarDatos($vNombreUsuario,$vDNI,$vRol,$vMensaje))
+  if (validarDatos($vNombreUsuario,$vDNI,$vRol,$link,$vMensaje))
   {
     if ($vRol == "Alumno")
     {
