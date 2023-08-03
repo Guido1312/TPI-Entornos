@@ -4,7 +4,7 @@ include("conexion.inc");
 $parametroEntrada = $_GET['code'];
 
 // Utilizamos la función SELECT para llamar a la función y obtener su valor de retorno
-$resultado = $link->query("SELECT validar_registro($parametroEntrada) AS resultado");
+$resultado = $link->query("SELECT validar_registro('$parametroEntrada') AS resultado");
 if ($resultado) {
     $fila = $resultado->fetch_assoc();
     $valorRetorno = $fila['resultado'];

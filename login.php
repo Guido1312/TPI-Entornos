@@ -10,33 +10,42 @@ function generarCodigoAleatorio($longitud) {
 //validacion del lado del servidor
 function validarDatos($vNombreUsuario,$vDNI,&$vMensaje) {
   if(empty($vNombreUsuario) || empty($vDNI))
-     {
-     $vTipoMensaje = "danger";
-     $vMensaje = "No se han rellenado todos los campos";
-     return false;
-     }
-     else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombreUsuario))
-     {
-     $vTipoMensaje = "danger";
-     $vMensaje = "Solo se deben usar letras en el nombre de usuario, sin espacios";
-     return false;
-     }
-     else if(!is_numeric($vDNI))
-     {
-         $vTipoMensaje = "danger";
-         $vMensaje = "Solo se deben usar numeros en el DNI";
-         return false;
-     }
-     else if($vDNI > 999999999)
-     {
-         $vTipoMensaje = "danger";
-         $vMensaje = "El DNI debe tener 9 dígitos o menos";
-         return false;
-     }
-     else
-     {
-         return true;
-     }
+    {
+    $vTipoMensaje = "danger";
+    $vMensaje = "No se han rellenado todos los campos";
+    return false;
+    }
+    $vSql = "SELECT count(*) FROM usuarios u
+              WHERE u.nombre_usuario = '$vNombreUsuario'";
+    $vResultado = mysqli_query($link, $vSql);
+    if(mysqli_num_rows($vResultado) == 0)
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Nombre de usuario ya registrado. Por favor seleccione uno distinto.";
+        return false;
+    }
+    else if(!preg_match('/^[a-zA-Z\s]+$/', $vNombreUsuario))
+    {
+    $vTipoMensaje = "danger";
+    $vMensaje = "Solo se deben usar letras en el nombre de usuario, sin espacios";
+    return false;
+    }
+    else if(!is_numeric($vDNI))
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "Solo se deben usar numeros en el DNI";
+        return false;
+    }
+    else if($vDNI > 999999999)
+    {
+        $vTipoMensaje = "danger";
+        $vMensaje = "El DNI debe tener 9 dígitos o menos";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
  }
 ?>
 <!DOCTYPE html>
@@ -246,7 +255,15 @@ elseif(isset($_POST['registrar'])){
       <div class="modal-content">
       <form action="login.php" method="post">
         <div class="modal-header">
-          <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px">Registro de usuario</h1>
+          <div style="align-items: center;display: flex;">
+            <h1 class="modal-title" id="labellRecuperacion" style="font-size: 25px;margin-right: 10px;">Registro de usuario</h1>
+            <div name="ayudaRegistro" title="Para registrarse su DNI y Correo electrónico deben coincidir con los datos brindados a la Universidad.">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z"/>
+                </svg>
+            </div>
+          </div>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
