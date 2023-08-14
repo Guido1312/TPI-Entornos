@@ -88,7 +88,7 @@ include("head.html");
                             <a href="consultasProfesor.php" class="stretched-link"></a>
                             </div>
                         </div>
-                        <div class="card">
+                        <div class="card" style="max-width: 500px;">
                             <img src="images/iconCalendar.png" class="card-img-top" alt="Calendario academico">
                             <div class="card-body content-center">
                             <h5 class="card-title">Calendario académico</h5> 
